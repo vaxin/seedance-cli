@@ -5,7 +5,7 @@
 </picture>
 
 <p align="center">
-  <a href="https://github.com/Emily2040/seedance-2.0/releases"><img src="https://img.shields.io/badge/version-4.2.0-00f0ff?style=flat-square&labelColor=0d1117" alt="Version"></a>
+  <a href="https://github.com/Emily2040/seedance-2.0/releases"><img src="https://img.shields.io/badge/version-5.0.0-00f0ff?style=flat-square&labelColor=0d1117" alt="Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-b000ff?style=flat-square&labelColor=0d1117" alt="License"></a>
   <a href="skills"><img src="https://img.shields.io/badge/skills-23_modules-ff006e?style=flat-square&labelColor=0d1117" alt="Skills"></a>
   <a href="#-multilingual-precision"><img src="https://img.shields.io/badge/languages-5-ffbe0b?style=flat-square&labelColor=0d1117" alt="Languages"></a>
@@ -23,21 +23,21 @@
   <a href="https://x.com/iamemily2050">𝕏</a> &nbsp;|&nbsp;
   <a href="https://instagram.com/iamemily2050">IG</a><br>
   <b>Platform:</b> <a href="https://seed.bytedance.com/en/seedance2_0">ByteDance Seedance 2.0</a> · <a href="https://dreamina.capcut.com/tools/seedance-2-0">Dreamina</a> · <a href="https://jimeng.jianying.com/">Jimeng</a><br>
-  <b>Updated:</b> 2026-03-02 · Q1 2026 release intelligence
+  <b>Updated:</b> 2026-03-03 · Q1 2026 release intelligence
 </p>
 
 ---
 
-## `>` Two Workflows: Max Detail vs. Max Performance
+## `>` The v5.0 Philosophy: Intent Over Precision
 
-This repository now offers two distinct workflows for prompt engineering:
+This library teaches you to **direct** the AI, not micro-manage it. Tell the model WHAT you want and HOW it should FEEL. Use `@references` to show, not tell.
 
-| Workflow | Best for | Philosophy |
+| Workflow | Best for | Start here |
 |:---|:---|:---|
-| **1. Max Detail (Long Form)** | Professional production, complex scenes, maximum creative control | Leave no detail to chance. Specify everything. |
-| **2. Max Performance (Short Form)** | Quick iteration, single clips, high-volume generation | Trust the model. Focus on the emotional core. |
+| **Full Interview** | Vague idea, need creative guidance | [seedance-interview](skills/seedance-interview/SKILL.md) |
+| **Direct Prompt** | Clear vision, have reference media | [seedance-prompt](skills/seedance-prompt/SKILL.md) |
 
-> **Note from the field (Feb 2026):** At the moment, Seedance V2 performs significantly better with short prompts (below 2000 characters) written in Chinese. For best results, use the **Max Performance** workflow.
+> **Note from the field (Feb 2026):** Seedance V2 performs significantly better with short prompts (30-100 words) written in Chinese. The v5.0 prompt system enforces this by default.
 
 ---
 
@@ -52,7 +52,7 @@ This repository now offers two distinct workflows for prompt engineering:
 </td>
 <td width="50%">
 
-**For Agent Builders** — Each of the 23 sub-skills is independently loadable. Your agent reads the 75-line root `SKILL.md`, identifies the task, and loads only the specific modules it needs. Zero token waste. Maximum precision.
+**For Agent Builders** — Each of the 23 sub-skills is independently loadable. Your agent reads the root `SKILL.md`, identifies the task, and loads only the specific modules it needs. Zero token waste. Maximum precision.
 
 </td>
 </tr>
@@ -76,20 +76,20 @@ This repository now offers two distinct workflows for prompt engineering:
 
 | Skill | Emoji | What it does |
 |:---|:---:|:---|
-| [`seedance-interview`](skills/seedance-interview/SKILL.md) | 🎭 | **Cognitive L8** — Construction-First interview: builds a draft, user attacks it, cinematic friction emerges |
-| [`seedance-interview-short`](skills/seedance-interview-short/SKILL.md) | 🎙️ | Max Performance — guided interview outputting a 2000-char compressed brief with live counter |
-| [`seedance-prompt`](skills/seedance-prompt/SKILL.md) | ✍️ | **Cognitive L7** — Concealment Check: exposes hidden vagueness, forces measurable detail before building |
-| [`seedance-prompt-short`](skills/seedance-prompt-short/SKILL.md) | ⚡️ | Max Performance — 2000-char budget system with Compression Engine (4 rules) |
-| [`seedance-camera`](skills/seedance-camera/SKILL.md) | 🎥 | Camera movement, shot framing, multi-shot sequences, anti-drift locks |
-| [`seedance-motion`](skills/seedance-motion/SKILL.md) | 🏃 | Motion timing, action choreography, fight physics, video extension chains |
+| [`seedance-interview`](skills/seedance-interview/SKILL.md) | 🎭 | Director's Journey with Quick Mode exit and genre detection |
+| [`seedance-interview-short`](skills/seedance-interview-short/SKILL.md) | 🎙️ | Compressed interview outputting a 30-100 word brief with live counter |
+| [`seedance-prompt`](skills/seedance-prompt/SKILL.md) | ✍️ | Director's Formula: genre router, 30-100 word target, I2V gate, anti-slop check |
+| [`seedance-prompt-short`](skills/seedance-prompt-short/SKILL.md) | ⚡️ | 30-100 word budget system with Compression Engine |
+| [`seedance-camera`](skills/seedance-camera/SKILL.md) | 🎥 | One-Move Rule, genre camera presets, camera transfer via @Video |
+| [`seedance-motion`](skills/seedance-motion/SKILL.md) | 🏃 | Intent-first motion, @Video reference primary, physics consequences |
 | [`seedance-lighting`](skills/seedance-lighting/SKILL.md) | 💡 | Lighting, atmosphere, light transitions, mood and time-of-day specs |
 | [`seedance-characters`](skills/seedance-characters/SKILL.md) | 🎭 | Character identity locking, @Tag assignment, multi-character scene management |
 | [`seedance-style`](skills/seedance-style/SKILL.md) | 🎨 | Visual style, render-engine tokens, period aesthetics, style-transfer reference |
 | [`seedance-vfx`](skills/seedance-vfx/SKILL.md) | ✨ | VFX physics contracts, particle systems, destruction, energy effects |
 | [`seedance-audio`](skills/seedance-audio/SKILL.md) | 🔊 | Native audio design, dialogue lip-sync, @Audio1 reference, desync fixes |
 | [`seedance-pipeline`](skills/seedance-pipeline/SKILL.md) | 🔗 | ComfyUI nodes, API integration, Firebase Studio, post-processing chains |
-| [`seedance-recipes`](skills/seedance-recipes/SKILL.md) | 📖 | Genre template recipes: product ads, fight scenes, music videos, and more |
-| [`seedance-troubleshoot`](skills/seedance-troubleshoot/SKILL.md) | 🔧 | **Cognitive L11** — Conservation Law: identifies fundamental trade-offs, inverts design for creative escape |
+| [`seedance-recipes`](skills/seedance-recipes/SKILL.md) | 📖 | 7-genre template library: product, lifestyle, drama, MV, landscape, commercial, anime |
+| [`seedance-troubleshoot`](skills/seedance-troubleshoot/SKILL.md) | 🔧 | Diagnostic tree: 5-step root cause analysis for common failure modes |
 
 </details>
 
@@ -246,14 +246,14 @@ seedance-2.0/
 ├── SKILL.md                         ← Root entry point (75 lines)
 ├── LICENSE                          ← MIT
 ├── README.md                        ← You are here
-├── CHANGELOG.md                     ← v3.0.0 → v4.2.0
+├── CHANGELOG.md                     ← v3.0.0 → v5.0.0
 ├── .github/
 │   └── CODEOWNERS                   ← @Emily2040
-├── skills/                          ← 22 modular sub-skills
-│   ├── seedance-interview/          ← 🎭 Cognitive L8 Construction-First
-│   ├── seedance-interview-short/    ← 🎙️ Max Performance (2000-char)
-│   ├── seedance-prompt/             ← ✍️ Cognitive L7 Concealment Check
-│   ├── seedance-prompt-short/       ← ⚡️ Max Performance (2000-char)
+├── skills/                          ← 23 modular sub-skills
+│   ├── seedance-interview/          ← 🎭 Director's Journey + Quick Mode
+│   ├── seedance-interview-short/    ← 🎙️ Compressed interview (30-100 words)
+│   ├── seedance-prompt/             ← ✍️ Director's Formula + Genre Router
+│   ├── seedance-prompt-short/       ← ⚡️ Compressed prompt (30-100 words)
 │   ├── seedance-camera/             ← 🎥 Camera language
 │   ├── seedance-motion/             ← 🏃 Motion control
 │   ├── seedance-lighting/           ← 💡 Lighting design
@@ -263,7 +263,7 @@ seedance-2.0/
 │   ├── seedance-audio/              ← 🔊 Audio & lip-sync
 │   ├── seedance-pipeline/           ← 🔗 Pipeline ops
 │   ├── seedance-recipes/            ← 📖 Genre recipes
-│   ├── seedance-troubleshoot/       ← 🔧 Cognitive L11 Conservation Law
+│   ├── seedance-troubleshoot/       ← 🔧 Diagnostic Tree
 │   ├── seedance-copyright/          ← ⚖️ IP governance
 │   ├── seedance-antislop/           ← 🚫 Language filter
 │   ├── seedance-vocab-zh/           ← 🇨🇳 Chinese
@@ -271,13 +271,18 @@ seedance-2.0/
 │   ├── seedance-vocab-ko/           ← 🇰🇷 Korean
 │   ├── seedance-vocab-es/           ← 🇪🇸 Spanish
 │   ├── seedance-vocab-ru/           ← 🇷🇺 Russian
+│   ├── seedance-filter/              ← 🛡️ Content filter intelligence
 │   └── seedance-examples-zh/        ← 🇨🇳 Chinese Working Examples
-└── references/                      ← 5 reference files
+└── references/                      ← 9 reference files
     ├── platform-constraints.md      ← Platform limits & rules
     ├── json-schema.md               ← JSON prompt schema
     ├── prompt-examples.md           ← Copy-paste examples
     ├── storytelling-framework.md    ← Narrative design & visual layering principles
-    └── quick-ref.md                 ← Quick reference card
+    ├── quick-ref.md                 ← Quick reference card
+    ├── genre-guides.md              ← 7-genre prompt templates
+    ├── reference-workflow.md        ← @reference system guide
+    ├── i2v-guide.md                 ← Image-to-Video best practices
+    └── intent-vs-precision.md       ← Intent-first prompting philosophy
 ```
 
 <br>
@@ -291,25 +296,29 @@ seedance-2.0/
 | [`prompt-examples.md`](references/prompt-examples.md) | Compact, copy-paste prompt examples |
 | [`quick-ref.md`](references/quick-ref.md) | Quick reference card for all parameters |
 | [`storytelling-framework.md`](references/storytelling-framework.md) | Narrative design, visual layering, and director's toolkit principles |
+| [`genre-guides.md`](references/genre-guides.md) | 7-genre prompt templates and best practices |
+| [`reference-workflow.md`](references/reference-workflow.md) | The @reference system: show, don't tell |
+| [`i2v-guide.md`](references/i2v-guide.md) | Image-to-Video best practices |
+| [`intent-vs-precision.md`](references/intent-vs-precision.md) | Intent-first prompting philosophy |
 
 <br>
 
 ## `>` Compliance
 
-All 22 skills pass the [AgentSkills open standard](https://agentskills.io/) validation:
+All 23 skills pass the [AgentSkills open standard](https://agentskills.io/) validation:
 
 - ✅ `name` — lowercase, hyphen-separated, no dots or spaces
 - ✅ `description` — single-quoted, verb-first, includes WHEN trigger phrases
 - ✅ `license: MIT` · `user-invocable: true` · `user-invokable: true`
 - ✅ `tags:` array and `metadata` with `version`, `updated`, `author`, platform blocks
-- ✅ `metadata.parent: seedance-20` on all 22 sub-skills
+- ✅ `metadata.parent: seedance-20` on all 23 sub-skills
 - ✅ No illegal top-level custom fields
 
 <br>
 
 ## `>` Changelog
 
-See [`CHANGELOG.md`](CHANGELOG.md) for the full version history from v3.0.0 to v4.2.0.
+See [`CHANGELOG.md`](CHANGELOG.md) for the full version history from v3.0.0 to v5.0.0.
 
 <br>
 

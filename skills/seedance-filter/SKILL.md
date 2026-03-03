@@ -5,7 +5,7 @@ license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["content-filter", "prompt-engineering", "safety", "troubleshooting", "seedance-20"]
-metadata: {"version": "4.1.0", "updated": "2026-03-02", "openclaw": {"emoji": "🛡️", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "antigravity": {"emoji": "🛡️", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🛡️", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
+metadata: {"version": "5.0.0", "updated": "2026-03-03", "openclaw": {"emoji": "🛡️", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "antigravity": {"emoji": "🛡️", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🛡️", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
   "parent": "seedance-20",
 ---
 

@@ -5,7 +5,7 @@ license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["vfx", "particles", "destruction", "physics", "openclaw", "antigravity", "gemini-cli", "codex", "cursor"]
-metadata: {"version": "4.0.0", "updated": "2026-02-28", "openclaw": {"emoji": "✨", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "✨", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "✨", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
+metadata: {"version": "5.0.0", "updated": "2026-03-03", "openclaw": {"emoji": "✨", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "✨", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "✨", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
 ---
 
 # seedance-vfx
@@ -31,7 +31,7 @@ VFX integration, energy effects, particle systems, and destruction physics for S
 
 ## FX Contract (Required for Every Effect)
 
-Every VFX element needs all five:
+Every VFX element should be described by its **intent and consequence**, not just its physical properties. However, a full FX contract can be useful for complex effects:
 
 ```
 Source:      where does it originate?

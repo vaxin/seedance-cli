@@ -5,172 +5,104 @@ license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["motion", "choreography", "physics", "openclaw", "antigravity", "gemini-cli", "codex", "cursor"]
-metadata: {"version": "4.0.0", "updated": "2026-02-28", "openclaw": {"emoji": "🏃", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "🏃", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🏃", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
+metadata: {"version": "5.0.0", "updated": "2026-03-03", "openclaw": {"emoji": "🏃", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "🏃", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🏃", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
 ---
 
-# seedance-motion
+# seedance-motion · Intent-First Choreography (v5.0)
 
-Temporal control, motion physics, action choreography, and video extension for Seedance 2.0.
+This skill covers motion control, action choreography, and video extension for Seedance 2.0, prioritizing intent-driven descriptions over micro-management.
 
-## Scope
+## The Guiding Philosophy
 
-- Beat density guidelines per clip duration
-- Timing language (timestamps, easing, stillness)
-- Action choreography protocol (fight scenes, martial arts)
-- Per-shot impact physics and grid method
-- Sequential extension chains for long-form production
-
-## Out of scope
-
-- Camera framing and movement — see [skill:seedance-camera]
-- VFX tied to impacts — see [skill:seedance-vfx]
-- Audio per impact — see [skill:seedance-audio]
+> For action, describe the **intent** and **consequence**, not the precise timestamps. Let the AI director handle the interpolation.
 
 ---
 
-## Beat Density (Level 2–3)
+## 1. The Recommended Workflow: Intent + @Video Reference
 
-Excessive beats cause jitter and morphing.
+This is the most reliable method for all action and fight scenes.
 
-| Duration | Max changes |
-|----------|-------------|
-| 4–6s | 1 primary change |
-| 8–10s | 1–2 changes |
-| 12–15s | 2–3 changes (time-segmented) |
+### Step 1: Find a Reference Video
 
-For Level 4 fight choreography: 6–8 beats per 5 seconds is achievable with precise specification.
+Find a real-world video clip (e.g., from a movie, a stunt performance, or a video game) that captures the style of action you want. Upload it as `@Video1`.
+
+### Step 2: Write an Intent-Based Prompt
+
+Describe the high-level action in 1-3 sentences. Use degree adverbs and physics consequences. Then, explicitly tell the model to reference the uploaded video.
+
+```
+// Recommended Prompt Structure
+
+Characters: A references @Image1; B references @Image2.
+
+Choreography: The archer fires two arrows; the mage deflects them with a violet energy shield, then closes distance and blasts the archer into a tree with a shockwave. The archer draws a short blade and counter-attacks in close combat.
+
+Reference: Reference the fight actions, character movements, and camera work from @Video1.
+
+Style: Match the gritty, handheld style of @Video1.
+```
+
+**Why this works:** The `@Video1` reference provides the model with a rich, dense, and unambiguous understanding of the desired motion, physics, and camera language, which consistently outperforms any text-only description.
+
+*For more on the @reference system, see [ref:reference-workflow].*
 
 ---
 
-## Timing Language
+## 2. The Text-Only Workflow: Intent-Based Description
+
+Use this when you don't have a reference video. The key is to keep it simple and enforce the **"One Action Per Shot"** rule.
 
 ```
-Timestamps:   0–3s: ... 3–6s: ... 6–8s: ...
-Relative:     motion eases in over 2 seconds, then eases out
-Terminal:     final frame holds for 0.8 seconds
-Sequential:   starts walking slowly, then accelerates into a run while turning left
+// Text-Only Fight Scene Example
+
+Characters: A references @Image1; B references @Image2.
+
+Shot 1: A throws a right hook at B's jaw.
+Shot 2: B ducks under the punch and sweeps A's legs.
+Shot 3: A jumps, landing a spinning back kick to B's shoulder.
+Shot 4: B staggers backward two steps, recovering his balance.
+
+Camera: Medium shot, tracking the action. Slight handheld shake on impacts.
+Physics: Dust puffs up from the ground on the leg sweep. A wet impact sound accompanies each hit.
 ```
 
-Always describe events in the order they occur. Jumbled temporal order breaks motion flow.
+### Key Principles for Text-Only Action
+
+- **One Action Per Shot:** Do not chain multiple distinct actions (e.g., punch, block, kick) into a single sentence or shot. Break them down.
+- **Degree Adverbs:** Use words like `violently`, `gracefully`, `slowly`, `frantically` to guide the model's interpretation of the action.
+- **Physics Consequences:** Describe the results of the action. `Dust erupts`, `sparks fly`, `water sprays`, `the character staggers`.
 
 ---
 
-## Stillness Contracts
+## 3. Experimental Workflow: Micro-Choreography
 
-```
-the subject is still, only subtle breathing
-no idle swaying, no camera drift
-wind is minimal, only small cloth movement
-locked body, only eyes moving
-```
+> **⚠️ Warning:** This is an advanced, experimental technique that is unreliable for most users and often results in jitter, morphing, and failed generations. Use the Intent-Based workflows above for production.
 
----
-
-## Action Choreography Protocol
-
-### Per-shot micro-choreography
-
-Number every shot with timestamps. Specify hit type, force direction, reaction physics, and sound per beat.
-
-```
-Shot 1 (0–0.6s): Full shot, locked. B throws right heavy punch at A's face.
-SFX: drum "dong" + wind chase.
-
-Shot 2 (0.6–1.2s): Close-up. A double-arm crossguard block, cloth tightens.
-SFX: impact "peng" + cloth snap.
-
-Shot 3 (1.2–1.8s): Medium. A wrist flip counter-throw, B micro-sway.
-SFX: bone crack, ground dust puff.
-
-Shot 4 (1.8–2.4s): Medium-long. B shoulder charge into A's chest, shockwave ripple.
-SFX: heavy thud.
-
-Shot 5 (2.4–3.0s): Low angle. A slides back, recovers low stance, dust trail.
-SFX: scraping "ci" + wind settle.
-```
-
-### Impact physics — every hit specifies
-
-- Contact type: punch / kick / block / throw / weapon strike
-- Force direction: where does energy go?
-- Reaction: body recoil / stagger / knockback distance / guard break
-- Environment: dust cloud / ground crack / debris scatter / shockwave
-- Sound: see [skill:seedance-audio] for layering
+Micro-choreography involves specifying actions with timestamps or in a grid format. While it offers the highest potential for control, it is also the most likely to fail.
 
 ### The Grid Method (25宫格)
 
-For maximum choreographic control, plan each beat as a table row:
-
 | Beat | Camera | Action | SFX |
-|------|--------|--------|-----|
+| :--- | :--- | :--- | :--- |
 | 1 | Full shot, locked | B right punch → A face | drum "dong" + wind |
 | 2 | Close-up | A crossguard block | impact "peng" |
 | 3 | Medium | A wrist flip counter | ground crack |
 
-Convert each row to one sentence in the final prompt.
+### Timestamp Method
 
-### Multi-character fight pattern
+`0-1s: A throws a punch. 1-2s: B blocks. 2-3s: A follows with a kick.`
 
-```
-Characters: A references @Image1; B references @Image2.
-
-Choreography:
-A throws right hook at B's jaw.
-B ducks, sweeps A's legs.
-A jumps, lands spinning back kick to B's shoulder.
-B staggers backward 2 steps.
-
-Camera: medium shot tracking, slight handheld shake on impacts.
-Sound: wet impact each hit, dust puff from ground, heavy breathing between exchanges.
-```
+**When to use:** Only for short, highly technical sequences where the exact timing of each beat is critical and you are prepared to iterate many times to get a usable result.
 
 ---
 
-## Sequential Extension Protocol
+## Diagnostic Tools
 
-### Basic extension
+Use these concepts to diagnose failing motion prompts, not as prescriptive rules for building them.
 
-```
-Extend @Video1 by [X] seconds. New content: [description of what happens next].
-```
-
-Set generation duration = extension length (not total length).
-
-### Continuity rules for extension
-
-1. Re-upload character @Image references — don't rely on last frame alone (prevents identity drift)
-2. Set creativity slider low (0.3–0.4) to stay close to source
-3. Describe the continuation, not the whole scene again
-4. Specify audio continuity: continues / changes / bridges
-
-### Forward extension
-
-```
-Extend @Video1 forward by [X] seconds. Preceding content: [what comes before].
-```
-
-### Bridge between two clips
-
-```
-Generate a [X]-second bridge between @Video1 and @Video2. [Transition description].
-```
-
-### Novel-text chain
-
-For adapting prose to sequential video:
-
-1. Generate clip 1 from opening passage + style reference
-2. For each subsequent clip: `Extend @VideoN by 15s. Content: [paste next paragraph].`
-3. Always include same character @Image and style @Video references
-
-The model reads narrative prose directly — no need to reformat as shot lists.
+- **Beat Density:** If your output is blurry or jittery, you may have too many actions packed into a short duration. The model can typically handle 1-2 distinct beats every 5 seconds. High-density prompts require the experimental micro-choreography format.
+- **Timing Language:** Use relative terms (`eases in over 2 seconds`) or descriptive adverbs (`accelerates into a run`) instead of hard timestamps for smoother, more natural motion.
 
 ---
 
-## Agent gotchas
-
-1. Object integrity degrades under high-speed motion. Always add: `"weapon/prop shape stays consistent throughout."`
-2. Describe events in chronological order. The model processes sequences left to right.
-3. When extending: re-upload character references every time. Do not assume the last frame holds identity.
-4. Beat density beyond guidelines causes jitter. For fight scenes, use the numbered shot format — it handles density better than prose.
-5. `"slowly"` is not a timing word. Use `"over 3 seconds"` or `"eases in over 2s, holds for 1s."`
+*Maintained by [Emily (@iamemily2050)](https://github.com/Emily2040)*

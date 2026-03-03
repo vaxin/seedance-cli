@@ -6,6 +6,31 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [5.0.0] — 2026-03-03
+### Added
+- **Intent-First Philosophy** — The entire library now prioritizes intent-based prompting over precision-based micro-management. New governing rule: "Direct the model. Don't micro-manage it."
+- **4 new reference files:**
+  - `references/genre-guides.md` — 7-genre prompt templates (Product, Lifestyle, Drama, Music Video, Landscape, Commercial, Anime).
+  - `references/reference-workflow.md` — Complete `@reference` system guide (Image, Video, Audio, Material tags).
+  - `references/i2v-guide.md` — Image-to-Video best practices: motion-only prompts, common mistakes.
+  - `references/intent-vs-precision.md` — The philosophical shift from precision to intent.
+
+### Changed
+- **`seedance-prompt` (P0 rewrite)** — Replaced Concealment Check with Director's Formula: genre router, 30-100 word target, I2V gate, anti-slop check.
+- **`seedance-motion` (P0 restructure)** — Replaced micro-choreography with intent-first motion: degree adverbs, physics consequences, `@Video` reference as primary tool.
+- **`seedance-camera` (P1 update)** — Added One-Move Rule as governing principle, genre-based camera presets, camera transfer via `@Video`.
+- **`seedance-recipes` (P1 expansion)** — Expanded from cinematic-only to 7 content categories with templates.
+- **`seedance-interview` (P1 update)** — Added Quick Mode exit for users with strong references, genre detection from `genre-guides`.
+- **`seedance-interview-short` (P1 update)** — Aligned with 30-100 word target, added genre and reference fields.
+- **`seedance-troubleshoot` (P1 update)** — Replaced Conservation Law with practical 5-step diagnostic tree.
+- **`seedance-prompt-short` (P2 update)** — Aligned budget table with 30-100 word target.
+- **`seedance-style` (P2 update)** — Changed style budget from "2-3 tokens" to "ONE primary style anchor."
+- **`seedance-vfx` (P2 update)** — Added intent-first framing to FX contract.
+- **`seedance-audio` (P2 update)** — Added natural language sound description guidance.
+- Root `SKILL.md`, `README.md`, `CHANGELOG.md`, `quick-ref.md` updated for v5.0.0.
+
+---
+
 ## [4.2.0] — 2026-03-03
 ### Added
 - **Safe Vocabulary Integration** — Added filter-safe action, weapon, clothing, body, environment, material, VFX, sound, and production-context vocabulary to `seedance-filter` and all 5 language vocabulary skills.

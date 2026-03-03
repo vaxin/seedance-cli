@@ -5,21 +5,25 @@ license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["ai-video", "filmmaking", "bytedance", "seedance", "multimodal", "lip-sync", "openclaw", "antigravity", "gemini-cli", "firebase", "codex", "cursor", "windsurf", "opencode"]
-metadata: {"version": "4.2.0", "updated": "2026-03-03", "openclaw": {"emoji": "🎬", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "antigravity": {"emoji": "🎬", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🎬", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "firebase": {"emoji": "🎬", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
+metadata: {"version": "5.0.0", "updated": "2026-03-03", "openclaw": {"emoji": "🎬", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "antigravity": {"emoji": "🎬", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🎬", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "firebase": {"emoji": "🎬", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
 ---
 
 # seedance-20
 
 Seedance 2.0 quad-modal AI filmmaking (T2V · I2V · V2V · R2V).
 
+## The v5.0 Philosophy
+
+> **Direct the model. Don't micro-manage it.** Tell it WHAT you want and HOW it should FEEL, not every pixel of HOW to execute it. Use @references to show, not tell.
+
 This library offers two workflows:
 
-1. **Max Detail (Long Form)**: For professional production. Start with [skill:seedance-interview].
-2. **Max Performance (Short Form)**: For high-volume generation. Start with [skill:seedance-interview-short].
+1. **Full Interview**: For users with a vague idea who need creative guidance. Start with [skill:seedance-interview].
+2. **Direct Prompt**: For users who know what they want. Start with [skill:seedance-prompt].
 
 > **Note (Feb 2026):** Seedance V2 currently performs best with short (<2000 char) Chinese prompts.
 
-> **⚠️ Feb 2026 Status**: Seedance 2.0 API global release was delayed (from planned Feb 24) due to copyright enforcement actions by Disney, Paramount Skydance, Netflix, MPA, and SAG-AFTRA. ByteDance paused real-person face uploads Feb 15. Content filters for named franchise characters, anime IPs, and streaming originals have been tightened. The [skill:seedance-copyright] module reflects the current post-enforcement state. Run it before every generation.
+> **Feb 2026 Status**: Seedance 2.0 API global release was delayed (from planned Feb 24) due to copyright enforcement actions by Disney, Paramount Skydance, Netflix, MPA, and SAG-AFTRA. ByteDance paused real-person face uploads Feb 15. Content filters for named franchise characters, anime IPs, and streaming originals have been tightened. The [skill:seedance-copyright] module reflects the current post-enforcement state. Run it before every generation.
 
 
 ## Platform Compatibility
@@ -71,12 +75,13 @@ opencode skills install https://github.com/Emily2040/seedance-2.0
 
 ## References
 
-[ref:platform-constraints] · [ref:json-schema] · [ref:prompt-examples] · [ref:quick-ref] · [ref:storytelling-framework]
+[ref:platform-constraints] · [ref:json-schema] · [ref:prompt-examples] · [ref:quick-ref] · [ref:storytelling-framework] · [ref:genre-guides] · [ref:reference-workflow] · [ref:i2v-guide] · [ref:intent-vs-precision]
 
 ## Version history
 
 | Version | Date | Changes |
 |---|---|---|
+| 5.0.0 | 2026-03-03 | **Intent-First Overhaul.** Rewrote seedance-prompt (genre router, 30-100 word target, I2V gate). Restructured seedance-motion (intent-first, @Video reference primary). Updated seedance-camera (One-Move Rule, genre presets). Updated seedance-recipes (7 genre categories). Updated seedance-interview (Quick Mode exit, genre detection). Updated seedance-troubleshoot (diagnostic tree). Added 4 new references: genre-guides, reference-workflow, i2v-guide, intent-vs-precision. Minor updates to seedance-prompt-short, seedance-style, seedance-vfx, seedance-audio. |
 | 4.2.0 | 2026-03-03 | Safe Vocabulary Integration: added filter-safe action, weapon, clothing, body, environment, material, VFX, sound, and production-context terms to seedance-filter and all 5 language vocabulary skills (zh, ja, ko, es, ru). Term counts: zh 550+, ja/ko/es/ru 450+ each. |
 | 4.1.0 | 2026-03-02 | Added seedance-filter: content filter intelligence, 37% block-rate diagnosis, four-question framework, safe-prompting techniques. |
 | 4.0.0 | 2026-02-28 | Cognitive Architecture upgrade: L8 Construction-First interview, L7 Concealment Check prompt, L11 Conservation Law troubleshoot. Inspired by agi-in-md cognitive compression. |

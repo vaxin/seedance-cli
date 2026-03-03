@@ -5,147 +5,74 @@ license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["camera", "cinematography", "framing", "openclaw", "antigravity", "gemini-cli", "codex", "cursor"]
-metadata: {"version": "4.0.0", "updated": "2026-02-28", "openclaw": {"emoji": "🎥", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "🎥", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🎥", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
+metadata: {"version": "5.0.0", "updated": "2026-03-03", "openclaw": {"emoji": "🎥", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "🎥", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🎥", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
 ---
 
-# seedance-camera
+# seedance-camera · The One-Move Rule (v5.0)
 
-Camera movement, framing, multi-shot, one-take, and storyboard reference technique for Seedance 2.0.
+This skill covers camera movement, framing, and multi-shot techniques for Seedance 2.0, centered on the most important principle for avoiding camera chaos: **The One-Move Rule**.
 
-## Scope
+## The One-Move Rule
 
-- Camera contract (framing + movement + speed + angle)
-- Reliable phrasing for every camera move
-- Multi-shot within one clip
-- One-take (一镜到底) spatial journey technique
-- Nine-grid storyboard reference method
-- Anti-drift locks
-
-## Out of scope
-
-- Motion timing and beat density — see [skill:seedance-motion]
-- Character staying consistent across shots — see [skill:seedance-characters]
-- Fight choreography camera — see [skill:seedance-motion]
+> **For any single shot, specify only ONE primary camera move.** Do not stack multiple moves (e.g., `dolly push` + `pan left` + `tilt up`). This is the most common cause of jitter, unwanted camera rotation, and failed generations.
 
 ---
 
-## Camera Contract (include for Level 2+)
+## 1. The Camera Contract
 
-Every shot needs all four:
+Every shot should have a camera contract, but the `Move` parameter should only contain one item.
 
 ```
-Framing:   wide / medium / close-up / ECU / over-shoulder / full body
-Move:      locked-off / dolly push / dolly pull / pan / tilt / orbit /
-           handheld / crane / tracking
-Speed:     slow / moderate / fast / "over 8 seconds"
-Angle:     eye level / low angle / high angle / bird's eye / Dutch angle
+Framing:   [wide / medium / close-up / etc.]
+Move:      [CHOOSE ONE: locked-off / dolly / pan / tilt / orbit / handheld / crane / tracking]
+Speed:     [slow / moderate / fast / "over 8 seconds"]
+Angle:     [eye level / low angle / high angle / etc.]
 ```
 
 ---
 
-## Reliable Phrasing Library
+## 2. Genre-Based Camera Presets
 
-```
-locked-off static camera, no movement
-slow dolly push from medium shot to tight close-up over 8 seconds
-slow dolly pull back revealing the full environment
-slow pan left revealing [new element]
-slow tilt up from [foreground] to [sky]
-slow orbit left around the subject, constant distance
-handheld tracking following the subject, subtle shake, not chaotic
-rack focus foreground→background at 4 seconds
-shallow depth of field, eyes in sharp focus
-Hitchcock zoom (dolly out while zooming in)
-crane shot rising from ground level to overhead
-POV first-person perspective
-low angle looking up at the subject
-```
+Different genres have different camera languages. Use these presets as a starting point.
+
+| Genre | Recommended Moves | Avoid |
+| :--- | :--- | :--- |
+| **Product/E-commerce** | `orbit`, `slow push-in`, `static` | `handheld`, `whip pan` |
+| **Lifestyle/Social** | `handheld`, `static`, `slow pan` | `crane`, `dolly zoom` |
+| **Drama/Narrative** | `slow push-in`, `dolly pull-out`, `tracking`, `static` | `fast orbit`, `snap zoom` |
+| **Music Video** | `whip pan`, `snap zoom`, `fast tracking`, `orbit` | `slow pan` (unless for effect) |
+| **Landscape/Travel** | `slow aerial pullback`, `slow pan`, `static wide` | `handheld`, `fast moves` |
+| **Commercial/Brand** | `tracking`, `crane up`, `slow push-in` | `shaky handheld` |
+| **Anime/Artistic** | `dynamic low-angle`, `fast push-in`, `whip pan` | `subtle, slow moves` |
 
 ---
 
-## Multi-Shot Within One Clip
+## 3. Reliable Phrasing Library (The One-Move Edition)
 
-2–3 shots is the reliable sweet spot. 4–8 is achievable for action (see [skill:seedance-motion]).
+Use these phrases to ensure clarity.
 
-**Pattern:**
-```
-[Shot 1: Wide] Description. [Cut to: Close-up] Description. [Cut to: Medium] Description.
-```
-
-Rules:
-- Restate the full shot after each cut marker
-- Specify sound continuity: `"ambient continues across all shots"` or `"music hits the cut"`
-
----
-
-## One-Take Technique (一镜到底)
-
-Upload 3–5 scene images in sequence. Each = a waypoint on the camera path.
-
-```
-@Image1 @Image2 @Image3 @Image4 @Image5, one continuous tracking shot,
-following the runner from the street up stairs, through a corridor, 
-onto the rooftop, ending with a city overlook.
-```
-
-For POV one-takes:
-```
-First-person POV, walking through [environment], camera moves continuously without cuts.
-```
+- `locked-off static camera, no movement`
+- `slow dolly push from medium shot to tight close-up over 8 seconds`
+- `slow dolly pull back revealing the full environment`
+- `slow pan left revealing [new element]`
+- `slow tilt up from [foreground] to [sky]`
+- `slow orbit left around the subject, constant distance`
+- `handheld tracking following the subject, subtle shake, not chaotic`
+- `crane shot rising from ground level to overhead`
 
 ---
 
-## Nine-Grid Storyboard Method (九宫格)
+## 4. Advanced Techniques (Use with Caution)
 
-When text descriptions become unwieldy, generate a storyboard image and use it as @Image1.
+These techniques can break the One-Move Rule but are powerful when used correctly.
 
-**Step 1 — Generate the storyboard:**
-```
-Create a 3×3 nine-panel storyboard for [scenario].
-Panel 1: [description]. Panel 2: [description]. ... Panel 9: [description].
-Professional storyboard illustration style, clear panel divisions.
-```
-
-**Step 2 — Upload and reference:**
-```
-Strictly follow the storyboard sequence from @Image1.
-[Character from @Image2] performs the actions shown.
-Match lighting and camera angles per panel. Smooth transitions between scenes.
-```
-
-The model reads sequential visual intent without reproducing the storyboard's layout or labels.
-
-**Best for:** Complex multi-shot sequences, interior walkthroughs, action poses, non-filmmakers who can sketch.
+- **Multi-Shot Within One Clip:** Use `[Cut to:]` to create a sequence of shots. Each shot in the sequence should still follow the One-Move Rule.
+    - `[Shot 1: Wide, static] Description. [Cut to: Close-up, slow push-in] Description.`
+- **One-Take Technique (一镜到底):** Use a sequence of reference images (`@Image1 @Image2 @Image3`) to define a continuous camera path. The prompt should describe the journey, not individual moves.
+    - `@Image1 @Image2 @Image3, one continuous tracking shot, following the runner from the street, up the stairs, and onto the rooftop.`
+- **Camera Transfer:** Use `@Video1` to copy the camera work from a reference clip. This is the safest way to achieve complex camera motion.
+    - `Match the camera movement and editing from @Video1.`
 
 ---
 
-## Portrait (9:16) Composition Rules
-
-Changing aspect ratio changes composition logic:
-- Reduce horizontal pans and orbit moves
-- Prefer centered subject hierarchy
-- Use vertical reveals instead of horizontal pans
-
----
-
-## Anti-Drift Locks
-
-If the camera wanders or floats:
-
-```
-locked horizon, stable framing, no rolling shutter
-```
-
-- Remove extra camera adjectives
-- Choose ONE move only — never combine pan + orbit + tilt
-- For subjects stationary relative to camera (riding, flying): `CAMERA MOUNTED ON [SUBJECT], LOCKED-ON SHOT, FIXED-TO-ACTOR`
-
----
-
-## Agent gotchas
-
-1. Never combine mutually exclusive moves: `locked-off + handheld`, `orbit + pan`, `tilt + dolly push` simultaneously.
-2. Specify timing as duration, not speed word: `"over 8 seconds"` not `"slowly."` Speed words are vague.
-3. For vehicle/mount shots: "CAMERA MOUNTED ON [SUBJECT]" prevents the model from misreading a moving subject as camera movement.
-4. The word "cinematic" does nothing. Replace it with a physical camera description.
-5. Horizontal pans in 9:16 portrait mode create ugly compositions. Always check aspect ratio before planning moves.
+*Maintained by [Emily (@iamemily2050)](https://github.com/Emily2040)*

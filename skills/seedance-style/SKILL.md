@@ -5,7 +5,7 @@ license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["style", "aesthetic", "transfer", "openclaw", "antigravity", "gemini-cli", "codex", "cursor"]
-metadata: {"version": "4.0.0", "updated": "2026-02-28", "openclaw": {"emoji": "🎨", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "🎨", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🎨", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
+metadata: {"version": "5.0.0", "updated": "2026-03-03", "openclaw": {"emoji": "🎨", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "🎨", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🎨", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
 ---
 
 # seedance-style
@@ -40,7 +40,7 @@ Palette:     muted / desaturated / warm highlights cold shadows / neon-saturated
 Contrast:    low-key / high-key / deep blacks / crushed shadows
 ```
 
-**Style budget: 2–3 tokens max.**
+**Style budget: **ONE primary style anchor** is recommended. Add a secondary anchor only if necessary.**
 `"anamorphic, subtle grain, muted palette"` — done.
 
 ---

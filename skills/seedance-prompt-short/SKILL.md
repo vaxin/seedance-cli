@@ -6,8 +6,8 @@ user-invocable: true
 user-invokable: true
 tags: [prompt, compression, t2v, i2v, v2v, r2v, character-limit, openclaw, antigravity, gemini-cli]
 metadata: {
-  "version": "4.0.0",
-  "updated": "2026-02-28",
+  "version": "5.0.0",
+  "updated": "2026-03-03",
   "openclaw": {"emoji": "⚡️", "homepage": "https://github.com/Emily2040/seedance-2.0"},
   "parent": "seedance-20",
   "author": "Emily (@iamemily2050)",
@@ -17,18 +17,18 @@ metadata: {
 
 # seedance-prompt-short
 
-This skill enforces a hard **2000-character limit** for Seedance 2.0 prompts, based on practitioner data showing superior performance with short, dense prompts.
+This skill helps construct and compress prompts for Seedance 2.0, with a recommended target of **30-100 words**.
 
-## The 2000-Character Budget
+## The 30-100 Word Target
 
 | Layer | Budget (chars) | Purpose |
 |:---|:---:|:---|
-| **1. Core Intent** | 400 | Subject + Action. The emotional and narrative heart. |
-| **2. Visuals** | 600 | Camera + Lighting + Style. The cinematic eye. |
-| **3. Audio** | 300 | Music + SFX + Ambience. The soundscape. |
-| **4. Technical** | 400 | @Tags + Constraints + Physics. The rules. |
-| **5. Flex** | 300 | Reserve for the most important layer. |
-| **Total** | **2000** | **Maximum** |
+| **1. Core Intent** | ~20-40 words | Subject + Action. The emotional and narrative heart. |
+| **2. Visuals** | ~20-30 words | Camera + Lighting + Style. The cinematic eye. |
+| **3. Audio** | ~10-20 words | Music + SFX + Ambience. The soundscape. |
+| **4. Technical** | ~10-20 words | @Tags + Constraints + Physics. The rules. |
+
+| **Total** | **~30-100 words** | **Recommended Target** |
 
 ## The Compression Engine
 
@@ -39,4 +39,4 @@ This skill enforces a hard **2000-character limit** for Seedance 2.0 prompts, ba
 
 ---
 
-For a guided workflow that builds a 2000-char prompt, use [skill:seedance-interview-short].
+For a guided workflow that builds a prompt, use [skill:seedance-interview].

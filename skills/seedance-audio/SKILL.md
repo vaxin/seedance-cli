@@ -5,7 +5,7 @@ license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["audio", "lip-sync", "dialogue", "multimodal", "openclaw", "antigravity", "gemini-cli", "codex", "cursor"]
-metadata: {"version": "4.0.0", "updated": "2026-02-28", "openclaw": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
+metadata: {"version": "5.0.0", "updated": "2026-03-03", "openclaw": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
 ---
 
 # seedance-audio
@@ -54,6 +54,14 @@ The Master mode (大师模式), Quick mode (快速模式), Standard mode (标准
 ---
 
 ## How Seedance 2.0 Audio Works
+
+For most use cases, **describe the sound you want in natural language.** The model understands sound concepts.
+
+- `The scene is silent except for the sound of wind.`
+- `A heavy metal track plays.`
+- `The sword makes a "shing" sound when drawn.`
+
+Use the `@Audio1` reference only for precise lip-sync or music video beat-matching.
 
 Seedance 2.0 uses a **unified multimodal audio-video joint generation architecture** (统一多模态音视频联合生成架构). Audio and video are generated together — not as separate passes. This is its core architectural difference from older video models.
 

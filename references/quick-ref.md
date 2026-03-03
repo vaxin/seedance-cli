@@ -15,28 +15,29 @@ One-page cheat sheet. Print or keep pinned.
 
 ---
 
-## Delegation Levels
+## Delegation Levels (v5.0)
 
 | Level | Words (EN) | Use when |
 |---|---|---|
 | 1 | ≤ 30 | Pure atmosphere, model freestyle |
-| 2 | 30–80 | Clear subject + action + camera |
-| 3 | 80–200 | Time-segmented, multi-beat |
-| 4 | 200–1000+ | Full choreography, fight, complex |
+| 2 | 30–80 | Clear subject + action + camera (recommended default) |
+| 3 | 80–100 | Multi-beat with @Video reference |
+| 4 | 100+ | Experimental micro-choreography (high failure rate) |
 
 ---
 
-## Five-Layer Prompt Stack
+## Director's Formula (v5.0)
 
 ```
-1. SUBJECT   — who/what, identity (@Tag)
-2. ACTION    — verb + timing
-3. CAMERA    — framing + movement + speed
-4. STYLE     — 1–3 tokens
-5. SOUND     — ambient + sfx + music  (optional)
+1. GENRE     — choose from genre-guides (Product/Lifestyle/Drama/MV/Landscape/Commercial/Anime)
+2. SUBJECT   — who/what, identity (@Tag)
+3. ACTION    — verb + physics consequence
+4. CAMERA    — ONE move only (One-Move Rule)
+5. STYLE     — ONE primary anchor
+6. SOUND     — natural language description (optional)
 ```
 
-Early tokens carry heavy weight. Subject + Action in first 20–30 words.
+**Target: 30-100 words.** Early tokens carry heavy weight. Subject + Action in first 20–30 words.
 
 ---
 
@@ -96,18 +97,18 @@ Remove: SFX → style tokens → environment → camera detail
 
 ```
 seedance-20 (router)
-├── seedance-interview     ← start here for new projects
-├── seedance-prompt       ← Five-Layer Stack, @Tags, JSON
-├── seedance-camera       ← framing, storyboard
-├── seedance-motion       ← speed, fight, extension
+├── seedance-interview     ← start here (Quick Mode + genre detection)
+├── seedance-prompt       ← Director's Formula, genre router, I2V gate
+├── seedance-camera       ← One-Move Rule, genre presets
+├── seedance-motion       ← intent-first, @Video primary
 ├── seedance-lighting     ← light, color, atmosphere
 ├── seedance-characters   ← identity, multi-char
 ├── seedance-style        ← aesthetic, CGI, period
 ├── seedance-vfx          ← magic, destruction, energy
 ├── seedance-audio        ← voice, music, sync
 ├── seedance-pipeline     ← API, ComfyUI, post
-├── seedance-recipes      ← genre templates
-├── seedance-troubleshoot ← QA, errors, fixes
+├── seedance-recipes      ← 7-genre templates
+├── seedance-troubleshoot ← 5-step diagnostic tree
 ├── seedance-copyright    ← IP rules, safe substitutions
 ├── seedance-antislop     ← kill hollow language
 ├── seedance-filter       ← content filter navigation
@@ -140,18 +141,14 @@ Spider-Man · Darth Vader · Iron Man · Deadpool · Shrek · SpongeBob · Eleve
 
 ---
 
-## 6-Part Field Formula
+## v5.0 Core Rules
 
-```
-[SHOT TYPE] + [SUBJECT] + [ACTION] + [STYLE] + [CAMERA MOVEMENT] + [AUDIO CUES]
-```
-
-Cross-validated on 10,000+ generations. Maps directly to Five-Layer Stack.
-
-**Top 3 practitioner laws:**
-1. Volume over perfection: generate 10, select 1
-2. One action per prompt: no competing verbs
-3. Front-load substance: subject+action in first 20 tokens, never adjectives
+1. **Intent over precision:** Tell the model WHAT and HOW IT FEELS, not every pixel.
+2. **One-Move Rule:** One camera move per shot. No stacking.
+3. **30-100 words:** Shorter, denser prompts outperform long ones.
+4. **Show, don't tell:** Use `@references` instead of text descriptions.
+5. **I2V Gate:** In I2V mode, describe ONLY motion and camera. Never re-describe the image.
+6. **Iterate:** Test at 5s, re-roll 3-5 times. Volume over perfection.
 
 ---
 
