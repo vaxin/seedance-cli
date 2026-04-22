@@ -10,6 +10,12 @@ Seedance 2.0 AI 视频生成命令行工具，基于火山引擎 Ark 平台。
 npm install -g seedance
 ```
 
+为 AI Agent（Claude Code / Cursor / Codex 等）安装 Skill：
+
+```bash
+npx skills add vaxin/seedance-cli
+```
+
 或从源码构建：
 
 ```bash
