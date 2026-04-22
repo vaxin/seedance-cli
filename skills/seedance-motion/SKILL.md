@@ -30,16 +30,10 @@ Find a real-world video clip (e.g., from a movie, a stunt performance, or a vide
 
 Describe the high-level action in 1-3 sentences. Use degree adverbs and physics consequences. Then, explicitly tell the model to reference the uploaded video.
 
-```
-// Recommended Prompt Structure
-
-Characters: A references @Image1; B references @Image2.
-
-Choreography: The archer fires two arrows; the mage deflects them with a violet energy shield, then closes distance and blasts the archer into a tree with a shockwave. The archer draws a short blade and counter-attacks in close combat.
-
-Reference: Reference the fight actions, character movements, and camera work from @Video1.
-
-Style: Match the gritty, handheld style of @Video1.
+```bash
+seedance generate "Characters: A references @Image1; B references @Image2. Choreography: The archer fires two arrows; the mage deflects them with a violet energy shield, then closes distance and blasts the archer into a tree with a shockwave. The archer draws a short blade and counter-attacks in close combat. Reference the fight actions, character movements, and camera work from @Video1. Match the gritty, handheld style of @Video1." \
+  --image archer.png --image mage.png --video fight_ref.mp4 \
+  --duration 10 --wait
 ```
 
 **Why this works:** The `@Video1` reference provides the model with a rich, dense, and unambiguous understanding of the desired motion, physics, and camera language, which consistently outperforms any text-only description.
@@ -52,16 +46,18 @@ Style: Match the gritty, handheld style of @Video1.
 
 Use this when you don't have a reference video. The key is to keep it simple and enforce the **"One Action Per Shot"** rule.
 
+```bash
+seedance generate @fight_prompt.txt --image charA.png --image charB.png --duration 10 --audio-gen --wait
 ```
-// Text-Only Fight Scene Example
 
+Where `fight_prompt.txt` contains:
+
+```
 Characters: A references @Image1; B references @Image2.
-
 Shot 1: A throws a right hook at B's jaw.
 Shot 2: B ducks under the punch and sweeps A's legs.
 Shot 3: A jumps, landing a spinning back kick to B's shoulder.
 Shot 4: B staggers backward two steps, recovering his balance.
-
 Camera: Medium shot, tracking the action. Slight handheld shake on impacts.
 Physics: Dust puffs up from the ground on the leg sweep. A wet impact sound accompanies each hit.
 ```

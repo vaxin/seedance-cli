@@ -5,7 +5,7 @@ license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["debugging", "troubleshooting", "prompt-engineering", "quality-control", "root-cause-analysis", "seedance-20"]
-metadata: {"version": "5.0.0", "updated": "2026-03-03", "openclaw": {"emoji": "🔧", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "antigravity": {"emoji": "🔧", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🔧", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
+metadata: {"version": "6.0.0", "updated": "2026-04-22", "openclaw": {"emoji": "🔧", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "antigravity": {"emoji": "🔧", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🔧", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
   "parent": "seedance-20",
 ---
 
@@ -56,6 +56,28 @@ Start at the top and work your way down.
     1.  Run the prompt through the **Anti-Slop Check** in the [skill:seedance-prompt] skill.
     2.  Replace every subjective adjective with a measurable, observable detail.
     3.  **Iterate.** Make small changes to your prompt and re-roll 3-5 times. Do not expect a perfect result on the first try.
+
+---
+
+## CLI Debugging Tips
+
+```bash
+# Check task failure details
+seedance status <TASK_ID> --json | jq '.error'
+
+# List recent failed tasks
+seedance list --status failed --json
+
+# Retry with a different seed
+seedance generate @prompt.txt --seed 2001 --wait
+
+# Iterate rapidly: generate 5 variants, pick the best
+for seed in 1000 1001 1002 1003 1004; do
+  seedance generate "Your prompt here" --seed $seed -q
+done
+```
+
+For full CLI reference, see [skill:seedance-cli].
 
 ---
 

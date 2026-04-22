@@ -68,10 +68,19 @@ These techniques can break the One-Move Rule but are powerful when used correctl
 
 - **Multi-Shot Within One Clip:** Use `[Cut to:]` to create a sequence of shots. Each shot in the sequence should still follow the One-Move Rule.
     - `[Shot 1: Wide, static] Description. [Cut to: Close-up, slow push-in] Description.`
-- **One-Take Technique (一镜到底):** Use a sequence of reference images (`@Image1 @Image2 @Image3`) to define a continuous camera path. The prompt should describe the journey, not individual moves.
-    - `@Image1 @Image2 @Image3, one continuous tracking shot, following the runner from the street, up the stairs, and onto the rooftop.`
-- **Camera Transfer:** Use `@Video1` to copy the camera work from a reference clip. This is the safest way to achieve complex camera motion.
-    - `Match the camera movement and editing from @Video1.`
+- **One-Take Technique (一镜到底):** Use a sequence of reference images via `--image` to define a continuous camera path.
+
+```bash
+seedance generate "One continuous tracking shot, following the runner from the street, up the stairs, and onto the rooftop." \
+  --image street.jpg --image stairs.jpg --image rooftop.jpg --duration 10 --wait
+```
+
+- **Camera Transfer:** Use `--video` to copy the camera work from a reference clip. This is the safest way to achieve complex camera motion.
+
+```bash
+seedance generate "Match the camera movement and editing from @Video1." \
+  --video reference_clip.mp4 --image character.png --duration 8 --wait
+```
 
 ---
 

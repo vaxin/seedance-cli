@@ -1,0 +1,44 @@
+{
+  "name": "seedance",
+  "version": "0.1.0",
+  "description": "CLI for Seedance 2.0 video generation on Volcengine Ark",
+  "bin": {
+    "seedance": "scripts/run.js"
+  },
+  "scripts": {
+    "postinstall": "node scripts/install.js"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaxin/seedance-cli.git"
+  },
+  "keywords": [
+    "seedance",
+    "video",
+    "ai",
+    "bytedance",
+    "volcengine",
+    "ark",
+    "cli"
+  ],
+  "author": "vaxin",
+  "license": "MIT",
+  "files": [
+    "scripts/install.js",
+    "scripts/run.js",
+    "README.md",
+    "LICENSE"
+  ]
+}

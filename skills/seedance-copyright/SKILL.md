@@ -22,7 +22,7 @@ Every generation must clear this checklist before submission.
 >
 > ByteDance's response (Feb 15): "We are taking steps to strengthen current safeguards as we work to prevent the unauthorised use of intellectual property and likeness by users."
 >
-> **API global release was delayed** from the planned Feb 24 date. No new release date set (as of Feb 25).
+> **API global release was delayed** from the planned Feb 24 date. The `seedance` CLI now provides access via Volcengine Ark.
 >
 > **What this means for prompts:** Hard blocks are stricter than v3.0. Many character/likeness filters have been tightened. Assume any named franchise character, actor, or streamer-original content will be refused or silently degraded.
 
@@ -277,9 +277,9 @@ All six clear → safe to generate.
 
 ## Why This Matters (for developers)
 
-The Feb 2026 enforcement events changed the API landscape:
-- **API release delayed** — planning around an integration date is impossible until ByteDance issues a new schedule.
-- **Filter tightening will continue** — MPA demanded a Feb 27 response. Expect further content-filter updates.
+The Feb 2026 enforcement events affected the content pipeline:
+- **Content filters tightened** — MPA demanded a Feb 27 response. Filter updates continue.
+- **Use the `seedance` CLI** for generation — it handles the Volcengine Ark API. Run `seedance config init` to configure. See [skill:seedance-cli].
 - **Platform viability model** — ByteDance may follow the OpenAI/Disney path: licensing deals with studios as the path to re-enabling character content.
 - **Open-source alternatives** — Community discussion (r/comfyui) points to WAN 2.2 and local OSS models as filter-free alternatives, but with lower output quality.
 

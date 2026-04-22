@@ -63,12 +63,9 @@ A bare `@Image1` with no role instruction is weak.
 
 For two characters, use separate identity anchors:
 
-```
-Character A references @Image1.
-Character B references @Image2.
-
-Character A throws a right punch at Character B.
-Character B blocks with crossed arms.
+```bash
+seedance generate "Character A references @Image1. Character B references @Image2. Character A throws a right punch at Character B. Character B blocks with crossed arms." \
+  --image charA.png --image charB.png --duration 8 --wait
 ```
 
 Attribute every action by name. Never use ambiguous pronouns in multi-character prompts.
@@ -79,9 +76,9 @@ Attribute every action by name. Never use ambiguous pronouns in multi-character 
 
 Upload character body and prop/weapon as separate references:
 
-```
-Character appearance references @Image1.
-Weapon design references @Image2.
+```bash
+seedance generate "Character appearance references @Image1. Weapon design references @Image2. Character draws weapon." \
+  --image character.png --image weapon.png --duration 8 --wait
 ```
 
 This prevents the model from blending weapon details into the character's body geometry.

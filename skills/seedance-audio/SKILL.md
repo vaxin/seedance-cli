@@ -1,16 +1,41 @@
 ---
-name: seedance-audio
+
+## name: seedance-audio
 description: 'Design sound layers, specify dialogue lip-sync, and troubleshoot audio failures for Seedance 2.0 video generation. Covers @Audio1 reference input, multi-character constraints, known failure modes (silent output, desync, audio rewrite bug), and the boundary between Seedance 2.0 video generation and the separate Jimeng Digital Human tool. Use when adding audio to a Seedance prompt, fixing lip-sync errors, building multi-character dialogue scenes, or diagnosing why uploaded audio is ignored or replaced.'
 license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["audio", "lip-sync", "dialogue", "multimodal", "openclaw", "antigravity", "gemini-cli", "codex", "cursor"]
-metadata: {"version": "5.0.0", "updated": "2026-03-03", "openclaw": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
----
+metadata: {"version": "6.0.0", "updated": "2026-04-22", "openclaw": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
 
 # seedance-audio
 
 Audio design, lip-sync, and multi-character dialogue for **Seedance 2.0 video generation**.
+
+---
+
+## CLI Audio Quick Reference
+
+```bash
+# Enable native audio generation
+seedance generate "A thunderstorm over the ocean, waves crashing" \
+  --audio-gen --duration 8 --wait
+
+# Audio-driven lip-sync (upload MP3 as reference)
+seedance generate "Character speaks to camera, medium close-up, locked" \
+  --audio dialogue.mp3 --image character.png --audio-gen --duration 8 --wait
+
+# Music beat-sync with multiple scene images
+seedance generate "Scene transitions sync to musical downbeats" \
+  --image scene1.jpg --image scene2.jpg --image scene3.jpg \
+  --audio music.mp3 --audio-gen --duration 10 --wait
+
+# Multiple audio references (max 3, Rule of 12)
+seedance generate "Two instruments duet, violin and piano" \
+  --audio violin.mp3 --audio reference_piano.mp3 --audio-gen --duration 8 --wait
+```
+
+Key flags: `--audio <file>` (repeatable, max 3), `--audio-gen` (enable native audio generation). See [skill:seedance-cli] for full reference.
 
 > **Source intelligence**: ByteDance official Seedance 2.0 release blog (seed.bytedance.com), Douyin/抖音 creator community, CSDN practitioner tutorials, Q1 2026. Western sources have minimal real-world data.
 
@@ -20,10 +45,12 @@ Audio design, lip-sync, and multi-character dialogue for **Seedance 2.0 video ge
 
 The Jimeng platform hosts **two completely different tools** that both involve lip-sync. Mixing them up is the most common documentation error.
 
-| Tool | Model | Where to find | What it does |
-|------|-------|--------------|--------------|
-| **视频生成 (Video Generation)** | **Seedance 2.0** | Jimeng → Video Generation → Seedance 2.0 | Generates full video clips (4–15 s) with native audio-video joint generation. Audio is part of the generated output. |
-| **数字人 (Digital Human)** | **OmniHuman-1** | Jimeng → Digital Human | Portrait animation tool — uploads a face image + audio → generates a talking head with precise lip-sync. Has Master/Quick/Standard modes. |
+
+| Tool                        | Model            | Where to find                            | What it does                                                                                                                              |
+| --------------------------- | ---------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **视频生成 (Video Generation)** | **Seedance 2.0** | Jimeng → Video Generation → Seedance 2.0 | Generates full video clips (4–15 s) with native audio-video joint generation. Audio is part of the generated output.                      |
+| **数字人 (Digital Human)**     | **OmniHuman-1**  | Jimeng → Digital Human                   | Portrait animation tool — uploads a face image + audio → generates a talking head with precise lip-sync. Has Master/Quick/Standard modes. |
+
 
 **This skill covers Seedance 2.0 video generation only.**
 The Master mode (大师模式), Quick mode (快速模式), Standard mode (标准模式), and OmniHuman-1 engine all belong to the **Digital Human tool** — not Seedance 2.0. Do not import those concepts here.
@@ -66,6 +93,7 @@ Use the `@Audio1` reference only for precise lip-sync or music video beat-matchi
 Seedance 2.0 uses a **unified multimodal audio-video joint generation architecture** (统一多模态音视频联合生成架构). Audio and video are generated together — not as separate passes. This is its core architectural difference from older video models.
 
 **What the model generates automatically:**
+
 ```
 Ambient audio:     environmental sounds matched to visual scene
 Background music:  mood-appropriate score matched to visual content  
@@ -75,6 +103,7 @@ Dialogue:          natural speech with lip-sync when characters talk in the prom
 
 **What audio reference input does:**
 When you upload an MP3 as `@Audio1`, you are providing a **reference** that influences:
+
 - Rhythm and pacing of the visual edit
 - Mood and tonal character of generated audio
 - Beat-sync cut timing
@@ -108,6 +137,7 @@ Noise:        Background noise in audio degrades phoneme recognition.
 Seedance 2.0 generates lip-sync from two pathways:
 
 **Pathway 1 — Text-driven dialogue** (most reliable):
+
 ```
 Character A says: "We leave at dawn."
 Framing: medium close-up, locked-off camera.
@@ -115,12 +145,15 @@ Character lips match the dialogue naturally.
 ```
 
 **Pathway 2 — Audio-driven** (音频驱动):
-```
-Upload MP3 audio as @Audio1.
-In prompt: "Lip-sync matches @Audio1 exactly. Camera: medium close-up, locked."
+
+```bash
+# Upload MP3 via CLI --audio flag, reference as @Audio1 in prompt
+seedance generate "Lip-sync matches @Audio1 exactly. Camera: medium close-up, locked." \
+  --audio speech.mp3 --image character.png --audio-gen --duration 8 --wait
 ```
 
 **Key rules for reliable lip-sync:**
+
 - Keep lines short. Long dialogue degrades visual stability.
 - Put dialogue in quotes: `Character says: "We leave at dawn."`
 - Specify framing: `medium close-up, locked-off camera`
@@ -139,6 +172,7 @@ ByteDance's own official Seedance 2.0 release blog explicitly states:
 This is not a community complaint. It is an official acknowledgment from the Seedance team. Multi-person lip-sync in a single generation is an **open, unresolved problem** in Seedance 2.0 as of Q1 2026.
 
 **What actually happens with multiple characters:**
+
 - The model may animate only one character's mouth
 - Both characters may produce garbled or misaligned mouth movements
 - Audio routing between two characters is unreliable
@@ -193,6 +227,7 @@ These failure patterns are documented from Douyin/Bilibili creator community rep
 **Why it happens**: Seedance's native audio generation engine can override the reference when it detects audio it knows how to generate (ambient, music, SFX). The model treats audio input as a reference signal, not a playback instruction. Competing motion tokens amplify this behavior.
 
 **Fixes (field-tested by Douyin creators — 时间戳反向套路法):**
+
 ```
 Fix A — Explicit preservation instruction:
   Add to prompt: "Audio @Audio1 plays exactly as uploaded from 0s to end.
@@ -211,6 +246,7 @@ Fix C — Simplify:
 ### Failure 2: Lip-sync desync / mouth misalignment
 
 **Causes and fixes:**
+
 ```
 Cause: Audio too long (>10 s is the practical ceiling, not 15 s)
 Fix:   Trim to 3–8 s for best results. The 15 s limit is technical maximum,
@@ -244,9 +280,11 @@ Fix:   Always split audio by speaker before uploading. Never upload a
 
 **Cause**: File is not MP3. WAV, AAC, OGG, FLAC, M4A all fail silently.
 
-**Fix**: Convert to MP3 (128–320 kbps, ≤15 s, ≤10 MB) before uploading.
-```
-FFmpeg command: ffmpeg -i input.wav -codec:libmp3lame -b:a 192k output.mp3
+**Fix**: Convert to MP3 (128–320 kbps, ≤15 s, ≤10 MB) before passing to `--audio`.
+
+```bash
+ffmpeg -i input.wav -codec:libmp3lame -b:a 192k output.mp3
+seedance generate "Lip-sync matches @Audio1" --audio output.mp3 --image char.png --audio-gen --wait
 ```
 
 ### Failure 5: Occasional audio distortion
@@ -259,6 +297,7 @@ Unpredictable. No reliable prevention method documented yet by community.
 ### Failure 6: Audio exceeds 15 seconds → fail or truncation
 
 **Fix — Segmented generation pipeline:**
+
 ```
 1. Split audio at natural pause points into 3–8 s segments (not 15 s slices)
 2. Each segment becomes one generation
@@ -273,6 +312,7 @@ Unpredictable. No reliable prevention method documented yet by community.
 No timeline for restoration announced.
 
 **Current alternative:**
+
 - Use external TTS tools (ElevenLabs, Minimax TTS, etc.) to generate clean speech MP3
 - Upload that MP3 as your audio reference
 
@@ -281,6 +321,7 @@ No timeline for restoration announced.
 **Status**: Blocked as of Feb 15, 2026 (ByteDance enforcement).
 
 **Workaround:**
+
 - Generate an AI character illustration first (using Jimeng image generation)
 - Use that illustration as the character reference
 - Do not upload photos of real people
@@ -324,6 +365,7 @@ Atmospheric:      ambient dominant, sparse SFX, no music or faint drone
 ## Dialogue Prompt Syntax
 
 **Single character:**
+
 ```
 Character A (deep male voice) says: "I told you not to come here."
 Framing: medium close-up, locked-off camera.
@@ -331,6 +373,7 @@ Lip-sync matches @Audio1 exactly. No head rotation.
 ```
 
 **Two-character (generate SEPARATELY — see compositing workflow):**
+
 ```
 Generation 1 (Character A's turn):
   Character A says: "I told you not to come here."
@@ -343,6 +386,7 @@ Generation 2 (Character B's turn):
 ```
 
 **Timestamp anchoring:**
+
 ```
 At 0s: character begins speaking quietly.
 At 2s: brief pause, character looks down.
@@ -372,20 +416,17 @@ Dialect support confirmed including regional Chinese dialects. 8+ languages supp
 
 ## Beat-Sync / 卡点 Technique
 
-For music-synced visual editing:
+For music-synced visual editing, pass scene images via `--image` and the music track via `--audio`:
 
-1. Upload scene images + one music reference audio/video
-2. Prompt:
-
-```
-@Image1 through @Image6 are scene images.
-@Audio1 provides rhythm and beat reference.
-Cut scene transitions on musical downbeats.
-Characters move with energy matching the music tempo.
-Visual pacing: fast during chorus, slower during verse.
+```bash
+seedance generate "@Image1 through @Image6 are scene images. @Audio1 provides rhythm and beat reference. Cut scene transitions on musical downbeats. Visual pacing: fast during chorus, slower during verse." \
+  --image scene1.jpg --image scene2.jpg --image scene3.jpg \
+  --image scene4.jpg --image scene5.jpg --image scene6.jpg \
+  --audio music_track.mp3 --audio-gen --duration 10 --wait
 ```
 
 **Beat-sync best practices:**
+
 - 5–7 scene images works best (more = more cuts = more complex choreography)
 - Use clearly rhythmic audio (not ambient or atmospheric tracks)
 - Short clips (4–8 s) are more reliable than 15 s clips for rhythmic precision
@@ -421,3 +462,4 @@ Character flinches at the sound.
 12. **Maintain consistent framing/lighting across segments** so stitched clips cut invisibly.
 13. **Occasional audio distortion is a known bug.** Regenerate if it occurs.
 14. **Master/Quick/Standard modes do not exist in Seedance 2.0.** Those belong to the separate Jimeng Digital Human (OmniHuman-1) tool.
+

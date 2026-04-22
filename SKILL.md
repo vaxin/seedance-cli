@@ -1,12 +1,13 @@
 ---
-name: seedance-20
+
+## name: seedance-20
+
 description: 'Generate and direct cinematic AI videos with Seedance 2.0 (ByteDance/Dreamina/Jimeng). Covers text-to-video, image-to-video, video-to-video, and reference-to-video workflows with @Tag asset references, multi-character scenes, audio design, and post-processing. Use when making AI video, writing Seedance prompts, directing a scene, fixing generation errors, or building an AI short film, product ad, or music video.'
 license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["ai-video", "filmmaking", "bytedance", "seedance", "multimodal", "lip-sync", "openclaw", "antigravity", "gemini-cli", "firebase", "codex", "cursor", "windsurf", "opencode"]
-metadata: {"version": "5.0.0", "updated": "2026-03-03", "openclaw": {"emoji": "🎬", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "antigravity": {"emoji": "🎬", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🎬", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "firebase": {"emoji": "🎬", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
----
+metadata: {"version": "5.0.0", "updated": "2026-03-03", "openclaw": {"emoji": "🎬", "homepage": "[https://github.com/Emily2040/seedance-2.0"}](https://github.com/Emily2040/seedance-2.0"}), "antigravity": {"emoji": "🎬", "homepage": "[https://github.com/Emily2040/seedance-2.0"}](https://github.com/Emily2040/seedance-2.0"}), "gemini-cli": {"emoji": "🎬", "homepage": "[https://github.com/Emily2040/seedance-2.0"}](https://github.com/Emily2040/seedance-2.0"}), "firebase": {"emoji": "🎬", "homepage": "[https://github.com/Emily2040/seedance-2.0"}](https://github.com/Emily2040/seedance-2.0"}), "author": "Emily (@iamemily2050)", "repository": "[https://github.com/Emily2040/seedance-2.0"}](https://github.com/Emily2040/seedance-2.0"})
 
 # seedance-20
 
@@ -25,21 +26,22 @@ This library offers two workflows:
 
 > **Feb 2026 Status**: Seedance 2.0 API global release was delayed (from planned Feb 24) due to copyright enforcement actions by Disney, Paramount Skydance, Netflix, MPA, and SAG-AFTRA. ByteDance paused real-person face uploads Feb 15. Content filters for named franchise characters, anime IPs, and streaming originals have been tightened. The [skill:seedance-copyright] module reflects the current post-enforcement state. Run it before every generation.
 
-
 ## Platform Compatibility
 
-| Platform | Install path | Scope |
-|---|---|---|
-| **Antigravity** | `.agent/skills/seedance-20/` | workspace |
-| **Gemini CLI** | `.gemini/skills/seedance-20/` | workspace |
-| **Firebase Studio** | `.idx/skills/seedance-20/` | workspace |
-| **Claude Code** | `.claude/skills/seedance-20/` | workspace |
-| **OpenClaw / ClawHub** | `.claude/skills/seedance-20/` | workspace |
-| **GitHub Copilot** | `.github/skills/seedance-20/` | workspace |
-| **Codex** | `.agents/skills/seedance-20/` | workspace |
-| **Cursor** | `.cursor/skills/seedance-20/` | workspace |
-| **Windsurf** | `.windsurf/skills/seedance-20/` | workspace |
-| **OpenCode** | `.opencode/skills/seedance-20/` | workspace |
+
+| Platform               | Install path                    | Scope     |
+| ---------------------- | ------------------------------- | --------- |
+| **Antigravity**        | `.agent/skills/seedance-20/`    | workspace |
+| **Gemini CLI**         | `.gemini/skills/seedance-20/`   | workspace |
+| **Firebase Studio**    | `.idx/skills/seedance-20/`      | workspace |
+| **Claude Code**        | `.claude/skills/seedance-20/`   | workspace |
+| **OpenClaw / ClawHub** | `.claude/skills/seedance-20/`   | workspace |
+| **GitHub Copilot**     | `.github/skills/seedance-20/`   | workspace |
+| **Codex**              | `.agents/skills/seedance-20/`   | workspace |
+| **Cursor**             | `.cursor/skills/seedance-20/`   | workspace |
+| **Windsurf**           | `.windsurf/skills/seedance-20/` | workspace |
+| **OpenCode**           | `.opencode/skills/seedance-20/` | workspace |
+
 
 ### One-liner installs
 
@@ -61,6 +63,9 @@ opencode skills install https://github.com/Emily2040/seedance-2.0
 
 ## Skills
 
+**CLI**
+[skill:seedance-cli]
+
 **Core pipeline**
 [skill:seedance-interview] / [skill:seedance-interview-short] · [skill:seedance-prompt] / [skill:seedance-prompt-short] · [skill:seedance-camera] · [skill:seedance-motion] · [skill:seedance-lighting] · [skill:seedance-characters] · [skill:seedance-style] · [skill:seedance-vfx] · [skill:seedance-audio] · [skill:seedance-pipeline] · [skill:seedance-recipes] · [skill:seedance-troubleshoot]
 
@@ -79,16 +84,19 @@ opencode skills install https://github.com/Emily2040/seedance-2.0
 
 ## Version history
 
-| Version | Date | Changes |
-|---|---|---|
-| 5.0.0 | 2026-03-03 | **Intent-First Overhaul.** Rewrote seedance-prompt (genre router, 30-100 word target, I2V gate). Restructured seedance-motion (intent-first, @Video reference primary). Updated seedance-camera (One-Move Rule, genre presets). Updated seedance-recipes (7 genre categories). Updated seedance-interview (Quick Mode exit, genre detection). Updated seedance-troubleshoot (diagnostic tree). Added 4 new references: genre-guides, reference-workflow, i2v-guide, intent-vs-precision. Minor updates to seedance-prompt-short, seedance-style, seedance-vfx, seedance-audio. |
-| 4.2.0 | 2026-03-03 | Safe Vocabulary Integration: added filter-safe action, weapon, clothing, body, environment, material, VFX, sound, and production-context terms to seedance-filter and all 5 language vocabulary skills (zh, ja, ko, es, ru). Term counts: zh 550+, ja/ko/es/ru 450+ each. |
-| 4.1.0 | 2026-03-02 | Added seedance-filter: content filter intelligence, 37% block-rate diagnosis, four-question framework, safe-prompting techniques. |
-| 4.0.0 | 2026-02-28 | Cognitive Architecture upgrade: L8 Construction-First interview, L7 Concealment Check prompt, L11 Conservation Law troubleshoot. Inspired by agi-in-md cognitive compression. |
-| 3.8.0 | 2026-02-27 | Dual Workflow System: Max Detail + Max Performance. Added seedance-prompt-short and seedance-interview-short. |
-| 3.7.0 | 2026-02-26 | Redesigned seedance-interview as "Director's Journey" with 5-stage storytelling workflow. Added storytelling-framework reference. |
-| 3.6.1 | 2026-02-26 | Enhanced vocab-zh (400+ terms, 16 categories). Added seedance-examples-zh with 16 battle-tested Chinese prompts across 7 genres. |
-| 3.3.0 | 2026-02-25 | Rewrote seedance-interview v4.0: A/B/C/D/E guided stages, 5-flow types (image/video/audio/one-liner/script), 3-option prompt output, language selection |
-| 3.2.1 | 2026-02-25 | **Accuracy corrections**: removed negative-prompt support claim (not supported), corrected API availability (no public API yet), fixed aspect ratios (added 3:4 and 21:9), fixed video input limit (15s combined not per-file), removed mobile-only duration claim |
-| 3.1.0 | 2026-02-25 | Added copyright, antislop, vocab-ja/ko/es/ru modules. 24 files. |
-| 3.0.0 | 2026-02-25 | Initial 12-skill core pipeline. |
+
+| Version | Date       | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 5.0.0   | 2026-03-03 | **Intent-First Overhaul.** Rewrote seedance-prompt (genre router, 30-100 word target, I2V gate). Restructured seedance-motion (intent-first, @Video reference primary). Updated seedance-camera (One-Move Rule, genre presets). Updated seedance-recipes (7 genre categories). Updated seedance-interview (Quick Mode exit, genre detection). Updated seedance-troubleshoot (diagnostic tree). Added 4 new references: genre-guides, reference-workflow, i2v-guide, intent-vs-precision. Minor updates to seedance-prompt-short, seedance-style, seedance-vfx, seedance-audio. |
+| 4.2.0   | 2026-03-03 | Safe Vocabulary Integration: added filter-safe action, weapon, clothing, body, environment, material, VFX, sound, and production-context terms to seedance-filter and all 5 language vocabulary skills (zh, ja, ko, es, ru). Term counts: zh 550+, ja/ko/es/ru 450+ each.                                                                                                                                                                                                                                                                                                      |
+| 4.1.0   | 2026-03-02 | Added seedance-filter: content filter intelligence, 37% block-rate diagnosis, four-question framework, safe-prompting techniques.                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| 4.0.0   | 2026-02-28 | Cognitive Architecture upgrade: L8 Construction-First interview, L7 Concealment Check prompt, L11 Conservation Law troubleshoot. Inspired by agi-in-md cognitive compression.                                                                                                                                                                                                                                                                                                                                                                                                  |
+| 3.8.0   | 2026-02-27 | Dual Workflow System: Max Detail + Max Performance. Added seedance-prompt-short and seedance-interview-short.                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| 3.7.0   | 2026-02-26 | Redesigned seedance-interview as "Director's Journey" with 5-stage storytelling workflow. Added storytelling-framework reference.                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| 3.6.1   | 2026-02-26 | Enhanced vocab-zh (400+ terms, 16 categories). Added seedance-examples-zh with 16 battle-tested Chinese prompts across 7 genres.                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| 3.3.0   | 2026-02-25 | Rewrote seedance-interview v4.0: A/B/C/D/E guided stages, 5-flow types (image/video/audio/one-liner/script), 3-option prompt output, language selection                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| 3.2.1   | 2026-02-25 | **Accuracy corrections**: removed negative-prompt support claim (not supported), corrected API availability (no public API yet), fixed aspect ratios (added 3:4 and 21:9), fixed video input limit (15s combined not per-file), removed mobile-only duration claim                                                                                                                                                                                                                                                                                                             |
+| 3.1.0   | 2026-02-25 | Added copyright, antislop, vocab-ja/ko/es/ru modules. 24 files.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| 3.0.0   | 2026-02-25 | Initial 12-skill core pipeline.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+
+
