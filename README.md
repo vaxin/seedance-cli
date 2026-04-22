@@ -1,324 +1,246 @@
+# seedance
 
+Seedance 2.0 AI 视频生成命令行工具，基于火山引擎 Ark 平台。
 
+支持 Text-to-Video、Image-to-Video、Video-to-Video、Reference-to-Video 四种生成模式。
 
-
-`Generate and direct cinematic AI videos with Seedance 2.0 (ByteDance / Dreamina / Jimeng).`  
-`Text-to-Video · Image-to-Video · Video-to-Video · Reference-to-Video`
-
-**Author:** [Emily (@iamemily2050)](https://github.com/Emily2040)  |  [𝕏](https://x.com/iamemily2050)  |  [IG](https://instagram.com/iamemily2050)  
-**Platform:** [ByteDance Seedance 2.0](https://seed.bytedance.com/en/seedance2_0) · [Dreamina](https://dreamina.capcut.com/tools/seedance-2-0) · [Jimeng](https://jimeng.jianying.com/)  
-**Updated:** 2026-03-03 · Q1 2026 release intelligence
-
----
-
-## `>` The v5.0 Philosophy: Intent Over Precision
-
-This library teaches you to **direct** the AI, not micro-manage it. Tell the model WHAT you want and HOW it should FEEL. Use `@references` to show, not tell.
-
-
-| Workflow           | Best for                           | Start here                                               |
-| ------------------ | ---------------------------------- | -------------------------------------------------------- |
-| **Full Interview** | Vague idea, need creative guidance | [seedance-interview](skills/seedance-interview/SKILL.md) |
-| **Direct Prompt**  | Clear vision, have reference media | [seedance-prompt](skills/seedance-prompt/SKILL.md)       |
-
-
-> **Note from the field (Feb 2026):** Seedance V2 performs significantly better with short prompts (30-100 words) written in Chinese. The v5.0 prompt system enforces this by default.
-
----
-
-## `>` Why Seedance 2.0?
-
-
-|     |
-| --- |
-|     |
-
-
-**For AI Filmmakers** — Stop writing flat prompts. Seedance 2.0 gives you a complete director's toolkit: camera language, motion control, lighting design, character fidelity, audio sync, and VFX integration — all structured as modular, composable skills that any AI agent can load on demand.
-
-
-
-**For Agent Builders** — Each of the 23 sub-skills is independently loadable. Your agent reads the root `SKILL.md`, identifies the task, and loads only the specific modules it needs. Zero token waste. Maximum precision.
-
-
-
-> ⚠️ **Feb 2026 Status**: Seedance 2.0 API global release was delayed due to copyright enforcement actions. Real-person face uploads paused Feb 15. Content filters tightened for named franchise characters, anime IPs, and streaming originals. Run `seedance-copyright` before every generation.
-
-  
-
-
-## `>` Skill Constellation
-
-> **Click any node** to navigate directly to that skill's documentation.
-
-
-
-**🖥️ CLI**
-
-| Skill                                                      | Emoji | What it does                                                  |
-| ---------------------------------------------------------- | ----- | ------------------------------------------------------------- |
-| `[seedance-cli](skills/seedance-cli/SKILL.md)`             | 🖥️   | CLI reference: generate, status, download, list, config       |
-
-**📂 Full Skill Directory — Core Pipeline**  
-
-
-
-| Skill                                                                  | Emoji | What it does                                                                          |
-| ---------------------------------------------------------------------- | ----- | ------------------------------------------------------------------------------------- |
-| `[seedance-interview](skills/seedance-interview/SKILL.md)`             | 🎭    | Director's Journey with Quick Mode exit and genre detection                           |
-| `[seedance-interview-short](skills/seedance-interview-short/SKILL.md)` | 🎙️   | Compressed interview outputting a 30-100 word brief with live counter                 |
-| `[seedance-prompt](skills/seedance-prompt/SKILL.md)`                   | ✍️    | Director's Formula: genre router, 30-100 word target, I2V gate, anti-slop check       |
-| `[seedance-prompt-short](skills/seedance-prompt-short/SKILL.md)`       | ⚡️    | 30-100 word budget system with Compression Engine                                     |
-| `[seedance-camera](skills/seedance-camera/SKILL.md)`                   | 🎥    | One-Move Rule, genre camera presets, camera transfer via @Video                       |
-| `[seedance-motion](skills/seedance-motion/SKILL.md)`                   | 🏃    | Intent-first motion, @Video reference primary, physics consequences                   |
-| `[seedance-lighting](skills/seedance-lighting/SKILL.md)`               | 💡    | Lighting, atmosphere, light transitions, mood and time-of-day specs                   |
-| `[seedance-characters](skills/seedance-characters/SKILL.md)`           | 🎭    | Character identity locking, @Tag assignment, multi-character scene management         |
-| `[seedance-style](skills/seedance-style/SKILL.md)`                     | 🎨    | Visual style, render-engine tokens, period aesthetics, style-transfer reference       |
-| `[seedance-vfx](skills/seedance-vfx/SKILL.md)`                         | ✨     | VFX physics contracts, particle systems, destruction, energy effects                  |
-| `[seedance-audio](skills/seedance-audio/SKILL.md)`                     | 🔊    | Native audio design, dialogue lip-sync, @Audio1 reference, desync fixes               |
-| `[seedance-pipeline](skills/seedance-pipeline/SKILL.md)`               | 🔗    | ComfyUI nodes, API integration, Firebase Studio, post-processing chains               |
-| `[seedance-recipes](skills/seedance-recipes/SKILL.md)`                 | 📖    | 7-genre template library: product, lifestyle, drama, MV, landscape, commercial, anime |
-| `[seedance-troubleshoot](skills/seedance-troubleshoot/SKILL.md)`       | 🔧    | Diagnostic tree: 5-step root cause analysis for common failure modes                  |
-
-
-
-
-**⚖️ Content Quality & Governance**  
-
-
-
-| Skill                                                      | Emoji | What it does                                                                         |
-| ---------------------------------------------------------- | ----- | ------------------------------------------------------------------------------------ |
-| `[seedance-copyright](skills/seedance-copyright/SKILL.md)` | ⚖️    | IP rules, safe substitutions, Feb 2026 enforcement data                              |
-| `[seedance-antislop](skills/seedance-antislop/SKILL.md)`   | 🚫    | Detects and removes AI filler language and hollow superlatives from prompts          |
-| `[seedance-filter](skills/seedance-filter/SKILL.md)`       | 🛡️   | Content filter intelligence: diagnose false-positive blocks, write prompts that pass |
-
-
-
-
-**🌍 Multilingual Vocabulary**  
-
-
-
-| Skill                                                    | Flag | Languages                                                     | Terms |
-| -------------------------------------------------------- | ---- | ------------------------------------------------------------- | ----- |
-| `[seedance-vocab-zh](skills/seedance-vocab-zh/SKILL.md)` | 🇨🇳 | Chinese cinematic vocabulary                                  | 400+  |
-| `[seedance-vocab-ja](skills/seedance-vocab-ja/SKILL.md)` | 🇯🇵 | Japanese cinematic vocabulary                                 | 280+  |
-| `[seedance-vocab-ko](skills/seedance-vocab-ko/SKILL.md)` | 🇰🇷 | Korean cinematic vocabulary                                   | 270+  |
-| `[seedance-vocab-es](skills/seedance-vocab-es/SKILL.md)` | 🇪🇸 | Spanish cinematic vocabulary (Castilian + Latin American)     | 270+  |
-| `[seedance-vocab-ru](skills/seedance-vocab-ru/SKILL.md)` | 🇷🇺 | Russian cinematic vocabulary (Eisenstein/Tarkovsky tradition) | 270+  |
-
-
-
-
-**🇨🇳 Working Examples (Chinese Prompts)**  
-
-
-
-| #   | Genre               | Difficulty   | Description                               |
-| --- | ------------------- | ------------ | ----------------------------------------- |
-| 1   | 剧情短剧 Short Drama    | Expert       | 霸道总裁爽剧风格 — 15s multi-shot reversal scene  |
-| 2   | 剧情短剧 Short Drama    | Beginner     | 优雅晾衣场景 — simple elegant action loop       |
-| 3   | 剧情短剧 Short Drama    | Intermediate | 维多利亚时代街景 — period drama environment       |
-| 4   | 广告 Advertising      | Advanced     | 互动绘画角色 — painting character comes alive   |
-| 5   | 广告 Advertising      | Creative     | 摩托车广告 — donkey motorcycle stunt ad        |
-| 6   | 广告 Advertising      | Creative     | 反转零食广告 — spy thriller snack reveal        |
-| 7   | 动漫武打 Animation      | Expert       | 哪吒 vs 敖丙 — 4-act ice/fire battle sequence |
-| 8   | 动漫武打 Animation      | Advanced     | 多视频参考打斗 — multi-reference fight scene     |
-| 9   | 产品展示 Product        | Intermediate | 高端香水 MG 动画 — luxury perfume ad            |
-| 10  | 产品展示 Product        | Advanced     | 多图融合产品展示 — multi-image bag showcase       |
-| 11  | 产品展示 Product        | Advanced     | 经典广告节奏复刻 — car ad rhythm clone            |
-| 12  | 视觉特效 VFX            | Advanced     | 粒子特效片头 — gold particle title animation    |
-| 13  | 运镜叙事 Cinematography | Advanced     | 一镜到底追踪镜头 — one-take tracking shot         |
-| 14  | 运镜叙事 Cinematography | Advanced     | 动作+运镜双重复刻 — dance performance clone       |
-| 15  | 运镜叙事 Cinematography | Advanced     | 角色替换 — character replacement in video     |
-| 16  | 音乐卡点 Beat Sync      | Advanced     | 风光片音乐卡点 — landscape beat sync             |
-
-
-→ Full prompts: `[skills/seedance-examples-zh/SKILL.md](skills/seedance-examples-zh/SKILL.md)`
-
-
-
-  
-
-
-## `>` Quick Install
+## 安装
 
 ```bash
-# Antigravity
-antigravity skills install https://github.com/Emily2040/seedance-2.0
-
-# Gemini CLI
-gemini skills install https://github.com/Emily2040/seedance-2.0
-
-# Claude Code
-claude skills install https://github.com/Emily2040/seedance-2.0
-
-# GitHub Copilot / Codex
-codex skills install https://github.com/Emily2040/seedance-2.0
-
-# Cursor
-cursor skills install https://github.com/Emily2040/seedance-2.0
-
-# Windsurf
-windsurf skills install https://github.com/Emily2040/seedance-2.0
-
-# OpenCode
-opencode skills install https://github.com/Emily2040/seedance-2.0
+npm install -g seedance
 ```
 
-**📁 Manual Installation Paths**  
+或从源码构建：
 
-
-
-| Platform                                                  | Workspace path                  | Global path                                 |
-| --------------------------------------------------------- | ------------------------------- | ------------------------------------------- |
-| **[Antigravity](https://antigravity.google/)**            | `.agent/skills/seedance-20/`    | `~/.gemini/antigravity/skills/seedance-20/` |
-| **[Gemini CLI](https://geminicli.com/)**                  | `.gemini/skills/seedance-20/`   | `~/.gemini/skills/seedance-20/`             |
-| **[Firebase Studio](https://firebase.studio/)**           | `.idx/skills/seedance-20/`      | —                                           |
-| **[Claude Code](https://code.claude.com/)**               | `.claude/skills/seedance-20/`   | `~/.claude/skills/seedance-20/`             |
-| **[OpenClaw](https://openclaw.ai/)**                      | `.claude/skills/seedance-20/`   | `~/.claude/skills/seedance-20/`             |
-| **[GitHub Copilot](https://github.com/features/copilot)** | `.github/skills/seedance-20/`   | `~/.copilot/skills/seedance-20/`            |
-| **[Codex](https://openai.com/codex/)**                    | `.agents/skills/seedance-20/`   | `~/.agents/skills/seedance-20/`             |
-| **[Cursor](https://cursor.com/)**                         | `.cursor/skills/seedance-20/`   | `~/.cursor/skills/seedance-20/`             |
-| **[Windsurf](https://windsurf.com/)**                     | `.windsurf/skills/seedance-20/` | `~/.codeium/windsurf/skills/seedance-20/`   |
-| **[OpenCode](https://opencode.ai/)**                      | `.opencode/skills/seedance-20/` | `~/.config/opencode/skills/seedance-20/`    |
-
-
-
-
-  
-
-
-## `>` Platform Matrix
-
-
-|                                                |                                          |                                                 |                                             |                                      |                                                    |                                        |                                   |                                       |
-| ---------------------------------------------- | ---------------------------------------- | ----------------------------------------------- | ------------------------------------------- | ------------------------------------ | -------------------------------------------------- | -------------------------------------- | --------------------------------- | ------------------------------------- |
-| **[Antigravity](https://antigravity.google/)** | **[Gemini CLI](https://geminicli.com/)** | **[Firebase Studio](https://firebase.studio/)** | **[Claude Code](https://code.claude.com/)** | **[OpenClaw](https://openclaw.ai/)** | **[Copilot](https://github.com/features/copilot)** | **[Codex](https://openai.com/codex/)** | **[Cursor](https://cursor.com/)** | **[Windsurf](https://windsurf.com/)** |
-| ✅                                              | ✅                                        | ✅                                               | ✅                                           | ✅                                    | ✅                                                  | ✅                                      | ✅                                 | ✅                                     |
-
-
-  
-
-
-## `>` Multilingual Precision
-
-Seedance 2.0 includes dedicated cinematic vocabulary modules for five languages, enabling native-language prompt engineering for maximum generation fidelity.
-
-
-|                                        |                                        |                                      |                                       |                                       |
-| -------------------------------------- | -------------------------------------- | ------------------------------------ | ------------------------------------- | ------------------------------------- |
-| **🇨🇳 Chinese** `vocab-zh` 400+ terms | **🇯🇵 Japanese** `vocab-ja` 235 lines | **🇰🇷 Korean** `vocab-ko` 225 lines | **🇪🇸 Spanish** `vocab-es` 232 lines | **🇷🇺 Russian** `vocab-ru` 235 lines |
-
-
-  
-
-
-## `>` Architecture
-
-```
-seedance-2.0/
-├── SKILL.md                         ← Root entry point (75 lines)
-├── LICENSE                          ← MIT
-├── README.md                        ← You are here
-├── CHANGELOG.md                     ← v3.0.0 → v5.0.0
-├── .github/
-│   └── CODEOWNERS                   ← @Emily2040
-├── skills/                          ← 23 modular sub-skills
-│   ├── seedance-interview/          ← 🎭 Director's Journey + Quick Mode
-│   ├── seedance-interview-short/    ← 🎙️ Compressed interview (30-100 words)
-│   ├── seedance-prompt/             ← ✍️ Director's Formula + Genre Router
-│   ├── seedance-prompt-short/       ← ⚡️ Compressed prompt (30-100 words)
-│   ├── seedance-camera/             ← 🎥 Camera language
-│   ├── seedance-motion/             ← 🏃 Motion control
-│   ├── seedance-lighting/           ← 💡 Lighting design
-│   ├── seedance-characters/         ← 🎭 Character fidelity
-│   ├── seedance-style/              ← 🎨 Style control
-│   ├── seedance-vfx/                ← ✨ VFX integration
-│   ├── seedance-audio/              ← 🔊 Audio & lip-sync
-│   ├── seedance-pipeline/           ← 🔗 Pipeline ops
-│   ├── seedance-recipes/            ← 📖 Genre recipes
-│   ├── seedance-troubleshoot/       ← 🔧 Diagnostic Tree
-│   ├── seedance-copyright/          ← ⚖️ IP governance
-│   ├── seedance-antislop/           ← 🚫 Language filter
-│   ├── seedance-vocab-zh/           ← 🇨🇳 Chinese
-│   ├── seedance-vocab-ja/           ← 🇯🇵 Japanese
-│   ├── seedance-vocab-ko/           ← 🇰🇷 Korean
-│   ├── seedance-vocab-es/           ← 🇪🇸 Spanish
-│   ├── seedance-vocab-ru/           ← 🇷🇺 Russian
-│   ├── seedance-filter/              ← 🛡️ Content filter intelligence
-│   └── seedance-examples-zh/        ← 🇨🇳 Chinese Working Examples
-└── references/                      ← 9 reference files
-    ├── platform-constraints.md      ← Platform limits & rules
-    ├── json-schema.md               ← JSON prompt schema
-    ├── prompt-examples.md           ← Copy-paste examples
-    ├── storytelling-framework.md    ← Narrative design & visual layering principles
-    ├── quick-ref.md                 ← Quick reference card
-    ├── genre-guides.md              ← 7-genre prompt templates
-    ├── reference-workflow.md        ← @reference system guide
-    ├── i2v-guide.md                 ← Image-to-Video best practices
-    └── intent-vs-precision.md       ← Intent-first prompting philosophy
+```bash
+cargo install --path .
 ```
 
-  
+安装后验证：
 
-
-## `>` References
-
-
-| File                                                                | Purpose                                                              |
-| ------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `[platform-constraints.md](references/platform-constraints.md)`     | Platform limits, resolution caps, and known behaviors                |
-| `[json-schema.md](references/json-schema.md)`                       | JSON prompt schema for structured generation                         |
-| `[prompt-examples.md](references/prompt-examples.md)`               | Compact, copy-paste prompt examples                                  |
-| `[quick-ref.md](references/quick-ref.md)`                           | Quick reference card for all parameters                              |
-| `[storytelling-framework.md](references/storytelling-framework.md)` | Narrative design, visual layering, and director's toolkit principles |
-| `[genre-guides.md](references/genre-guides.md)`                     | 7-genre prompt templates and best practices                          |
-| `[reference-workflow.md](references/reference-workflow.md)`         | The @reference system: show, don't tell                              |
-| `[i2v-guide.md](references/i2v-guide.md)`                           | Image-to-Video best practices                                        |
-| `[intent-vs-precision.md](references/intent-vs-precision.md)`       | Intent-first prompting philosophy                                    |
-
-
-  
-
-
-## `>` Compliance
-
-All 23 skills pass the [AgentSkills open standard](https://agentskills.io/) validation:
-
-- ✅ `name` — lowercase, hyphen-separated, no dots or spaces
-- ✅ `description` — single-quoted, verb-first, includes WHEN trigger phrases
-- ✅ `license: MIT` · `user-invocable: true` · `user-invokable: true`
-- ✅ `tags:` array and `metadata` with `version`, `updated`, `author`, platform blocks
-- ✅ `metadata.parent: seedance-20` on all 23 sub-skills
-- ✅ No illegal top-level custom fields
-
-  
-
-
-## `>` Changelog
-
-See `[CHANGELOG.md](CHANGELOG.md)` for the full version history from v3.0.0 to v5.0.0.
-
-  
-
-
-## `>` Contributing
-
-Contributions are welcome. Fork the repository, create a feature branch, and submit a pull request. All contributions will be reviewed by [@Emily2040](https://github.com/Emily2040).
-
-  
-
-
-## `>` License
-
-```
-MIT © 2026 Emily (@iamemily2050)
+```bash
+seedance --version
 ```
 
----
+## 快速开始
 
-Built with precision by **Emily (@iamemily2050)** — AI artist, filmmaker, and agent skill architect.  
- [𝕏 @iamemily2050](https://x.com/iamemily2050) · [IG @iamemily2050](https://instagram.com/iamemily2050) · [GitHub @Emily2040](https://github.com/Emily2040)  
-Source intelligence: ByteDance Seedance 2.0 official blog, Douyin creator community, CSDN practitioner tutorials, Q1 2026.
+```bash
+# 1. 配置 API Key（交互式）
+seedance config init
+
+# 2. 文生视频
+seedance generate "夕阳下的湖面，金色光芒铺满水面，镜头缓缓后拉" --wait
+
+# 3. 图生视频
+seedance generate "角色缓步走来，风吹动发丝" \
+  --first-frame character.png --wait
+
+# 4. 完整参数控制
+seedance generate "产品瓶身置于大理石台面，缓慢环绕拍摄" \
+  --model standard --duration 8 --ratio 16:9 --resolution 1080p --wait
+```
+
+## 命令一览
+
+### `seedance generate` — 创建视频
+
+```
+seedance generate <PROMPT> [OPTIONS]
+```
+
+`PROMPT` 可以是字符串，也可以用 `@file.txt` 从文件读取。
+
+**生成参数**
+
+| 参数 | 短写 | 默认值 | 说明 |
+|---|---|---|---|
+| `--model` | `-m` | `standard` | 模型：`standard` / `fast` |
+| `--duration` | `-d` | `5` | 时长 4–15 秒 |
+| `--ratio` | `-r` | `16:9` | 画面比例：`16:9` `9:16` `4:3` `3:4` `21:9` `1:1` |
+| `--resolution` | | `1080p` | 分辨率：`480p` `720p` `1080p` `2K` |
+| `--seed` | | | 随机种子，用于复现 |
+| `--watermark` | | `false` | 添加水印 |
+| `--audio-gen` | | `false` | 启用原生音频生成 |
+| `--return-last-frame` | | `false` | 返回最后一帧图片 |
+| `--callback` | | | Webhook 回调地址 |
+
+**素材输入（I2V / V2V / R2V）**
+
+| 参数 | 短写 | 可重复 | 上限 | 说明 |
+|---|---|---|---|---|
+| `--image` | `-i` | 是 | 9 | 图片参考（URL 或本地路径） |
+| `--video` | `-v` | 是 | 3 | 视频参考 |
+| `--audio` | `-a` | 是 | 3 | 音频参考 |
+| `--first-frame` | | 否 | 1 | 首帧图片 |
+| `--last-frame` | | 否 | 1 | 尾帧图片 |
+
+所有素材总数不超过 12 个（Rule of 12）。本地文件自动 base64 编码上传。
+
+**等待与输出**
+
+| 参数 | 短写 | 默认值 | 说明 |
+|---|---|---|---|
+| `--wait` | `-w` | `false` | 等待完成并自动下载 |
+| `--output` | `-o` | | 输出路径（默认 `seedance_<id>.mp4`） |
+| `--timeout` | | `300` | 最大等待秒数 |
+| `--poll-interval` | | `10` | 轮询间隔秒数 |
+| `--strict` | | `false` | 超时返回 exit code 2（CI 用） |
+| `--quiet` | `-q` | | 静默模式：仅输出 task_id 或文件路径 |
+| `--json` | | | JSON 格式输出 |
+
+### `seedance status` — 查询任务状态
+
+```bash
+seedance status <TASK_ID> [--json] [--wait] [--timeout 300]
+```
+
+### `seedance download` — 下载视频
+
+```bash
+seedance download <TASK_ID> [-o output.mp4]
+```
+
+### `seedance list` — 查看任务历史
+
+```bash
+seedance list [-n 20] [--status failed] [--json]
+```
+
+### `seedance config` — 管理配置
+
+```bash
+seedance config init              # 交互式配置向导
+seedance config show              # 显示所有配置
+seedance config get <KEY>         # 获取单项
+seedance config set <KEY> <VALUE> # 设置单项
+```
+
+可配置项：`api_key`、`base_url`、`model`、`resolution`、`ratio`、`duration`、`output_dir`。
+
+## 环境变量
+
+| 变量 | 说明 |
+|---|---|
+| `ARK_API_KEY` | API Key，优先级高于 config.toml |
+
+## 使用示例
+
+**R2V：多角色参考生成**
+
+```bash
+seedance generate "角色A向角色B挥拳出击" \
+  --image charA.png --image charB.png --duration 8 --wait
+```
+
+**V2V：风格迁移**
+
+```bash
+seedance generate "匹配参考视频的运镜和剪辑风格" \
+  --video reference.mp4 --image character.png --duration 10 --wait
+```
+
+**音频驱动 + 口型同步**
+
+```bash
+seedance generate "角色面对镜头讲话，中近景，锁定机位" \
+  --audio dialogue.mp3 --image character.png --audio-gen --duration 8 --wait
+```
+
+**从文件读取长提示词**
+
+```bash
+echo '古风仙侠场景，白衣剑客凌空而起，剑光如虹划过夜空，远山云海翻涌。升格慢动作，仰拍视角。' > prompt.txt
+seedance generate @prompt.txt --duration 10 --ratio 16:9 --wait
+```
+
+**批量生成（种子变体）**
+
+```bash
+for seed in 1000 1001 1002 1003 1004; do
+  seedance generate "海边日落，金色光芒，镜头缓缓右移" --seed $seed -d 5 -q
+done
+```
+
+**异步提交 + 稍后下载**
+
+```bash
+TASK_ID=$(seedance generate "一段戏剧性场景" -q)
+# ... 做其他事情 ...
+seedance status $TASK_ID
+seedance download $TASK_ID -o final.mp4
+```
+
+**CI/CD 集成**
+
+```bash
+TASK_ID=$(seedance generate "产品广告场景" --wait --strict --timeout 600 -q)
+seedance status $TASK_ID --json | jq '.status'
+seedance list --status failed --json | jq '.[].task_id'
+```
+
+## 任务状态
+
+| 状态 | 终态 | 说明 |
+|---|---|---|
+| `submitted` | 否 | 已提交 |
+| `queued` | 否 | 排队中 |
+| `running` | 否 | 生成中 |
+| `succeeded` | 是 | 生成完成 |
+| `failed` | 是 | 生成失败 |
+| `expired` | 是 | 结果已过期 |
+| `cancelled` | 是 | 已取消 |
+
+## 退出码
+
+| 退出码 | 含义 |
+|---|---|
+| `0` | 成功 |
+| `1` | 错误（API 失败、参数错误等） |
+| `2` | 超时（仅 `--strict` 模式） |
+
+## 项目结构
+
+```
+seedance-cli/
+├── src/
+│   ├── main.rs            # 入口 + 命令路由
+│   ├── cli/               # 各子命令实现
+│   │   ├── generate.rs
+│   │   ├── status.rs
+│   │   ├── download.rs
+│   │   ├── list.rs
+│   │   └── config.rs
+│   ├── client/            # Ark API 客户端
+│   ├── config/            # 配置文件管理
+│   ├── core/              # 核心逻辑（上传 / 轮询 / 下载）
+│   ├── store/             # SQLite 任务历史
+│   └── ui/                # 终端输出 & 进度条
+├── scripts/
+│   ├── install.js         # npm postinstall（下载二进制）
+│   └── run.js             # npm bin shim
+├── .github/workflows/
+│   └── release.yml        # CI: 多平台编译 + npm 发布
+├── Cargo.toml
+└── package.json
+```
+
+## 支持平台
+
+| 平台 | 架构 |
+|---|---|
+| macOS | x86_64, aarch64 (Apple Silicon) |
+| Linux | x86_64, aarch64 |
+| Windows | x86_64, aarch64 |
+
+## 发版
+
+```bash
+# 1. 同步 package.json 和 Cargo.toml 版本号
+# 2. 创建并推送 tag
+bash scripts/tag-release.sh
+# 3. GitHub Actions 自动编译所有平台 + 发布到 npm
+```
+
+## License
+
+MIT

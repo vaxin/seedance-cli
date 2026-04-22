@@ -1,12 +1,13 @@
 ---
-name: seedance-cli
+
+## name: seedance-cli
+
 description: 'Use the seedance CLI to generate, track, download, and manage Seedance 2.0 AI videos from the terminal. Covers all subcommands (generate, status, download, list, config), flag reference, workflow patterns, CI/CD integration, and error handling. Use when generating a video, checking task status, downloading results, configuring defaults, or building automated pipelines with Seedance 2.0.'
 license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["cli", "terminal", "automation", "pipeline", "seedance-20"]
 metadata: {"version": "1.0.0", "updated": "2026-04-22", "parent": "seedance-20"}
----
 
 # seedance-cli
 
@@ -49,9 +50,11 @@ seedance --version
 
 ## Environment
 
-| Variable      | Purpose                                     |
-|---------------|---------------------------------------------|
-| `ARK_API_KEY` | API key (overrides config file if set)       |
+
+| Variable      | Purpose                                |
+| ------------- | -------------------------------------- |
+| `ARK_API_KEY` | API key (overrides config file if set) |
+
 
 Priority: `ARK_API_KEY` env var > `config.toml` api_key.
 
@@ -71,27 +74,31 @@ seedance generate <PROMPT> [OPTIONS]
 
 #### Generation Options
 
-| Flag              | Short | Default    | Description                              |
-|-------------------|-------|------------|------------------------------------------|
-| `--model`         | `-m`  | `standard` | Model variant: `standard` or `fast`      |
-| `--duration`      | `-d`  | `5`        | Duration in seconds (4–15)               |
-| `--ratio`         | `-r`  | `16:9`     | Aspect ratio (`16:9` `9:16` `4:3` `3:4` `21:9` `1:1`) |
-| `--resolution`    |       | `1080p`    | Resolution (`480p` `720p` `1080p` `2K`)  |
-| `--seed`          |       |            | Random seed for reproducibility          |
-| `--watermark`     |       | `false`    | Add watermark                            |
-| `--audio-gen`     |       | `false`    | Enable native audio generation           |
-| `--return-last-frame` |   | `false`    | Return the last frame as an image        |
-| `--callback`      |       |            | Webhook callback URL                     |
+
+| Flag                  | Short | Default    | Description                                           |
+| --------------------- | ----- | ---------- | ----------------------------------------------------- |
+| `--model`             | `-m`  | `standard` | Model variant: `standard` or `fast`                   |
+| `--duration`          | `-d`  | `5`        | Duration in seconds (4–15)                            |
+| `--ratio`             | `-r`  | `16:9`     | Aspect ratio (`16:9` `9:16` `4:3` `3:4` `21:9` `1:1`) |
+| `--resolution`        |       | `1080p`    | Resolution (`480p` `720p` `1080p` `2K`)               |
+| `--seed`              |       |            | Random seed for reproducibility                       |
+| `--watermark`         |       | `false`    | Add watermark                                         |
+| `--audio-gen`         |       | `false`    | Enable native audio generation                        |
+| `--return-last-frame` |       | `false`    | Return the last frame as an image                     |
+| `--callback`          |       |            | Webhook callback URL                                  |
+
 
 #### Material Inputs (I2V / V2V / R2V)
 
-| Flag             | Short | Repeatable | Max  | Description                            |
-|------------------|-------|------------|------|----------------------------------------|
-| `--image`        | `-i`  | Yes        | 9    | Image reference (URL or local path)    |
-| `--video`        | `-v`  | Yes        | 3    | Video reference (URL or local path)    |
-| `--audio`        | `-a`  | Yes        | 3    | Audio reference (URL or local path)    |
-| `--first-frame`  |       | No         | 1    | First frame image                      |
-| `--last-frame`   |       | No         | 1    | Last frame image                       |
+
+| Flag            | Short | Repeatable | Max | Description                         |
+| --------------- | ----- | ---------- | --- | ----------------------------------- |
+| `--image`       | `-i`  | Yes        | 9   | Image reference (URL or local path) |
+| `--video`       | `-v`  | Yes        | 3   | Video reference (URL or local path) |
+| `--audio`       | `-a`  | Yes        | 3   | Audio reference (URL or local path) |
+| `--first-frame` |       | No         | 1   | First frame image                   |
+| `--last-frame`  |       | No         | 1   | Last frame image                    |
+
 
 Total files across all types: max 12 (Rule of 12).
 
@@ -99,20 +106,24 @@ Local files are automatically converted to base64 data URIs. Supported formats: 
 
 #### Wait & Output Options
 
-| Flag             | Short | Default | Description                                |
-|------------------|-------|---------|--------------------------------------------|
-| `--wait`         | `-w`  | `false` | Wait for completion and auto-download      |
-| `--output`       | `-o`  |         | Output file path (default: `seedance_<id>.mp4`) |
-| `--timeout`      |       | `300`   | Max wait seconds (with `--wait`)           |
-| `--poll-interval` |      | `10`    | Poll interval seconds                      |
-| `--strict`       |       | `false` | Exit code 2 on timeout (for CI)            |
+
+| Flag              | Short | Default | Description                                     |
+| ----------------- | ----- | ------- | ----------------------------------------------- |
+| `--wait`          | `-w`  | `false` | Wait for completion and auto-download           |
+| `--output`        | `-o`  |         | Output file path (default: `seedance_<id>.mp4`) |
+| `--timeout`       |       | `300`   | Max wait seconds (with `--wait`)                |
+| `--poll-interval` |       | `10`    | Poll interval seconds                           |
+| `--strict`        |       | `false` | Exit code 2 on timeout (for CI)                 |
+
 
 #### Output Format Options
 
-| Flag      | Short | Description                                      |
-|-----------|-------|--------------------------------------------------|
+
+| Flag      | Short | Description                                       |
+| --------- | ----- | ------------------------------------------------- |
 | `--quiet` | `-q`  | Quiet mode: only print task_id or final file path |
-| `--json`  |       | JSON output                                      |
+| `--json`  |       | JSON output                                       |
+
 
 ---
 
@@ -122,11 +133,13 @@ Local files are automatically converted to base64 data URIs. Supported formats: 
 seedance status <TASK_ID> [OPTIONS]
 ```
 
+
 | Flag        | Default | Description                      |
-|-------------|---------|----------------------------------|
+| ----------- | ------- | -------------------------------- |
 | `--json`    | `false` | JSON output                      |
 | `--wait`    | `false` | Poll until task completes        |
 | `--timeout` | `300`   | Max wait seconds (with `--wait`) |
+
 
 ---
 
@@ -136,9 +149,11 @@ seedance status <TASK_ID> [OPTIONS]
 seedance download <TASK_ID> [OPTIONS]
 ```
 
-| Flag       | Short | Description                                      |
-|------------|-------|--------------------------------------------------|
-| `--output` | `-o`  | Output file path (default: `seedance_<id>.mp4`)   |
+
+| Flag       | Short | Description                                     |
+| ---------- | ----- | ----------------------------------------------- |
+| `--output` | `-o`  | Output file path (default: `seedance_<id>.mp4`) |
+
 
 ---
 
@@ -148,11 +163,13 @@ seedance download <TASK_ID> [OPTIONS]
 seedance list [OPTIONS]
 ```
 
-| Flag       | Short | Default | Description          |
-|------------|-------|---------|----------------------|
-| `--limit`  | `-n`  | `20`    | Number of tasks      |
-| `--status` |       |         | Filter by status     |
-| `--json`   |       | `false` | JSON output          |
+
+| Flag       | Short | Default | Description      |
+| ---------- | ----- | ------- | ---------------- |
+| `--limit`  | `-n`  | `20`    | Number of tasks  |
+| `--status` |       |         | Filter by status |
+| `--json`   |       | `false` | JSON output      |
+
 
 ---
 
@@ -268,25 +285,29 @@ seedance list --status failed --json | jq '.[].task_id'
 
 ## Task States
 
-| Status      | Terminal | Description                    |
-|-------------|----------|--------------------------------|
-| `submitted` | No       | Task received by server        |
-| `queued`    | No       | Waiting in generation queue    |
-| `running`   | No       | Video is being generated       |
-| `succeeded` | Yes      | Generation complete            |
-| `failed`    | Yes      | Generation failed              |
-| `expired`   | Yes      | Task result expired on server  |
-| `cancelled` | Yes      | Task was cancelled             |
+
+| Status      | Terminal | Description                   |
+| ----------- | -------- | ----------------------------- |
+| `submitted` | No       | Task received by server       |
+| `queued`    | No       | Waiting in generation queue   |
+| `running`   | No       | Video is being generated      |
+| `succeeded` | Yes      | Generation complete           |
+| `failed`    | Yes      | Generation failed             |
+| `expired`   | Yes      | Task result expired on server |
+| `cancelled` | Yes      | Task was cancelled            |
+
 
 ---
 
 ## Exit Codes
 
+
 | Code | Meaning                                |
-|------|----------------------------------------|
+| ---- | -------------------------------------- |
 | `0`  | Success                                |
 | `1`  | Error (API failure, invalid args, etc) |
 | `2`  | Timeout (only with `--strict`)         |
+
 
 ---
 
@@ -295,10 +316,11 @@ seedance list --status failed --json | jq '.[].task_id'
 1. **Always `--wait` for one-shot workflows.** Without it, `generate` returns immediately with just a task_id. The video isn't ready yet.
 2. **Use `-q` for scripting.** Quiet mode outputs only the task_id (on generate) or file path (on download), nothing else.
 3. **Local files auto-upload.** Pass local paths to `--image`, `--video`, `--audio` — the CLI handles base64 encoding. No manual upload step needed.
-4. **`@file.txt` for long prompts.** Chinese prompts with special characters are easier to manage in a file.
-5. **`--strict` for CI.** Without it, timeout is a soft warning (exit 0). With it, timeout exits 2 so your pipeline catches it.
+4. `**@file.txt` for long prompts.** Chinese prompts with special characters are easier to manage in a file.
+5. `**--strict` for CI.** Without it, timeout is a soft warning (exit 0). With it, timeout exits 2 so your pipeline catches it.
 6. **Seed for reproducibility.** Same seed + same prompt + same model = same output. Use for A/B testing and iteration.
 7. **Config cascade:** `ARK_API_KEY` env var overrides `config.toml`. Useful for CI where you set secrets via env.
 8. **Rule of 12:** Total files (images + videos + audios + first_frame + last_frame) cannot exceed 12. CLI validates this before sending.
 9. **Duration range is 4–15 seconds.** CLI rejects values outside this range.
 10. **Audio must be MP3.** Other formats fail silently on the server side. Convert before passing to `--audio`.
+
