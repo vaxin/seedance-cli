@@ -35,6 +35,9 @@
   ],
   "author": "vaxin",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "scripts/install.js",
     "scripts/run.js",
