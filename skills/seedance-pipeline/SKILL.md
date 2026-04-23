@@ -1,13 +1,12 @@
 ---
-
-## name: seedance-pipeline
-
+name: seedance-pipeline
 description: 'Build automated video generation pipelines with the seedance CLI, ComfyUI nodes, and post-processing chains covering upscale, frame interpolation, color grade, composite, and metadata cleanup. Use when building automated video pipelines, connecting Seedance to external tools, or finishing and delivering a generated video clip.'
 license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["pipeline", "comfyui", "cli", "automation", "openclaw", "antigravity", "gemini-cli", "codex", "cursor", "windsurf", "opencode"]
-metadata: {"version": "6.0.0", "updated": "2026-04-22", "openclaw": {"emoji": "🔗", "homepage": "[https://github.com/Emily2040/seedance-2.0"}](https://github.com/Emily2040/seedance-2.0"}), "parent": "seedance-20", "antigravity": {"emoji": "🔗", "homepage": "[https://github.com/Emily2040/seedance-2.0"}](https://github.com/Emily2040/seedance-2.0"}), "gemini-cli": {"emoji": "🔗", "homepage": "[https://github.com/Emily2040/seedance-2.0"}](https://github.com/Emily2040/seedance-2.0"}), "firebase": {"emoji": "🔗", "homepage": "[https://github.com/Emily2040/seedance-2.0"}](https://github.com/Emily2040/seedance-2.0"}), "author": "Emily (@iamemily2050)", "repository": "[https://github.com/Emily2040/seedance-2.0"}](https://github.com/Emily2040/seedance-2.0"})
+metadata: {"version": "6.0.0", "updated": "2026-04-22", "openclaw": {"emoji": "🔗", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "🔗", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🔗", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "firebase": {"emoji": "🔗", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
+---
 
 # seedance-pipeline
 

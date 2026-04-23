@@ -1,13 +1,12 @@
 ---
-
-## name: seedance-cli
-
+name: seedance-cli
 description: 'Use the seedance CLI to generate, track, download, and manage Seedance 2.0 AI videos from the terminal. Covers all subcommands (generate, status, download, list, config), flag reference, workflow patterns, CI/CD integration, and error handling. Use when generating a video, checking task status, downloading results, configuring defaults, or building automated pipelines with Seedance 2.0.'
 license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["cli", "terminal", "automation", "pipeline", "seedance-20"]
 metadata: {"version": "1.0.0", "updated": "2026-04-22", "parent": "seedance-20"}
+---
 
 # seedance-cli
 
@@ -323,4 +322,3 @@ seedance list --status failed --json | jq '.[].task_id'
 8. **Rule of 12:** Total files (images + videos + audios + first_frame + last_frame) cannot exceed 12. CLI validates this before sending.
 9. **Duration range is 4–15 seconds.** CLI rejects values outside this range.
 10. **Audio must be MP3.** Other formats fail silently on the server side. Convert before passing to `--audio`.
-

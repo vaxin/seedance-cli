@@ -1,6 +1,6 @@
 ---
 name: seedance-interview-short
-description: 'A guided creative journey to craft a production-ready prompt under the hard 2000-character limit. Follow the "Director\\'s Journey" workflow: Vision → Narrative → Visuals → Technical → Final Compressed Brief.'
+description: "A guided creative journey to craft a production-ready prompt under the hard 2000-character limit. Follow the \"Director's Journey\" workflow: Vision → Narrative → Visuals → Technical → Final Compressed Brief."
 license: MIT
 user-invocable: true
 user-invokable: true

@@ -1,12 +1,12 @@
 ---
-
-## name: seedance-audio
+name: seedance-audio
 description: 'Design sound layers, specify dialogue lip-sync, and troubleshoot audio failures for Seedance 2.0 video generation. Covers @Audio1 reference input, multi-character constraints, known failure modes (silent output, desync, audio rewrite bug), and the boundary between Seedance 2.0 video generation and the separate Jimeng Digital Human tool. Use when adding audio to a Seedance prompt, fixing lip-sync errors, building multi-character dialogue scenes, or diagnosing why uploaded audio is ignored or replaced.'
 license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["audio", "lip-sync", "dialogue", "multimodal", "openclaw", "antigravity", "gemini-cli", "codex", "cursor"]
 metadata: {"version": "6.0.0", "updated": "2026-04-22", "openclaw": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "parent": "seedance-20", "antigravity": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "gemini-cli": {"emoji": "🔊", "homepage": "https://github.com/Emily2040/seedance-2.0"}, "author": "Emily (@iamemily2050)", "repository": "https://github.com/Emily2040/seedance-2.0"}
+---
 
 # seedance-audio
 
@@ -462,4 +462,3 @@ Character flinches at the sound.
 12. **Maintain consistent framing/lighting across segments** so stitched clips cut invisibly.
 13. **Occasional audio distortion is a known bug.** Regenerate if it occurs.
 14. **Master/Quick/Standard modes do not exist in Seedance 2.0.** Those belong to the separate Jimeng Digital Human (OmniHuman-1) tool.
-
