@@ -128,7 +128,6 @@ mod types_tests {
             content: vec![ContentItem::Text {
                 text: "test".into(),
             }],
-            prompt: Some("test".into()),
             resolution: Some("1080p".into()),
             ratio: Some("16:9".into()),
             duration: Some(5),
@@ -137,13 +136,105 @@ mod types_tests {
             seed: None,
             return_last_frame: None,
             callback_url: None,
+            tools: None,
+            service_tier: None,
         };
         let json = serde_json::to_value(&req).unwrap();
         assert!(json.get("generate_audio").is_none());
         assert!(json.get("seed").is_none());
         assert!(json.get("return_last_frame").is_none());
         assert!(json.get("callback_url").is_none());
+        assert!(json.get("tools").is_none());
+        assert!(json.get("service_tier").is_none());
+        assert!(json.get("prompt").is_none());
         assert_eq!(json["watermark"], false);
+    }
+
+    #[test]
+    fn create_task_request_with_tools() {
+        let req = CreateTaskRequest {
+            model: "test-model".into(),
+            content: vec![ContentItem::Text {
+                text: "test".into(),
+            }],
+            resolution: None,
+            ratio: None,
+            duration: None,
+            watermark: None,
+            generate_audio: None,
+            seed: None,
+            return_last_frame: None,
+            callback_url: None,
+            tools: Some(vec![Tool {
+                tool_type: "web_search".into(),
+            }]),
+            service_tier: Some("flex".into()),
+        };
+        let json = serde_json::to_value(&req).unwrap();
+        assert_eq!(json["tools"][0]["type"], "web_search");
+        assert_eq!(json["service_tier"], "flex");
+    }
+
+    #[test]
+    fn content_item_image_url_with_first_frame_role() {
+        let item = ContentItem::ImageUrl {
+            image_url: UrlRef {
+                url: "https://example.com/frame.png".into(),
+            },
+            role: Some("first_frame".into()),
+        };
+        let json = serde_json::to_value(&item).unwrap();
+        assert_eq!(json["role"], "first_frame");
+    }
+
+    #[test]
+    fn content_item_image_url_with_last_frame_role() {
+        let item = ContentItem::ImageUrl {
+            image_url: UrlRef {
+                url: "https://example.com/frame.png".into(),
+            },
+            role: Some("last_frame".into()),
+        };
+        let json = serde_json::to_value(&item).unwrap();
+        assert_eq!(json["role"], "last_frame");
+    }
+
+    #[test]
+    fn task_response_deserialize_with_last_frame_image_url() {
+        let json = r#"{
+            "id": "cgt-lf",
+            "status": "succeeded",
+            "content": {
+                "video_url": "https://example.com/v.mp4",
+                "last_frame_image_url": "https://example.com/last_frame.png"
+            }
+        }"#;
+        let resp: TaskResponse = serde_json::from_str(json).unwrap();
+        assert_eq!(
+            resp.last_frame_image_url(),
+            Some("https://example.com/last_frame.png")
+        );
+        assert_eq!(
+            resp.resolved_video_url(),
+            Some("https://example.com/v.mp4")
+        );
+    }
+
+    #[test]
+    fn task_response_deserialize_with_tool_usage() {
+        let json = r#"{
+            "id": "cgt-ws",
+            "status": "succeeded",
+            "video_url": "https://example.com/v.mp4",
+            "usage": {
+                "completion_tokens": 50000,
+                "total_tokens": 50000,
+                "tool_usage": {"web_search": 2}
+            }
+        }"#;
+        let resp: TaskResponse = serde_json::from_str(json).unwrap();
+        let usage = resp.usage.as_ref().unwrap();
+        assert_eq!(usage.tool_usage.as_ref().unwrap().web_search, Some(2));
     }
 
     #[test]
@@ -353,6 +444,12 @@ mod upload_tests {
     }
 
     #[test]
+    fn asset_url_passes_through() {
+        let url = "asset://asset-20260401123823-6d4x2";
+        assert_eq!(upload::resolve_file_ref(url).unwrap(), url);
+    }
+
+    #[test]
     fn nonexistent_local_file_fails() {
         let result = upload::resolve_file_ref("/tmp/seedance_test_nonexistent_xyz.png");
         assert!(result.is_err());
@@ -531,6 +628,8 @@ mod generate_tests {
             audio_gen: false,
             return_last_frame: false,
             callback: None,
+            web_search: false,
+            service_tier: None,
             image: vec![],
             video: vec![],
             audio: vec![],

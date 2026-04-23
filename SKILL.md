@@ -5,7 +5,7 @@ license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["cli", "terminal", "automation", "pipeline", "seedance-20"]
-metadata: {"version": "1.0.0", "updated": "2026-04-22", "parent": "seedance-20"}
+metadata: {"version": "1.1.0", "updated": "2026-04-22", "parent": "seedance-20"}
 ---
 
 # seedance-cli
@@ -74,17 +74,19 @@ seedance generate <PROMPT> [OPTIONS]
 #### Generation Options
 
 
-| Flag                  | Short | Default    | Description                                           |
-| --------------------- | ----- | ---------- | ----------------------------------------------------- |
-| `--model`             | `-m`  | `standard` | Model variant: `standard` or `fast`                   |
-| `--duration`          | `-d`  | `5`        | Duration in seconds (4–15)                            |
-| `--ratio`             | `-r`  | `16:9`     | Aspect ratio (`16:9` `9:16` `4:3` `3:4` `21:9` `1:1`) |
-| `--resolution`        |       | `1080p`    | Resolution (`480p` `720p` `1080p` `2K`)               |
-| `--seed`              |       |            | Random seed for reproducibility                       |
-| `--watermark`         |       | `false`    | Add watermark                                         |
-| `--audio-gen`         |       | `false`    | Enable native audio generation                        |
-| `--return-last-frame` |       | `false`    | Return the last frame as an image                     |
-| `--callback`          |       |            | Webhook callback URL                                  |
+| Flag                  | Short | Default    | Description                                                  |
+| --------------------- | ----- | ---------- | ------------------------------------------------------------ |
+| `--model`             | `-m`  | `standard` | Model variant: `standard` or `fast`                          |
+| `--duration`          | `-d`  | `5`        | Duration in seconds (4–15)                                   |
+| `--ratio`             | `-r`  | `16:9`     | Aspect ratio (`16:9` `9:16` `4:3` `3:4` `21:9` `1:1` `adaptive`) |
+| `--resolution`        |       | `1080p`    | Resolution (`480p` `720p` `1080p`)                           |
+| `--seed`              |       |            | Random seed for reproducibility                              |
+| `--watermark`         |       | `false`    | Add watermark                                                |
+| `--audio-gen`         |       | `false`    | Enable native audio generation                               |
+| `--return-last-frame` |       | `false`    | Return the last frame as an image                            |
+| `--callback`          |       |            | Webhook callback URL                                         |
+| `--web-search`        |       | `false`    | Enable web search tool (text-only input)                     |
+| `--service-tier`      |       |            | Service tier: `flex` for offline inference                   |
 
 
 #### Material Inputs (I2V / V2V / R2V)
@@ -95,13 +97,15 @@ seedance generate <PROMPT> [OPTIONS]
 | `--image`       | `-i`  | Yes        | 9   | Image reference (URL or local path) |
 | `--video`       | `-v`  | Yes        | 3   | Video reference (URL or local path) |
 | `--audio`       | `-a`  | Yes        | 3   | Audio reference (URL or local path) |
-| `--first-frame` |       | No         | 1   | First frame image                   |
-| `--last-frame`  |       | No         | 1   | Last frame image                    |
+| `--first-frame` |       | No         | 1   | First frame image (role: `first_frame`) |
+| `--last-frame`  |       | No         | 1   | Last frame image (role: `last_frame`)   |
 
 
 Total files across all types: max 12 (Rule of 12).
 
 Local files are automatically converted to base64 data URIs. Supported formats: JPG, PNG, WEBP (images), MP4, MOV (video), MP3 (audio).
+
+**Asset URLs:** Virtual avatars and authorized real-person assets can be passed via `asset://<asset-id>` to any `--image`, `--video`, or `--audio` flag.
 
 #### Wait & Output Options
 
@@ -230,6 +234,58 @@ seedance generate "Scene images transition on musical downbeats, energetic pacin
   --audio music_track.mp3 --audio-gen --duration 10 --wait
 ```
 
+### Video Extension (Forward)
+
+```bash
+seedance generate "向后延长视频1，角色缓步走出房间，镜头跟随" \
+  --video source.mp4 --duration 8 --wait
+```
+
+### Video Extension (Multi-clip Bridging)
+
+```bash
+seedance generate "视频1中拱形窗户打开，进入美术馆室内，接视频2，之后镜头进入画内，接视频3" \
+  --video clip1.mp4 --video clip2.mp4 --video clip3.mp4 \
+  --duration 8 --audio-gen --wait
+```
+
+### Video Editing (Subject Replacement)
+
+```bash
+seedance generate "将视频1礼盒中的香水替换成图片1中的面霜，运镜不变" \
+  --video original.mp4 --image cream.jpg --duration 5 --audio-gen --wait
+```
+
+### First + Last Frame (I2V with Anchors)
+
+```bash
+seedance generate "角色从站立过渡到奔跑姿势" \
+  --first-frame pose_start.png --last-frame pose_end.png \
+  --duration 5 --wait
+```
+
+### Web Search (Text-only)
+
+```bash
+seedance generate "微距镜头对准叶片上翠绿的玻璃蛙，焦点从皮肤转移到透明腹部" \
+  --web-search --duration 11 --wait
+```
+
+### Virtual Avatar
+
+```bash
+seedance generate "图片1中美妆博主面带笑容，向镜头介绍图片2中的面霜" \
+  --image "asset://asset-20260401123823-6d4x2" --image product.jpg \
+  --audio-gen --ratio adaptive --duration 11 --wait
+```
+
+### Offline Inference
+
+```bash
+seedance generate "A cinematic landscape shot" \
+  --service-tier flex --duration 10 --wait
+```
+
 ### Prompt from File
 
 ```bash
@@ -322,3 +378,7 @@ seedance list --status failed --json | jq '.[].task_id'
 8. **Rule of 12:** Total files (images + videos + audios + first_frame + last_frame) cannot exceed 12. CLI validates this before sending.
 9. **Duration range is 4–15 seconds.** CLI rejects values outside this range.
 10. **Audio must be MP3.** Other formats fail silently on the server side. Convert before passing to `--audio`.
+11. **Video extension is prompt-driven.** No special flag needed — pass the source video with `--video` and describe the extension in the prompt (e.g., "向后延长视频1，..."). The model understands extend/edit/bridge semantics from the prompt text.
+12. **`--web-search` only works with text-only input.** Cannot combine with `--image`, `--video`, or `--audio`.
+13. **`asset://` for virtual avatars.** Use `asset://<asset-id>` with `--image`/`--video`/`--audio`. Only works with assets from the same Volcengine account within 30 days.
+14. **Prompt references use "素材类型+序号" format.** In Chinese prompts, refer to inputs as 图片1, 视频1, 音频1 (numbered by order within their type in the content array). Do NOT use asset IDs in prompt text.

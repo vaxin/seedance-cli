@@ -2,7 +2,7 @@ use anyhow::Result;
 use clap::Args;
 use std::path::PathBuf;
 
-use crate::client::types::{ContentItem, CreateTaskRequest, UrlRef};
+use crate::client::types::{ContentItem, CreateTaskRequest, Tool, UrlRef};
 use crate::client::ArkClient;
 use crate::config::AppConfig;
 use crate::core::{downloader, poller, upload};
@@ -51,6 +51,14 @@ pub struct GenerateArgs {
     /// Webhook callback URL
     #[arg(long)]
     pub callback: Option<String>,
+
+    /// Enable web search tool (text-only input)
+    #[arg(long, default_value_t = false)]
+    pub web_search: bool,
+
+    /// Service tier: "default" or "flex" (offline inference)
+    #[arg(long)]
+    pub service_tier: Option<String>,
 
     // ── Material inputs ──
 
@@ -126,14 +134,14 @@ pub async fn execute(args: GenerateArgs) -> Result<()> {
         let url = upload::resolve_file_ref(ff)?;
         content.push(ContentItem::ImageUrl {
             image_url: UrlRef { url },
-            role: None,
+            role: Some("first_frame".into()),
         });
     }
     if let Some(ref lf) = args.last_frame {
         let url = upload::resolve_file_ref(lf)?;
         content.push(ContentItem::ImageUrl {
             image_url: UrlRef { url },
-            role: None,
+            role: Some("last_frame".into()),
         });
     }
 
@@ -159,10 +167,17 @@ pub async fn execute(args: GenerateArgs) -> Result<()> {
         });
     }
 
+    let tools = if args.web_search {
+        Some(vec![Tool {
+            tool_type: "web_search".into(),
+        }])
+    } else {
+        None
+    };
+
     let req = CreateTaskRequest {
         model: model_id.clone(),
         content,
-        prompt: Some(prompt.clone()),
         resolution: Some(args.resolution.clone()),
         ratio: Some(args.ratio.clone()),
         duration: Some(args.duration),
@@ -175,6 +190,8 @@ pub async fn execute(args: GenerateArgs) -> Result<()> {
             None
         },
         callback_url: args.callback.clone(),
+        tools,
+        service_tier: args.service_tier.clone(),
     };
 
     let resp = client.create_task(&req).await?;

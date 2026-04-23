@@ -5,7 +5,10 @@ use std::path::Path;
 /// Determine if a string is a URL or local path, and resolve to a URL.
 /// Local files are converted to base64 data URIs.
 pub fn resolve_file_ref(input: &str) -> Result<String> {
-    if input.starts_with("http://") || input.starts_with("https://") {
+    if input.starts_with("http://")
+        || input.starts_with("https://")
+        || input.starts_with("asset://")
+    {
         return Ok(input.to_string());
     }
 

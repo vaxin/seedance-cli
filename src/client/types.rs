@@ -5,8 +5,6 @@ pub struct CreateTaskRequest {
     pub model: String,
     pub content: Vec<ContentItem>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub prompt: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub resolution: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ratio: Option<String>,
@@ -22,6 +20,16 @@ pub struct CreateTaskRequest {
     pub return_last_frame: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub callback_url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tools: Option<Vec<Tool>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub service_tier: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct Tool {
+    #[serde(rename = "type")]
+    pub tool_type: String,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -79,6 +87,12 @@ impl TaskResponse {
             .or(self.content.as_ref().and_then(|c| c.video_url.as_deref()))
     }
 
+    pub fn last_frame_image_url(&self) -> Option<&str> {
+        self.content
+            .as_ref()
+            .and_then(|c| c.last_frame_image_url.as_deref())
+    }
+
     pub fn task_status(&self) -> TaskStatus {
         TaskStatus::from_str(&self.status)
     }
@@ -88,6 +102,7 @@ impl TaskResponse {
 pub struct TaskContent {
     pub video_url: Option<String>,
     pub url: Option<String>,
+    pub last_frame_image_url: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -97,9 +112,15 @@ pub struct ApiError {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ToolUsage {
+    pub web_search: Option<u64>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Usage {
     pub completion_tokens: Option<u64>,
     pub total_tokens: Option<u64>,
+    pub tool_usage: Option<ToolUsage>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
