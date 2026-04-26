@@ -775,7 +775,153 @@ mod generate_tests {
 }
 
 // ═══════════════════════════════════════════════════════
-// 6. poller — PollOptions defaults
+// 6. cli::extend — Args parsing
+// ═══════════════════════════════════════════════════════
+
+mod extend_tests {
+    use clap::Parser;
+    use seedance_cli::cli::extend::ExtendArgs;
+
+    #[derive(Parser)]
+    struct TestCli {
+        #[command(flatten)]
+        args: ExtendArgs,
+    }
+
+    #[test]
+    fn parse_single_source() {
+        let cli = TestCli::try_parse_from([
+            "test", "cgt-abc123", "向后延长视频1，角色走出房间",
+        ])
+        .unwrap();
+        assert_eq!(cli.args.source, vec!["cgt-abc123"]);
+        assert_eq!(cli.args.prompt, "向后延长视频1，角色走出房间");
+        assert_eq!(cli.args.duration, 5);
+        assert_eq!(cli.args.model, "standard");
+    }
+
+    #[test]
+    fn parse_multiple_sources_for_bridging() {
+        let cli = TestCli::try_parse_from([
+            "test", "cgt-001", "cgt-002", "cgt-003",
+            "视频1打开门，接视频2，镜头推进，接视频3",
+        ])
+        .unwrap();
+        assert_eq!(cli.args.source, vec!["cgt-001", "cgt-002", "cgt-003"]);
+    }
+
+    #[test]
+    fn parse_with_options() {
+        let cli = TestCli::try_parse_from([
+            "test", "cgt-abc", "延长内容",
+            "--model", "fast",
+            "--duration", "10",
+            "--ratio", "9:16",
+            "--audio-gen",
+            "--return-last-frame",
+            "--wait",
+        ])
+        .unwrap();
+        assert_eq!(cli.args.model, "fast");
+        assert_eq!(cli.args.duration, 10);
+        assert_eq!(cli.args.ratio, "9:16");
+        assert!(cli.args.audio_gen);
+        assert!(cli.args.return_last_frame);
+        assert!(cli.args.wait);
+    }
+
+    #[test]
+    fn parse_with_image_refs() {
+        let cli = TestCli::try_parse_from([
+            "test", "cgt-abc", "延长并加入角色",
+            "--image", "character.png",
+            "--image", "asset://asset-123",
+        ])
+        .unwrap();
+        assert_eq!(cli.args.image.len(), 2);
+        assert_eq!(cli.args.image[1], "asset://asset-123");
+    }
+
+    #[test]
+    fn reject_no_source() {
+        let result = TestCli::try_parse_from(["test"]);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn reject_too_many_sources() {
+        let result = TestCli::try_parse_from([
+            "test", "a", "b", "c", "d", "prompt",
+        ]);
+        assert!(result.is_err());
+    }
+}
+
+// ═══════════════════════════════════════════════════════
+// 7. cli::edit — Args parsing
+// ═══════════════════════════════════════════════════════
+
+mod edit_tests {
+    use clap::Parser;
+    use seedance_cli::cli::edit::EditArgs;
+
+    #[derive(Parser)]
+    struct TestCli {
+        #[command(flatten)]
+        args: EditArgs,
+    }
+
+    #[test]
+    fn parse_basic_edit() {
+        let cli = TestCli::try_parse_from([
+            "test", "cgt-abc123", "将香水替换成面霜",
+        ])
+        .unwrap();
+        assert_eq!(cli.args.source, "cgt-abc123");
+        assert_eq!(cli.args.prompt, "将香水替换成面霜");
+    }
+
+    #[test]
+    fn parse_edit_with_image() {
+        let cli = TestCli::try_parse_from([
+            "test", "cgt-abc", "替换成图片1中的面霜",
+            "--image", "cream.jpg",
+            "--duration", "8",
+            "--audio-gen",
+            "--wait",
+        ])
+        .unwrap();
+        assert_eq!(cli.args.image, vec!["cream.jpg"]);
+        assert_eq!(cli.args.duration, 8);
+        assert!(cli.args.audio_gen);
+        assert!(cli.args.wait);
+    }
+
+    #[test]
+    fn parse_edit_with_audio() {
+        let cli = TestCli::try_parse_from([
+            "test", "cgt-abc", "替换配音",
+            "--audio", "new_voice.mp3",
+        ])
+        .unwrap();
+        assert_eq!(cli.args.audio, vec!["new_voice.mp3"]);
+    }
+
+    #[test]
+    fn reject_missing_source() {
+        let result = TestCli::try_parse_from(["test"]);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn reject_missing_prompt() {
+        let result = TestCli::try_parse_from(["test", "cgt-abc"]);
+        assert!(result.is_err());
+    }
+}
+
+// ═══════════════════════════════════════════════════════
+// 8. poller — PollOptions defaults
 // ═══════════════════════════════════════════════════════
 
 mod poller_tests {

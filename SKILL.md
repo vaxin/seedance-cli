@@ -5,7 +5,7 @@ license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["cli", "terminal", "automation", "pipeline", "seedance-20"]
-metadata: {"version": "1.1.0", "updated": "2026-04-22", "parent": "seedance-20"}
+metadata: {"version": "1.2.0", "updated": "2026-04-26", "parent": "seedance-20"}
 ---
 
 # seedance-cli
@@ -130,6 +130,96 @@ Local files are automatically converted to base64 data URIs. Supported formats: 
 
 ---
 
+### `seedance extend` — Extend or Bridge Videos
+
+Extend a completed video forward/backward, or bridge 2–3 clips into one continuous video. Automatically resolves the source video URL from task ID(s).
+
+```
+seedance extend <SOURCE_TASK_ID>... <PROMPT> [OPTIONS]
+```
+
+Pass 1 task ID for forward/backward extension, or 2–3 task IDs for multi-clip bridging.
+
+| Flag                  | Short | Default    | Description                                      |
+| --------------------- | ----- | ---------- | ------------------------------------------------ |
+| `--model`             | `-m`  | `standard` | Model variant                                    |
+| `--duration`          | `-d`  | `5`        | Duration (4–15s)                                 |
+| `--ratio`             | `-r`  | `16:9`     | Aspect ratio                                     |
+| `--resolution`        |       | `1080p`    | Resolution                                       |
+| `--audio-gen`         |       | `false`    | Enable audio generation                          |
+| `--watermark`         |       | `false`    | Add watermark                                    |
+| `--return-last-frame` |       | `false`    | Return last frame (for chaining further extends) |
+| `--seed`              |       |            | Random seed                                      |
+| `--image`             | `-i`  |            | Additional image reference (repeatable)          |
+| `--wait`              | `-w`  | `false`    | Wait and auto-download                           |
+| `--output`            | `-o`  |            | Output file path                                 |
+| `--timeout`           |       | `300`      | Max wait seconds                                 |
+| `--strict`            |       | `false`    | Exit 2 on timeout                                |
+| `--quiet` / `--json`  |       |            | Output format                                    |
+
+**Examples:**
+
+```bash
+# Forward extension
+seedance extend cgt-abc123 "角色走出房间，镜头跟随" --duration 8 --wait
+
+# Backward extension
+seedance extend cgt-abc123 "向前延长视频1，镜头从远处推近" --wait
+
+# Bridge 3 clips
+seedance extend cgt-001 cgt-002 cgt-003 \
+  "视频1打开门，进入室内，接视频2，镜头推进，接视频3" \
+  --duration 10 --audio-gen --wait
+
+# Chain generation
+T1=$(seedance generate "开场：日出" --wait --return-last-frame -q)
+T2=$(seedance extend $T1 "中段：城市苏醒" --wait --return-last-frame -q)
+T3=$(seedance extend $T2 "结尾：人潮涌动" --wait -q)
+```
+
+---
+
+### `seedance edit` — Edit an Existing Video
+
+Edit a completed video: replace subjects, add/remove objects, repaint regions. Automatically resolves the source video URL from task ID.
+
+```
+seedance edit <SOURCE_TASK_ID> <PROMPT> [OPTIONS]
+```
+
+| Flag                 | Short | Default    | Description                             |
+| -------------------- | ----- | ---------- | --------------------------------------- |
+| `--model`            | `-m`  | `standard` | Model variant                           |
+| `--duration`         | `-d`  | `5`        | Duration (4–15s)                        |
+| `--ratio`            | `-r`  | `16:9`     | Aspect ratio                            |
+| `--resolution`       |       | `1080p`    | Resolution                              |
+| `--audio-gen`        |       | `false`    | Enable audio generation                 |
+| `--watermark`        |       | `false`    | Add watermark                           |
+| `--seed`             |       |            | Random seed                             |
+| `--image`            | `-i`  |            | Image for replacement/addition (repeat) |
+| `--audio`            | `-a`  |            | Audio reference (repeatable)            |
+| `--wait`             | `-w`  | `false`    | Wait and auto-download                  |
+| `--output`           | `-o`  |            | Output file path                        |
+| `--timeout`          |       | `300`      | Max wait seconds                        |
+| `--strict`           |       | `false`    | Exit 2 on timeout                       |
+| `--quiet` / `--json` |       |            | Output format                           |
+
+**Examples:**
+
+```bash
+# Replace subject
+seedance edit cgt-abc123 "将视频1中的香水替换成图片1中的面霜，运镜不变" \
+  --image cream.jpg --duration 5 --audio-gen --wait
+
+# Modify attribute
+seedance edit cgt-abc123 "将面霜颜色修改为白色" --ratio 16:9 --wait
+
+# Add element
+seedance edit cgt-abc123 "在桌面右侧添加一杯咖啡" --wait
+```
+
+---
+
 ### `seedance status` — Check Task Status
 
 ```
@@ -234,26 +324,41 @@ seedance generate "Scene images transition on musical downbeats, energetic pacin
   --audio music_track.mp3 --audio-gen --duration 10 --wait
 ```
 
-### Video Extension (Forward)
+### Video Extension (Forward) — Shortcut
 
 ```bash
+seedance extend cgt-abc123 "角色缓步走出房间，镜头跟随" --duration 8 --wait
+
+# Equivalent base-layer command:
 seedance generate "向后延长视频1，角色缓步走出房间，镜头跟随" \
   --video source.mp4 --duration 8 --wait
 ```
 
-### Video Extension (Multi-clip Bridging)
+### Video Extension (Multi-clip Bridging) — Shortcut
 
 ```bash
-seedance generate "视频1中拱形窗户打开，进入美术馆室内，接视频2，之后镜头进入画内，接视频3" \
-  --video clip1.mp4 --video clip2.mp4 --video clip3.mp4 \
+seedance extend cgt-001 cgt-002 cgt-003 \
+  "视频1中拱形窗户打开，进入室内，接视频2，镜头进入画内，接视频3" \
   --duration 8 --audio-gen --wait
 ```
 
-### Video Editing (Subject Replacement)
+### Video Editing — Shortcut
 
 ```bash
+seedance edit cgt-abc123 "将视频1礼盒中的香水替换成图片1中的面霜，运镜不变" \
+  --image cream.jpg --duration 5 --audio-gen --wait
+
+# Equivalent base-layer command:
 seedance generate "将视频1礼盒中的香水替换成图片1中的面霜，运镜不变" \
   --video original.mp4 --image cream.jpg --duration 5 --audio-gen --wait
+```
+
+### Chain Generation — Using Extend
+
+```bash
+T1=$(seedance generate "开场：日出照亮山脉" --wait --return-last-frame -q)
+T2=$(seedance extend $T1 "中段：城市苏醒，车流涌动" --wait --return-last-frame -q)
+T3=$(seedance extend $T2 "结尾：人潮中一个女孩回头微笑" --wait -q)
 ```
 
 ### First + Last Frame (I2V with Anchors)
@@ -378,7 +483,8 @@ seedance list --status failed --json | jq '.[].task_id'
 8. **Rule of 12:** Total files (images + videos + audios + first_frame + last_frame) cannot exceed 12. CLI validates this before sending.
 9. **Duration range is 4–15 seconds.** CLI rejects values outside this range.
 10. **Audio must be MP3.** Other formats fail silently on the server side. Convert before passing to `--audio`.
-11. **Video extension is prompt-driven.** No special flag needed — pass the source video with `--video` and describe the extension in the prompt (e.g., "向后延长视频1，..."). The model understands extend/edit/bridge semantics from the prompt text.
-12. **`--web-search` only works with text-only input.** Cannot combine with `--image`, `--video`, or `--audio`.
-13. **`asset://` for virtual avatars.** Use `asset://<asset-id>` with `--image`/`--video`/`--audio`. Only works with assets from the same Volcengine account within 30 days.
-14. **Prompt references use "素材类型+序号" format.** In Chinese prompts, refer to inputs as 图片1, 视频1, 音频1 (numbered by order within their type in the content array). Do NOT use asset IDs in prompt text.
+11. **Prefer `extend`/`edit` shortcuts over raw `generate`** for extension and editing tasks. They auto-resolve task IDs to video URLs and set up the correct content structure. Use `generate` with `--video` only when you have a raw video file (not a task ID).
+12. **Video extension is prompt-driven.** The model understands extend/edit/bridge semantics from the prompt text. Both `extend`/`edit` and raw `generate --video` rely on this — no special API flag exists.
+13. **`--web-search` only works with text-only input.** Cannot combine with `--image`, `--video`, or `--audio`.
+14. **`asset://` for virtual avatars.** Use `asset://<asset-id>` with `--image`/`--video`/`--audio`. Only works with assets from the same Volcengine account within 30 days.
+15. **Prompt references use "素材类型+序号" format.** In Chinese prompts, refer to inputs as 图片1, 视频1, 音频1 (numbered by order within their type in the content array). Do NOT use asset IDs in prompt text.

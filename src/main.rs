@@ -23,6 +23,12 @@ enum Commands {
     /// Create a video generation task (T2V / I2V / V2V / R2V)
     Generate(cli::generate::GenerateArgs),
 
+    /// Extend a video forward/backward, or bridge multiple clips
+    Extend(cli::extend::ExtendArgs),
+
+    /// Edit an existing video (replace, add, remove, repaint)
+    Edit(cli::edit::EditArgs),
+
     /// Query task status
     Status(cli::status::StatusArgs),
 
@@ -45,6 +51,8 @@ async fn main() {
 
     let result = match cli.command {
         Commands::Generate(args) => cli::generate::execute(args).await,
+        Commands::Extend(args) => cli::extend::execute(args).await,
+        Commands::Edit(args) => cli::edit::execute(args).await,
         Commands::Status(args) => cli::status::execute(args).await,
         Commands::Download(args) => cli::download::execute(args).await,
         Commands::List(args) => cli::list::execute(args).await,

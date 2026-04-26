@@ -5,9 +5,9 @@ use std::path::PathBuf;
 use crate::client::types::{ContentItem, CreateTaskRequest, Tool, UrlRef};
 use crate::client::ArkClient;
 use crate::config::AppConfig;
-use crate::core::{downloader, poller, upload};
-use crate::store::TaskStore;
-use crate::ui;
+use crate::core::upload;
+
+use super::common::{self, SubmitOpts};
 
 #[derive(Debug, Args)]
 pub struct GenerateArgs {
@@ -194,113 +194,17 @@ pub async fn execute(args: GenerateArgs) -> Result<()> {
         service_tier: args.service_tier.clone(),
     };
 
-    let resp = client.create_task(&req).await?;
-    let task_id = resp.id.clone();
-
-    if let Ok(store) = TaskStore::open() {
-        let _ = store.insert(&task_id, &prompt, &model_id);
-    }
-
-    if args.json && !args.wait {
-        println!("{}", serde_json::to_string_pretty(&resp)?);
-        return Ok(());
-    }
-
-    if !args.quiet {
-        ui::print_task_created(&task_id);
-    } else {
-        println!("{task_id}");
-    }
-
-    if !args.wait {
-        return Ok(());
-    }
-
-    // ── Wait mode ──
-
-    let poll_opts = poller::PollOptions {
-        timeout: std::time::Duration::from_secs(args.timeout),
-        initial_interval: std::time::Duration::from_secs(args.poll_interval),
+    let opts = SubmitOpts {
+        wait: args.wait,
+        output: args.output,
+        timeout: args.timeout,
+        poll_interval: args.poll_interval,
         strict: args.strict,
+        quiet: args.quiet,
+        json: args.json,
     };
 
-    let result = poller::poll_until_done(&client, &task_id, &poll_opts, args.quiet).await?;
-
-    match result {
-        poller::PollResult::Completed(task) => {
-            let status = task.task_status();
-
-            if let Ok(store) = TaskStore::open() {
-                let _ = store.update_status(
-                    &task_id,
-                    status.label(),
-                    task.resolved_video_url(),
-                );
-            }
-
-            if args.json {
-                println!("{}", serde_json::to_string_pretty(&task)?);
-                if !status.is_success() {
-                    std::process::exit(1);
-                }
-                return Ok(());
-            }
-
-            if !status.is_success() {
-                let msg = task
-                    .error
-                    .as_ref()
-                    .and_then(|e| e.message.as_deref())
-                    .unwrap_or("unknown error");
-                ui::print_error(&format!("Task {task_id} {status}: {msg}"));
-                std::process::exit(1);
-            }
-
-            if let Some(video_url) = task.resolved_video_url() {
-                let output = args
-                    .output
-                    .unwrap_or_else(|| PathBuf::from(format!("seedance_{task_id}.mp4")));
-
-                downloader::download_video(video_url, &output, args.quiet).await?;
-
-                if let Ok(store) = TaskStore::open() {
-                    let _ = store.update_output_path(&task_id, &output.display().to_string());
-                }
-
-                if args.quiet {
-                    println!("{}", output.display());
-                } else {
-                    ui::print_downloaded(&output.display().to_string());
-                }
-            }
-        }
-        poller::PollResult::TimedOut {
-            task_id,
-            elapsed,
-            ..
-        } => {
-            if args.json {
-                println!(
-                    "{}",
-                    serde_json::json!({
-                        "task_id": task_id,
-                        "status": "timeout",
-                        "elapsed_secs": elapsed.as_secs(),
-                    })
-                );
-            } else if !args.quiet {
-                ui::print_timeout_hint(&task_id, elapsed.as_secs());
-            } else {
-                println!("{task_id}");
-            }
-
-            if args.strict {
-                std::process::exit(2);
-            }
-        }
-    }
-
-    Ok(())
+    common::submit_and_handle(&client, &req, &prompt, &model_id, opts).await
 }
 
 pub fn resolve_prompt(input: &str) -> Result<String> {
