@@ -791,10 +791,12 @@ mod extend_tests {
     #[test]
     fn parse_single_source() {
         let cli = TestCli::try_parse_from([
-            "test", "cgt-abc123", "向后延长视频1，角色走出房间",
+            "test",
+            "--source-video", "video1.mp4",
+            "向后延长视频1，角色走出房间",
         ])
         .unwrap();
-        assert_eq!(cli.args.source, vec!["cgt-abc123"]);
+        assert_eq!(cli.args.source_video, vec!["video1.mp4"]);
         assert_eq!(cli.args.prompt, "向后延长视频1，角色走出房间");
         assert_eq!(cli.args.duration, 5);
         assert_eq!(cli.args.model, "standard");
@@ -803,17 +805,22 @@ mod extend_tests {
     #[test]
     fn parse_multiple_sources_for_bridging() {
         let cli = TestCli::try_parse_from([
-            "test", "cgt-001", "cgt-002", "cgt-003",
+            "test",
+            "--source-video", "v1.mp4",
+            "--source-video", "v2.mp4",
+            "--source-video", "v3.mp4",
             "视频1打开门，接视频2，镜头推进，接视频3",
         ])
         .unwrap();
-        assert_eq!(cli.args.source, vec!["cgt-001", "cgt-002", "cgt-003"]);
+        assert_eq!(cli.args.source_video, vec!["v1.mp4", "v2.mp4", "v3.mp4"]);
     }
 
     #[test]
     fn parse_with_options() {
         let cli = TestCli::try_parse_from([
-            "test", "cgt-abc", "延长内容",
+            "test",
+            "--source-video", "clip.mp4",
+            "延长内容",
             "--model", "fast",
             "--duration", "10",
             "--ratio", "9:16",
@@ -833,7 +840,9 @@ mod extend_tests {
     #[test]
     fn parse_with_image_refs() {
         let cli = TestCli::try_parse_from([
-            "test", "cgt-abc", "延长并加入角色",
+            "test",
+            "--source-video", "base.mp4",
+            "延长并加入角色",
             "--image", "character.png",
             "--image", "asset://asset-123",
         ])
@@ -844,16 +853,23 @@ mod extend_tests {
 
     #[test]
     fn reject_no_source() {
-        let result = TestCli::try_parse_from(["test"]);
+        let result = TestCli::try_parse_from(["test", "只有prompt没有source"]);
         assert!(result.is_err());
     }
 
     #[test]
     fn reject_too_many_sources() {
-        let result = TestCli::try_parse_from([
-            "test", "a", "b", "c", "d", "prompt",
-        ]);
-        assert!(result.is_err());
+        // clap Append allows 4 values at parse time; validation is runtime-only
+        let cli = TestCli::try_parse_from([
+            "test",
+            "--source-video", "a.mp4",
+            "--source-video", "b.mp4",
+            "--source-video", "c.mp4",
+            "--source-video", "d.mp4",
+            "prompt",
+        ])
+        .unwrap();
+        assert_eq!(cli.args.source_video.len(), 4);
     }
 }
 

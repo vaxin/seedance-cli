@@ -38,6 +38,9 @@ enum Commands {
     /// List task history
     List(cli::list::ListArgs),
 
+    /// Clean up expired TOS temporary files
+    Cleanup,
+
     /// Manage configuration
     Config {
         #[command(subcommand)]
@@ -56,6 +59,7 @@ async fn main() {
         Commands::Status(args) => cli::status::execute(args).await,
         Commands::Download(args) => cli::download::execute(args).await,
         Commands::List(args) => cli::list::execute(args).await,
+        Commands::Cleanup => cli::cleanup::execute().await,
         Commands::Config { command } => cli::config::execute(command).await,
     };
 

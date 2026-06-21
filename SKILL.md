@@ -132,49 +132,50 @@ Local files are automatically converted to base64 data URIs. Supported formats: 
 
 ### `seedance extend` — Extend or Bridge Videos
 
-Extend a completed video forward/backward, or bridge 2–3 clips into one continuous video. Automatically resolves the source video URL from task ID(s).
+Extend a video forward/backward, or bridge 2–3 clips into one continuous video. Pass local video files directly. Videos longer than `min(5s, --duration)` are automatically trimmed from the end before upload（需要安装 ffmpeg）.
 
 ```
-seedance extend <SOURCE_TASK_ID>... <PROMPT> [OPTIONS]
+seedance extend --source-video <VIDEO>... <PROMPT> [OPTIONS]
 ```
 
-Pass 1 task ID for forward/backward extension, or 2–3 task IDs for multi-clip bridging.
+Pass 1 video for forward/backward extension, or 2–3 videos for multi-clip bridging.
 
-| Flag                  | Short | Default    | Description                                      |
-| --------------------- | ----- | ---------- | ------------------------------------------------ |
-| `--model`             | `-m`  | `standard` | Model variant                                    |
-| `--duration`          | `-d`  | `5`        | Duration (4–15s)                                 |
-| `--ratio`             | `-r`  | `16:9`     | Aspect ratio                                     |
-| `--resolution`        |       | `1080p`    | Resolution                                       |
-| `--audio-gen`         |       | `false`    | Enable audio generation                          |
-| `--watermark`         |       | `false`    | Add watermark                                    |
-| `--return-last-frame` |       | `false`    | Return last frame (for chaining further extends) |
-| `--seed`              |       |            | Random seed                                      |
-| `--image`             | `-i`  |            | Additional image reference (repeatable)          |
-| `--wait`              | `-w`  | `false`    | Wait and auto-download                           |
-| `--output`            | `-o`  |            | Output file path                                 |
-| `--timeout`           |       | `300`      | Max wait seconds                                 |
-| `--strict`            |       | `false`    | Exit 2 on timeout                                |
-| `--quiet` / `--json`  |       |            | Output format                                    |
+| Flag                  | Short | Default    | Description                                                   |
+| --------------------- | ----- | ---------- | ------------------------------------------------------------- |
+| `--source-video`      | `-s`  | *(required)* | Source video file (1–3, repeatable). Auto-trimmed if too long |
+| `--model`             | `-m`  | `standard` | Model variant                                                 |
+| `--duration`          | `-d`  | `5`        | Duration (4–15s)                                              |
+| `--ratio`             | `-r`  | `16:9`     | Aspect ratio                                                  |
+| `--resolution`        |       | `1080p`    | Resolution                                                    |
+| `--audio-gen`         |       | `false`    | Enable audio generation                                       |
+| `--watermark`         |       | `false`    | Add watermark                                                 |
+| `--return-last-frame` |       | `false`    | Return last frame (for chaining further extends)              |
+| `--seed`              |       |            | Random seed                                                   |
+| `--image`             | `-i`  |            | Additional image reference (repeatable)                       |
+| `--wait`              | `-w`  | `false`    | Wait and auto-download                                        |
+| `--output`            | `-o`  |            | Output file path                                              |
+| `--timeout`           |       | `300`      | Max wait seconds                                              |
+| `--strict`            |       | `false`    | Exit 2 on timeout                                             |
+| `--quiet` / `--json`  |       |            | Output format                                                 |
 
 **Examples:**
 
 ```bash
-# Forward extension
-seedance extend cgt-abc123 "角色走出房间，镜头跟随" --duration 8 --wait
+# Forward extension (auto-trims if video > 5s)
+seedance extend -s input.mp4 "角色走出房间，镜头跟随" --duration 8 --wait
 
 # Backward extension
-seedance extend cgt-abc123 "向前延长视频1，镜头从远处推近" --wait
+seedance extend -s source.mp4 "向前延长视频1，镜头从远处推近" --wait
 
-# Bridge 3 clips
-seedance extend cgt-001 cgt-002 cgt-003 \
+# Bridge 3 clips (each auto-trimmed to min(5s, duration))
+seedance extend -s clip1.mp4 -s clip2.mp4 -s clip3.mp4 \
   "视频1打开门，进入室内，接视频2，镜头推进，接视频3" \
   --duration 10 --audio-gen --wait
 
-# Chain generation
-T1=$(seedance generate "开场：日出" --wait --return-last-frame -q)
-T2=$(seedance extend $T1 "中段：城市苏醒" --wait --return-last-frame -q)
-T3=$(seedance extend $T2 "结尾：人潮涌动" --wait -q)
+# Chain generation with return-last-frame
+seedance generate "开场：日出" --wait -o opening.mp4
+seedance extend -s opening.mp4 "中段：城市苏醒" --duration 8 --wait -o middle.mp4
+seedance extend -s middle.mp4 "结尾：人潮涌动" --duration 8 --wait -o ending.mp4
 ```
 
 ---
@@ -266,6 +267,25 @@ seedance list [OPTIONS]
 
 ---
 
+### `seedance cleanup` — Clean Up TOS Temp Files
+
+Delete expired TOS temporary files (those uploaded during `extend` or `generate --video`). Each uploaded file carries a `x-amz-meta-expire-at` metadata header set to 8 hours after upload. This command lists and deletes all objects under the `seedance-cli/` prefix.
+
+```bash
+seedance cleanup
+```
+
+Requires TOS env vars (`TOS_ACCESS_KEY`, `TOS_SECRET_KEY`, `TOS_BUCKET`). Safe to run anytime — only deletes temporary uploads, never user data.
+
+> **Tip:** Add to crontab for automatic cleanup:
+> ```bash
+> 0 */4 * * * seedance cleanup
+> ```
+
+**Auto-cleanup on `--wait`:** When `extend --wait` completes successfully, source video temp files are deleted immediately — no need to run `cleanup` for those.
+
+---
+
 ### `seedance config` — Manage Configuration
 
 ```bash
@@ -327,7 +347,7 @@ seedance generate "Scene images transition on musical downbeats, energetic pacin
 ### Video Extension (Forward) — Shortcut
 
 ```bash
-seedance extend cgt-abc123 "角色缓步走出房间，镜头跟随" --duration 8 --wait
+seedance extend -s source.mp4 "角色缓步走出房间，镜头跟随" --duration 8 --wait
 
 # Equivalent base-layer command:
 seedance generate "向后延长视频1，角色缓步走出房间，镜头跟随" \
@@ -337,7 +357,7 @@ seedance generate "向后延长视频1，角色缓步走出房间，镜头跟随
 ### Video Extension (Multi-clip Bridging) — Shortcut
 
 ```bash
-seedance extend cgt-001 cgt-002 cgt-003 \
+seedance extend -s clip1.mp4 -s clip2.mp4 -s clip3.mp4 \
   "视频1中拱形窗户打开，进入室内，接视频2，镜头进入画内，接视频3" \
   --duration 8 --audio-gen --wait
 ```
@@ -356,9 +376,9 @@ seedance generate "将视频1礼盒中的香水替换成图片1中的面霜，�
 ### Chain Generation — Using Extend
 
 ```bash
-T1=$(seedance generate "开场：日出照亮山脉" --wait --return-last-frame -q)
-T2=$(seedance extend $T1 "中段：城市苏醒，车流涌动" --wait --return-last-frame -q)
-T3=$(seedance extend $T2 "结尾：人潮中一个女孩回头微笑" --wait -q)
+seedance generate "开场：日出照亮山脉" --wait -o opening.mp4
+seedance extend -s opening.mp4 "中段：城市苏醒，车流涌动" --wait -o middle.mp4
+seedance extend -s middle.mp4 "结尾：人潮中一个女孩回头微笑" --wait -o ending.mp4
 ```
 
 ### First + Last Frame (I2V with Anchors)
@@ -483,7 +503,7 @@ seedance list --status failed --json | jq '.[].task_id'
 8. **Rule of 12:** Total files (images + videos + audios + first_frame + last_frame) cannot exceed 12. CLI validates this before sending.
 9. **Duration range is 4–15 seconds.** CLI rejects values outside this range.
 10. **Audio must be MP3.** Other formats fail silently on the server side. Convert before passing to `--audio`.
-11. **Prefer `extend`/`edit` shortcuts over raw `generate`** for extension and editing tasks. They auto-resolve task IDs to video URLs and set up the correct content structure. Use `generate` with `--video` only when you have a raw video file (not a task ID).
+11. **Prefer `extend`/`edit` shortcuts over raw `generate`** for extension and editing tasks. `extend` auto-trims source videos that exceed `min(5s, --duration)` and uploads them as base64. `edit` auto-resolves task IDs to video URLs. Use `generate` with `--video` only for raw video-to-video generation.
 12. **Video extension is prompt-driven.** The model understands extend/edit/bridge semantics from the prompt text. Both `extend`/`edit` and raw `generate --video` rely on this — no special API flag exists.
 13. **`--web-search` only works with text-only input.** Cannot combine with `--image`, `--video`, or `--audio`.
 14. **`asset://` for virtual avatars.** Use `asset://<asset-id>` with `--image`/`--video`/`--audio`. Only works with assets from the same Volcengine account within 30 days.

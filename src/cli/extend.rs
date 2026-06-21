@@ -5,16 +5,17 @@ use std::path::PathBuf;
 use crate::client::types::{ContentItem, CreateTaskRequest, UrlRef};
 use crate::client::ArkClient;
 use crate::config::AppConfig;
-use crate::core::upload;
+use crate::core::{tos, upload, video};
 
 use super::common::{self, SubmitOpts};
 use super::generate::{resolve_model_id, resolve_prompt};
 
 #[derive(Debug, Args)]
 pub struct ExtendArgs {
-    /// Source task ID(s) to extend (1 for forward/backward, 2-3 for bridging)
-    #[arg(required = true, num_args = 1..=3)]
-    pub source: Vec<String>,
+    /// Source video file(s) to extend (1 for forward/backward, 2-3 for bridging).
+    /// Videos longer than min(5s, --duration) are auto-trimmed from the end.
+    #[arg(short = 's', long = "source-video", required = true, action = clap::ArgAction::Append)]
+    pub source_video: Vec<String>,
 
     /// Prompt describing the extension content (or @file.txt)
     pub prompt: String,
@@ -97,6 +98,16 @@ pub async fn execute(args: ExtendArgs) -> Result<()> {
         anyhow::bail!("duration must be between 4 and 15 seconds");
     }
 
+    if args.source_video.is_empty() || args.source_video.len() > 3 {
+        anyhow::bail!(
+            "must specify 1–3 source videos (got {}). Use -s/--source-video for each.",
+            args.source_video.len()
+        );
+    }
+
+    // Auto-cleanup expired TOS temp files from previous runs (best-effort)
+    let _ = tos::cleanup_expired().await;
+
     let prompt = resolve_prompt(&args.prompt)?;
     let model_id = resolve_model_id(&args.model);
 
@@ -104,10 +115,14 @@ pub async fn execute(args: ExtendArgs) -> Result<()> {
         text: prompt.clone(),
     }];
 
-    for source_id in &args.source {
-        let video_url = common::resolve_source_video_url(&client, source_id).await?;
+    let max_source_duration = args.duration.min(5);
+    let mut source_urls: Vec<String> = Vec::new();
+
+    for src in &args.source_video {
+        let url = video::prepare_source_video(src, max_source_duration).await?;
+        source_urls.push(url.clone());
         content.push(ContentItem::VideoUrl {
-            video_url: UrlRef { url: video_url },
+            video_url: UrlRef { url },
             role: Some("reference_video".into()),
         });
     }
@@ -149,5 +164,18 @@ pub async fn execute(args: ExtendArgs) -> Result<()> {
         json: args.json,
     };
 
-    common::submit_and_handle(&client, &req, &prompt, &model_id, opts).await
+    common::submit_and_handle(&client, &req, &prompt, &model_id, opts).await?;
+
+    // Clean up TOS temp files after successful generation (only if we waited)
+    if args.wait {
+        for url in &source_urls {
+            if let Err(e) = tos::delete_file(url).await {
+                if !args.quiet {
+                    eprintln!("warning: failed to clean up TOS temp file: {e:#}");
+                }
+            }
+        }
+    }
+
+    Ok(())
 }
