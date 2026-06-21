@@ -97,3 +97,14 @@ pub async fn prepare_source_video(input: &str, max_duration: u8) -> Result<Strin
 
     url
 }
+
+/// Upload a video file to TOS and return a public HTTPS URL for the API.
+///
+/// Unlike `prepare_source_video`, this does NOT trim the video — it uploads
+/// the full file as-is. URLs are passed through directly.
+pub async fn upload_video_for_api(input: &str) -> Result<String> {
+    if input.starts_with("http://") || input.starts_with("https://") || input.starts_with("asset://") {
+        return Ok(input.to_string());
+    }
+    tos::upload_file(input).await
+}

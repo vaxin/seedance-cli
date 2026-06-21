@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use crate::client::types::{ContentItem, CreateTaskRequest, Tool, UrlRef};
 use crate::client::ArkClient;
 use crate::config::AppConfig;
-use crate::core::upload;
+use crate::core::{tos, upload, video};
 
 use super::common::{self, SubmitOpts};
 
@@ -124,11 +124,15 @@ pub async fn execute(args: GenerateArgs) -> Result<()> {
 
     validate_inputs(&args)?;
 
+    // Auto-cleanup expired TOS temp files from previous runs
+    let _ = tos::cleanup_expired().await;
+
     let model_id = resolve_model_id(&args.model);
 
     let mut content = vec![ContentItem::Text {
         text: prompt.clone(),
     }];
+    let mut video_urls: Vec<String> = Vec::new();
 
     if let Some(ref ff) = args.first_frame {
         let url = upload::resolve_file_ref(ff)?;
@@ -153,7 +157,8 @@ pub async fn execute(args: GenerateArgs) -> Result<()> {
         });
     }
     for vid in &args.video {
-        let url = upload::resolve_file_ref(vid)?;
+        let url = video::upload_video_for_api(vid).await?;
+        video_urls.push(url.clone());
         content.push(ContentItem::VideoUrl {
             video_url: UrlRef { url },
             role: Some("reference_video".into()),
@@ -204,7 +209,20 @@ pub async fn execute(args: GenerateArgs) -> Result<()> {
         json: args.json,
     };
 
-    common::submit_and_handle(&client, &req, &prompt, &model_id, opts).await
+    common::submit_and_handle(&client, &req, &prompt, &model_id, opts).await?;
+
+    // Clean up TOS temp video files after successful generation
+    if args.wait {
+        for url in &video_urls {
+            if let Err(e) = tos::delete_file(url).await {
+                if !args.quiet {
+                    eprintln!("warning: failed to clean up TOS temp file: {e:#}");
+                }
+            }
+        }
+    }
+
+    Ok(())
 }
 
 pub fn resolve_prompt(input: &str) -> Result<String> {
