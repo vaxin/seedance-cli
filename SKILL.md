@@ -299,6 +299,78 @@ Available keys: `api_key`, `base_url`, `model`, `resolution`, `ratio`, `duration
 
 ---
 
+## Prompt Engineering Guide
+
+Seedance 2.0 internally separates **spatial layer** (what's in frame) from **temporal layer** (how things change over time). Good prompts are **engineering directives**, not literary descriptions.
+
+### Reference Syntax
+
+| Syntax | Usage |
+|--------|-------|
+| `@图片N` / `@视频N` / `@音频N` | Asset references (numbered by CLI `--image`/`-s`/`--audio` order, starting from 1) |
+| `<主体N>@图片N` | Bind a subject to its reference image |
+| `将 @图片N 中的[特征]定义为 <主体N>` | Define reusable subject label (best for multi-scene) |
+
+- **Never** use raw asset IDs in action descriptions.
+- Always separate `@图片N` from following verbs with a noun: wrong `@图片1跑向…`, right `<主体1>@图片1 跑向…`.
+
+### Task Classification
+
+| Type | Use when | Prompt pattern |
+|------|----------|----------------|
+| **Reference** | Motion/style/character transfer | `参考 @图片N 中的<主体N>，生成…` |
+| **Edit** | Local replacement, removal, modification | `严格编辑 @视频1，将其中的<原特征>修改为<新特征>` |
+| **Extend** | Continue storyline, bridge clips | `向后延长 @视频1，生成…` / `@视频1，<过渡>，接@视频2` |
+| **Compose** | Reference one asset, edit another | `参考 @图片1 的[维度]，严格编辑 @视频2` |
+
+> ⚠️ **Edit/extend tasks**: use `@视频N` directly, NOT `参考 @视频N` — the latter is treated as a reference task.
+
+### Eight Core Elements
+
+```
+1. Subject     — who/what, identity (use <主体N>)
+2. Action      — verb + physics consequence, body-part detail + degree quantified
+3. Scene       — environment, lighting, time of day
+4. Lighting    — color temperature, quality, direction
+5. Camera      — ONE move only (push/pull/pan/track/fixed/follow)
+6. Style       — ONE primary style anchor (film/realistic/anime/cyberpunk)
+7. Quality     — resolution, detail level, texture
+8. Constraints — watermark/logo/subtitle suppression, stability, clone prevention
+```
+
+### Two Output Paths
+
+**Path A — Simple (one paragraph):** For single-shot, edit, extend, move tasks. One flowing paragraph with inline constraints.
+
+```
+[Task pattern], [subject + asset binding], [scene + brief action], [style + constraint pack]
+```
+
+**Path B — Complex (three paragraphs):** For ≥2 multi-scene narrative sequences. Must be three complete paragraphs:
+1. **Overall setting + subject definitions** — atmosphere, all `<主体N>` bindings, camera references
+2. **Scene breakdown** — `镜头1 / 镜头2 / 镜头3 …`, each with camera→action→position→audio. One camera move per shot. NO absolute timestamps (0–3s won't work).
+3. **Style + constraint pack** — quality, stability, subtitle/watermark suppression, clone prevention
+
+### Default Constraint Pack (always append)
+
+```
+画面稳定无变形，人物面部稳定，五官清晰，动作连贯自然，不僵硬，无穿模无卡顿。
+保持无字幕，不要生成水印，不要生成 Logo。
+高清电影质感，色彩自然，光影柔和。
+```
+
+For multi-character scenes, add: `禁止出现双胞胎/同款分身，同画面仅保留单个对应人物。`
+
+### Critical Don'ts
+
+- ❌ Negative prompts — describe what you WANT, not what you don't want
+- ❌ Absolute timestamps (`0–3s`) — Seedance 2.0 doesn't reliably follow them
+- ❌ Multiple camera moves in one shot — pick ONE per shot
+- ❌ High-impact dynamics (sprinting, big jumps, violent tumbles) — prefer slow, continuous micro-movements
+- ❌ Abstract emotion words — externalize as physical details (sad → shoulders trembling, eyes reddening)
+
+---
+
 ## Workflow Patterns
 
 ### Text-to-Video (T2V)
