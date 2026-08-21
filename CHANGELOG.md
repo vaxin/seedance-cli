@@ -35,6 +35,10 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
     changes, `--output-format`, native extend/edit sections, capability table.
 - npm package now ships both `seedance` and `seedream` binaries; release
   archives include both.
+- **Standalone `seedream` npm package** (`npm/seedream/`): downloads the same
+  release archive and installs just the seedream binary. Published by CI as a
+  separate job so it can't block the `seedance` package. `tag-release.sh` now
+  verifies all three version fields stay in sync.
 ### Fixed
 - Unit test race: `resolve_api_key_*` tests mutated `ARK_API_KEY` in parallel
   threads; now serialized behind a mutex.

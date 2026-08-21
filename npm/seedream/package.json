@@ -1,0 +1,47 @@
+{
+  "name": "seedream",
+  "version": "0.2.0",
+  "description": "CLI for Seedream image generation (T2I / I2I / editing / multi-image fusion) on Volcengine Ark",
+  "bin": {
+    "seedream": "scripts/run.js"
+  },
+  "scripts": {
+    "postinstall": "node scripts/install.js"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaxin/seedance-cli.git"
+  },
+  "keywords": [
+    "seedream",
+    "image",
+    "ai",
+    "bytedance",
+    "volcengine",
+    "ark",
+    "cli"
+  ],
+  "author": "vaxin",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "scripts/install.js",
+    "scripts/run.js",
+    "README.md",
+    "LICENSE"
+  ]
+}

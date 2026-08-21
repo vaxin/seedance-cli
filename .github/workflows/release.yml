@@ -97,3 +97,22 @@ jobs:
 
       - name: Publish to npm
         run: npm publish --access public
+
+  # Separate job so a seedream publishing problem (e.g. trusted publishing
+  # not yet configured for the new package) never blocks the seedance package.
+  publish-npm-seedream:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish seedream to npm
+        run: npm publish ./npm/seedream --access public

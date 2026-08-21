@@ -11,6 +11,12 @@ Seedance 2.0/2.5 AI 视频生成命令行工具，基于火山引擎 Ark 平台�
 npm install -g seedance
 ```
 
+图像生成 CLI（同仓库，独立 npm 包）：
+
+```bash
+npm install -g seedream
+```
+
 为 AI Agent（Claude Code / Cursor / Codex 等）安装 Skill：
 
 ```bash
@@ -158,6 +164,14 @@ seedance config set <KEY> <VALUE> # 设置单项
 
 同一仓库提供 `seedream` 命令，使用 Ark 同步接口 `/images/generations`（无需轮询任务），
 复用同一个 `ARK_API_KEY`，配置文件位于 `~/.config/seedream/config.toml`。
+
+安装独立 npm 包：
+
+```bash
+npm install -g seedream
+# 或随 seedance 包一起安装（v0.2.0 起自带 seedream 二进制）
+npm install -g seedance
+```
 
 ```bash
 # 文生图

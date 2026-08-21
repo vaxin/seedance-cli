@@ -12,9 +12,22 @@ metadata: {"version": "0.2.0", "updated": "2026-08-20", "parent": "seedance-cli"
 
 Command-line interface for **Seedream** image generation on Volcengine Ark.
 
-Binary name: `seedream`. Ships alongside `seedance` in the same repo/npm package. Written in Rust. Config stored at `~/.config/seedream/config.toml` (separate from seedance's). Uses the **synchronous** `/api/v3/images/generations` endpoint — no task polling, no task DB.
+Binary name: `seedream`. Ships alongside `seedance` in the same repo, and is published as its own npm package (`npm install -g seedream`) as well as bundled with `seedance` v0.2.0+. Written in Rust. Config stored at `~/.config/seedream/config.toml` (separate from seedance's). Uses the **synchronous** `/api/v3/images/generations` endpoint — no task polling, no task DB.
 
 Shares the `ARK_API_KEY` environment variable with the seedance CLI.
+
+---
+
+## Installation
+
+```bash
+npm install -g seedream
+# or, bundled with the seedance CLI (v0.2.0+)
+npm install -g seedance
+
+# from source
+cargo install --git https://github.com/vaxin/seedance-cli --bin seedream
+```
 
 ---
 
