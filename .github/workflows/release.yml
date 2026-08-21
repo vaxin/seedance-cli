@@ -96,7 +96,14 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish to npm
-        run: npm publish --access public
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ "$VERSION" == *-* ]]; then
+            echo "prerelease $VERSION → publishing under 'next' dist-tag"
+            npm publish --access public --tag next
+          else
+            npm publish --access public
+          fi
 
   # Separate job so a seedream publishing problem (e.g. trusted publishing
   # not yet configured for the new package) never blocks the seedance package.
@@ -128,4 +135,11 @@ jobs:
 
       - name: Publish seedream to npm
         if: env.SKIP != 'true'
-        run: npm publish ./npm/seedream --access public
+        run: |
+          VERSION=$(node -p "require('./npm/seedream/package.json').version")
+          if [[ "$VERSION" == *-* ]]; then
+            echo "prerelease $VERSION → publishing under 'next' dist-tag"
+            npm publish ./npm/seedream --access public --tag next
+          else
+            npm publish ./npm/seedream --access public
+          fi

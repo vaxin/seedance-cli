@@ -1,6 +1,6 @@
 {
   "name": "seedance",
-  "version": "0.2.1-tp.1",
+  "version": "0.2.0",
   "description": "CLI for Seedance 2.0/2.5 video generation and Seedream image generation on Volcengine Ark",
   "bin": {
     "seedance": "scripts/run.js",
