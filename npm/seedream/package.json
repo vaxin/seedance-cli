@@ -1,6 +1,6 @@
 {
   "name": "seedream",
-  "version": "0.2.0",
+  "version": "0.2.1-tp.1",
   "description": "CLI for Seedream image generation (T2I / I2I / editing / multi-image fusion) on Volcengine Ark",
   "bin": {
     "seedream": "scripts/run.js"
