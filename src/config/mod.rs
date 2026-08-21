@@ -39,19 +39,28 @@ fn default_output_dir() -> String {
 }
 
 impl AppConfig {
-    pub fn config_dir() -> Result<PathBuf> {
+    /// Config directory for a given app name ("seedance", "seedream", ...)
+    pub fn config_dir_for(app: &str) -> Result<PathBuf> {
         let dir = dirs::config_dir()
             .context("cannot determine config directory")?
-            .join("seedance");
+            .join(app);
         Ok(dir)
     }
 
-    pub fn config_path() -> Result<PathBuf> {
-        Ok(Self::config_dir()?.join("config.toml"))
+    pub fn config_dir() -> Result<PathBuf> {
+        Self::config_dir_for("seedance")
     }
 
-    pub fn load() -> Result<Self> {
-        let path = Self::config_path()?;
+    pub fn config_path_for(app: &str) -> Result<PathBuf> {
+        Ok(Self::config_dir_for(app)?.join("config.toml"))
+    }
+
+    pub fn config_path() -> Result<PathBuf> {
+        Self::config_path_for("seedance")
+    }
+
+    pub fn load_for(app: &str) -> Result<Self> {
+        let path = Self::config_path_for(app)?;
         if !path.exists() {
             return Ok(Self::with_defaults());
         }
@@ -62,13 +71,21 @@ impl AppConfig {
         Ok(cfg)
     }
 
-    pub fn save(&self) -> Result<()> {
-        let dir = Self::config_dir()?;
+    pub fn load() -> Result<Self> {
+        Self::load_for("seedance")
+    }
+
+    pub fn save_for(&self, app: &str) -> Result<()> {
+        let dir = Self::config_dir_for(app)?;
         std::fs::create_dir_all(&dir)?;
-        let path = Self::config_path()?;
+        let path = Self::config_path_for(app)?;
         let contents = toml::to_string_pretty(self)?;
         std::fs::write(&path, contents)?;
         Ok(())
+    }
+
+    pub fn save(&self) -> Result<()> {
+        self.save_for("seedance")
     }
 
     pub fn with_defaults() -> Self {

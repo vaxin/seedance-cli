@@ -8,6 +8,7 @@ use crate::config::AppConfig;
 use crate::core::{tos, upload, video};
 
 use super::common::{self, SubmitOpts};
+use super::models::resolve_spec;
 
 #[derive(Debug, Args)]
 pub struct GenerateArgs {
@@ -16,21 +17,26 @@ pub struct GenerateArgs {
 
     // ── Generation params ──
 
-    /// Model: standard or fast
+    /// Model: standard (2.0) | fast (2.0) | 2.5 — or a raw Ark model ID
     #[arg(short, long, default_value = "standard")]
     pub model: String,
 
-    /// Duration in seconds (4-15)
-    #[arg(short, long, default_value_t = 5)]
-    pub duration: u8,
+    /// Duration in seconds (2.0: 4-15; 2.5: 4-30, or -1 to let the model pick)
+    #[arg(short, long, default_value_t = 5, allow_negative_numbers = true)]
+    pub duration: i32,
 
-    /// Aspect ratio
+    /// Aspect ratio (2.5 also accepts "adaptive")
     #[arg(short, long, default_value = "16:9")]
     pub ratio: String,
 
-    /// Resolution
+    /// Resolution (2.5 supports 480p/720p only — no 1080p)
     #[arg(long, default_value = "1080p")]
     pub resolution: String,
+
+    /// Output container: mp4 (default) or mov — Seedance 2.5 only.
+    /// mov = H.264 + yuv444p + PCM, better for grading/keying
+    #[arg(long)]
+    pub output_format: Option<String>,
 
     /// Random seed for reproducibility
     #[arg(long)]
@@ -122,12 +128,13 @@ pub async fn execute(args: GenerateArgs) -> Result<()> {
 
     let prompt = resolve_prompt(&args.prompt)?;
 
-    validate_inputs(&args)?;
+    let spec = resolve_spec(&args.model);
+    let model_id = spec.id.to_string();
+
+    validate_inputs(&args, &spec)?;
 
     // Auto-cleanup expired TOS temp files from previous runs
     let _ = tos::cleanup_expired().await;
-
-    let model_id = resolve_model_id(&args.model);
 
     let mut content = vec![ContentItem::Text {
         text: prompt.clone(),
@@ -187,7 +194,15 @@ pub async fn execute(args: GenerateArgs) -> Result<()> {
         ratio: Some(args.ratio.clone()),
         duration: Some(args.duration),
         watermark: Some(args.watermark),
-        generate_audio: if args.audio_gen { Some(true) } else { None },
+        // 2.5 defaults generate_audio to true server-side, so send an
+        // explicit value to keep the CLI flag deterministic across models.
+        generate_audio: if spec.version >= 25 {
+            Some(args.audio_gen)
+        } else if args.audio_gen {
+            Some(true)
+        } else {
+            None
+        },
         seed: args.seed,
         return_last_frame: if args.return_last_frame {
             Some(true)
@@ -197,6 +212,8 @@ pub async fn execute(args: GenerateArgs) -> Result<()> {
         callback_url: args.callback.clone(),
         tools,
         service_tier: args.service_tier.clone(),
+        task_type: None,
+        output_format: args.output_format.clone(),
     };
 
     let opts = SubmitOpts {
@@ -236,32 +253,52 @@ pub fn resolve_prompt(input: &str) -> Result<String> {
 }
 
 pub fn resolve_model_id(model: &str) -> String {
-    match model {
-        "standard" | "std" => "doubao-seedance-2-0-260128".into(),
-        "fast" => "doubao-seedance-2-0-fast-260128".into(),
-        other => other.into(), // allow raw model IDs
-    }
+    super::models::resolve_model_id(model)
 }
 
-pub fn validate_inputs(args: &GenerateArgs) -> Result<()> {
-    if args.duration < 4 || args.duration > 15 {
-        anyhow::bail!("duration must be between 4 and 15 seconds");
+pub fn validate_inputs(args: &GenerateArgs, spec: &super::models::ModelSpec) -> Result<()> {
+    super::models::validate_duration(spec, args.duration)?;
+    super::models::validate_resolution(spec, &args.resolution)?;
+
+    if let Some(fmt) = &args.output_format {
+        if !matches!(fmt.as_str(), "mp4" | "mov") {
+            anyhow::bail!("output_format must be mp4 or mov, got {fmt}");
+        }
+        if !spec.supports_mov {
+            anyhow::bail!("output_format is only supported by Seedance 2.5");
+        }
     }
-    if args.image.len() > 9 {
-        anyhow::bail!("max 9 image references allowed (Rule of 12)");
+
+    if args.image.len() > spec.max_images {
+        anyhow::bail!(
+            "max {} image references allowed for this model (got {})",
+            spec.max_images,
+            args.image.len()
+        );
     }
-    if args.video.len() > 3 {
-        anyhow::bail!("max 3 video references allowed (Rule of 12)");
+    if args.video.len() > spec.max_videos {
+        anyhow::bail!(
+            "max {} video references allowed for this model (got {})",
+            spec.max_videos,
+            args.video.len()
+        );
     }
-    if args.audio.len() > 3 {
-        anyhow::bail!("max 3 audio references allowed (Rule of 12)");
+    if args.audio.len() > spec.max_audios {
+        anyhow::bail!(
+            "max {} audio references allowed for this model (got {})",
+            spec.max_audios,
+            args.audio.len()
+        );
     }
-    let total_files = args.image.len()
-        + args.video.len()
-        + args.audio.len()
+    // 2.5 allows up to 50 total reference assets (30 images + 10 videos + 10 audios).
+    let total_files = args.image.len() + args.video.len() + args.audio.len()
         + args.first_frame.as_ref().map(|_| 1).unwrap_or(0)
         + args.last_frame.as_ref().map(|_| 1).unwrap_or(0);
-    if total_files > 12 {
+    if spec.version >= 25 {
+        if total_files > 50 {
+            anyhow::bail!("max 50 total reference assets allowed (Seedance 2.5), got {total_files}");
+        }
+    } else if total_files > 12 {
         anyhow::bail!("max 12 total files allowed (Rule of 12), got {total_files}");
     }
     Ok(())

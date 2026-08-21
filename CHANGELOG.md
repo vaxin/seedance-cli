@@ -6,6 +6,44 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.2.0] — 2026-08-21
+### Added
+- **Seedance 2.5 support** (`--model 2.5` → `doubao-seedance-2-5-260628`):
+  - Duration 4–30s, plus `-1` to let the model pick the best length (2.5 only).
+  - Resolution 480p/720p (2.5 has no 1080p — validated with a clear error).
+  - Up to 50 reference assets (30 images / 10 videos / 10 audios).
+  - `--output-format mov` (H.264 + yuv444p + PCM, for grading/keying workflows).
+  - Native `extend` task type: `seedance extend --model 2.5` no longer trims
+    sources to 5s — full clips up to 30s total, ratio forced to `adaptive`.
+  - Native `edit` task type: `seedance edit --model 2.5` — duration/ratio follow
+    the source video automatically.
+  - `generate_audio` is sent explicitly for 2.5 (server default is true there).
+- **New `seedream` binary** for Seedream image generation on Ark:
+  - Synchronous `/images/generations` endpoint — no task polling.
+  - T2I / I2I / editing / multi-image fusion (up to 10 references).
+  - `--size` (`2048x2048`, `1K`, `2K`, `4K`, `adaptive`), `--sequential` group
+    generation (2–4 images), `--seed`, `--watermark`, `--response-format`.
+  - Local reference images: inline base64 ≤10MB, auto TOS upload above that.
+  - Separate config dir (`~/.config/seedream/`), same `ARK_API_KEY` env var.
+  - Aliases: `standard`/`4.0` → `doubao-seedream-4-0-250828`, `5.0` →
+    `doubao-seedream-5-0-260128`, `pro` → `doubao-seedream-5-0-pro` (verify the
+    Pro upstream ID in the Ark console — from third-party docs).
+- **Skills**:
+  - New `skills/seedream-cli/SKILL.md` — full skill for the seedream CLI
+    (modes, flags, model matrix, prompt tips, error table).
+  - Top-level `SKILL.md` updated for 2.5: model/duration/resolution flag
+    changes, `--output-format`, native extend/edit sections, capability table.
+- npm package now ships both `seedance` and `seedream` binaries; release
+  archives include both.
+### Fixed
+- Unit test race: `resolve_api_key_*` tests mutated `ARK_API_KEY` in parallel
+  threads; now serialized behind a mutex.
+### Notes
+- Seedance 2.5 model ID, `duration: -1`, and `output_format: "mov"` verified
+  against the live Ark API (task accepted and completed successfully).
+
+---
+
 ## [5.0.0] — 2026-03-03
 ### Added
 - **Intent-First Philosophy** — The entire library now prioritizes intent-based prompting over precision-based micro-management. New governing rule: "Direct the model. Don't micro-manage it."

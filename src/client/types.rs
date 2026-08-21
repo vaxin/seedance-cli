@@ -8,8 +8,9 @@ pub struct CreateTaskRequest {
     pub resolution: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ratio: Option<String>,
+    /// Duration in seconds; `-1` lets the model pick (Seedance 2.5)
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub duration: Option<u8>,
+    pub duration: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub watermark: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -24,6 +25,12 @@ pub struct CreateTaskRequest {
     pub tools: Option<Vec<Tool>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub service_tier: Option<String>,
+    /// Task type for Seedance 2.5+: "generate" / "edit" / "extend"
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub task_type: Option<String>,
+    /// Output container: "mp4" (default) or "mov" (Seedance 2.5+)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub output_format: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -178,4 +185,59 @@ impl std::fmt::Display for TaskStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.label())
     }
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Image generation (Seedream) — official Ark /images/generations API
+// ─────────────────────────────────────────────────────────────────
+
+#[derive(Debug, Clone, Serialize)]
+pub struct ImageGenRequest {
+    pub model: String,
+    pub prompt: String,
+    /// Reference images for i2i / editing / multi-image fusion
+    /// (URLs or base64 data URIs; max 10)
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub image: Vec<String>,
+    /// e.g. "2048x2048", "1K", "2K", "4K", "adaptive"
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub size: Option<String>,
+    /// "url" (default) or "b64_json"
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub response_format: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub watermark: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub seed: Option<u64>,
+    /// Group/sequential image generation (Seedream 4.0+)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sequential_image_generation: Option<SequentialImageGeneration>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct SequentialImageGeneration {
+    /// Number of images in the group (2-4)
+    pub max_images: u8,
+    /// Let the model write its own variation prompt per image (default true)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enable_default_prompt: Option<bool>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ImageGenResponse {
+    pub model: Option<String>,
+    pub created: Option<u64>,
+    pub data: Vec<ImageGenItem>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub usage: Option<serde_json::Value>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ImageGenItem {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub size: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub b64_json: Option<String>,
 }

@@ -3,7 +3,7 @@ pub mod types;
 
 use anyhow::{Context, Result};
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION, CONTENT_TYPE};
-use types::{CreateTaskRequest, TaskResponse};
+use types::{CreateTaskRequest, ImageGenRequest, ImageGenResponse, TaskResponse};
 
 pub struct ArkClient {
     http: reqwest::Client,
@@ -83,5 +83,36 @@ impl ArkClient {
         let task: TaskResponse =
             serde_json::from_str(&body).with_context(|| format!("failed to parse response: {body}"))?;
         Ok(task)
+    }
+
+    /// Generate images (Seedream) via the synchronous
+    /// POST /images/generations endpoint. Image generation can take
+    /// tens of seconds, so this uses a longer per-request timeout.
+    pub async fn generate_image(&self, req: &ImageGenRequest) -> Result<ImageGenResponse> {
+        let url = format!("{}/images/generations", self.base_url);
+
+        let resp = self
+            .http
+            .post(&url)
+            .json(req)
+            .timeout(std::time::Duration::from_secs(300))
+            .send()
+            .await?;
+        let status = resp.status();
+
+        if status == reqwest::StatusCode::TOO_MANY_REQUESTS {
+            anyhow::bail!(error::ArkError::RateLimited);
+        }
+
+        let body = resp.text().await?;
+
+        if !status.is_success() {
+            anyhow::bail!(error::ArkError::Api {
+                status: status.as_u16(),
+                message: body,
+            });
+        }
+
+        serde_json::from_str(&body).with_context(|| format!("failed to parse response: {body}"))
     }
 }

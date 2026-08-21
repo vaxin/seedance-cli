@@ -73,7 +73,7 @@ pub fn trim_from_end(input: &str, output: &str, keep_secs: f64) -> Result<()> {
 /// then uploaded to TOS (S3-compatible) to get a public HTTPS URL.
 ///
 /// Requires TOS_ACCESS_KEY, TOS_SECRET_KEY, TOS_BUCKET env vars for local files.
-pub async fn prepare_source_video(input: &str, max_duration: u8) -> Result<String> {
+pub async fn prepare_source_video(input: &str, max_duration: i32) -> Result<String> {
     // URLs are passed through directly
     if input.starts_with("http://") || input.starts_with("https://") || input.starts_with("asset://") {
         return Ok(input.to_string());
@@ -81,14 +81,14 @@ pub async fn prepare_source_video(input: &str, max_duration: u8) -> Result<Strin
 
     let duration = probe_duration(input)?;
 
-    if duration <= max_duration as f64 {
+    if duration <= max_duration.max(0) as f64 {
         // Upload as-is to TOS
         return tos::upload_file(input).await;
     }
 
     // Trim: keep the last max_duration seconds, then upload
     let trimmed_path = format!("{input}.seedance_trimmed.mp4");
-    trim_from_end(input, &trimmed_path, max_duration as f64)?;
+    trim_from_end(input, &trimmed_path, max_duration.max(0) as f64)?;
 
     let url = tos::upload_file(&trimmed_path).await;
 

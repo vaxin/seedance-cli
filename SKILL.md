@@ -1,18 +1,20 @@
 ---
 name: seedance-cli
-description: 'Use the seedance CLI to generate, track, download, and manage Seedance 2.0 AI videos from the terminal. Covers all subcommands (generate, status, download, list, config), flag reference, workflow patterns, CI/CD integration, and error handling. Use when generating a video, checking task status, downloading results, configuring defaults, or building automated pipelines with Seedance 2.0.'
+description: 'Use the seedance CLI to generate, track, download, and manage Seedance 2.0/2.5 AI videos from the terminal. Covers all subcommands (generate, extend, edit, status, download, list, config), flag reference, model differences (2.0 vs 2.5), workflow patterns, CI/CD integration, and error handling. Use when generating a video, extending or editing a video, checking task status, downloading results, configuring defaults, or building automated pipelines with Seedance.'
 license: MIT
 user-invocable: true
 user-invokable: true
-tags: ["cli", "terminal", "automation", "pipeline", "seedance-20"]
-metadata: {"version": "1.2.0", "updated": "2026-04-26", "parent": "seedance-20"}
+tags: ["cli", "terminal", "automation", "pipeline", "seedance-20", "seedance-25"]
+metadata: {"version": "1.3.0", "updated": "2026-08-20", "parent": "seedance-20"}
 ---
 
 # seedance-cli
 
-Command-line interface for **Seedance 2.0** video generation on Volcengine Ark.
+Command-line interface for **Seedance 2.0/2.5** video generation on Volcengine Ark.
 
 Binary name: `seedance`. Written in Rust. Config stored at `~/.config/seedance/config.toml`. Task history in local SQLite at `~/.config/seedance/tasks.db`.
+
+> The same repo also ships a `seedream` binary for image generation — see the `seedream-cli` skill.
 
 ---
 
@@ -76,10 +78,11 @@ seedance generate <PROMPT> [OPTIONS]
 
 | Flag                  | Short | Default    | Description                                                  |
 | --------------------- | ----- | ---------- | ------------------------------------------------------------ |
-| `--model`             | `-m`  | `standard` | Model variant: `standard` or `fast`                          |
-| `--duration`          | `-d`  | `5`        | Duration in seconds (4–15)                                   |
+| `--model`             | `-m`  | `standard` | Model: `standard`/`fast` (2.0), `2.5` — or a raw Ark model ID |
+| `--duration`          | `-d`  | `5`        | Duration in seconds. 2.0: 4–15. 2.5: 4–30, or `-1` (model picks) |
 | `--ratio`             | `-r`  | `16:9`     | Aspect ratio (`16:9` `9:16` `4:3` `3:4` `21:9` `1:1` `adaptive`) |
-| `--resolution`        |       | `1080p`    | Resolution (`480p` `720p` `1080p`)                           |
+| `--resolution`        |       | `1080p`    | Resolution (`480p` `720p` `1080p`). **2.5 supports 480p/720p only** |
+| `--output-format`     |       |            | Output container: `mp4` (default) or `mov` — 2.5 only        |
 | `--seed`              |       |            | Random seed for reproducibility                              |
 | `--watermark`         |       | `false`    | Add watermark                                                |
 | `--audio-gen`         |       | `false`    | Enable native audio generation                               |
@@ -134,6 +137,8 @@ Local files are automatically converted to base64 data URIs. Supported formats: 
 
 Extend a video forward/backward, or bridge 2–3 clips into one continuous video. Pass local video files directly. Videos longer than `min(5s, --duration)` are automatically trimmed from the end before upload（需要安装 ffmpeg）.
 
+> With `--model 2.5` this submits a **native `extend` task** instead: no 5s trimming (up to 30s total across clips), ratio forced to `adaptive`, duration 4–30 or `-1`.
+
 ```
 seedance extend --source-video <VIDEO>... <PROMPT> [OPTIONS]
 ```
@@ -183,6 +188,8 @@ seedance extend -s middle.mp4 "结尾：人潮涌动" --duration 8 --wait -o end
 ### `seedance edit` — Edit an Existing Video
 
 Edit a completed video: replace subjects, add/remove objects, repaint regions. Automatically resolves the source video URL from task ID.
+
+> With `--model 2.5` this submits a **native `edit` task**: duration/ratio follow the source video automatically (`--duration`/`--ratio` ignored).
 
 ```
 seedance edit <SOURCE_TASK_ID> <PROMPT> [OPTIONS]
@@ -296,6 +303,37 @@ seedance config set <KEY> <VALUE>  # Set a single value
 ```
 
 Available keys: `api_key`, `base_url`, `model`, `resolution`, `ratio`, `duration`, `output_dir`.
+
+---
+
+## Seedance 2.5
+
+Use `--model 2.5` (upstream `doubao-seedance-2-5-260628`, launched on Ark 2026-08-07). Model ID, `duration: -1`, and `mov` output are verified against the live API.
+
+| Capability | 2.0 | 2.5 |
+| --- | --- | --- |
+| Duration | 4–15s | **4–30s**, or `-1` (model picks the best length) |
+| Resolution | 480p / 720p / 1080p | **480p / 720p only** (no 1080p — validated with an error) |
+| Reference assets | 9 images / 3 videos / 3 audios (Rule of 12) | **50 total**: 30 images + 10 videos + 10 audios; audio may be the *only* reference |
+| Task types | generate | generate / **edit** / **extend** (native) |
+| Output format | mp4 | mp4 / **mov** (H.264 + yuv444p + PCM — better for grading/keying) |
+| Audio | opt-in | `--audio-gen` sent explicitly (server default is true on 2.5) |
+
+```bash
+# 30s max length, model picks duration, mov delivery
+seedance generate "One-take cinematic hallway dolly shot" \
+  --model 2.5 --duration -1 --resolution 720p --output-format mov --wait
+```
+
+### Native extend (2.5)
+
+`seedance extend --model 2.5` submits a native `extend` task: source clips are **not** trimmed to 5s (up to 30s total across 1–3 clips), ratio is forced to `adaptive` (matches the source), and duration accepts `-1`.
+
+### Native edit (2.5)
+
+`seedance edit --model 2.5` submits a native `edit` task: duration and ratio follow the source video automatically (`--duration`/`--ratio` are ignored with a note). Supports replace / add / remove objects and audio-track editing via prompt.
+
+> ⚠️ On 2.5, edit/extend are billed by **source + output** total duration. At 720p, 2.5 costs ~37% more per second than 2.0.
 
 ---
 

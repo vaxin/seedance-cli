@@ -8,7 +8,7 @@ use crate::config::AppConfig;
 use crate::core::upload;
 
 use super::common::{self, SubmitOpts};
-use super::generate::{resolve_model_id, resolve_prompt};
+use super::generate::resolve_prompt;
 
 #[derive(Debug, Args)]
 pub struct EditArgs {
@@ -20,19 +20,20 @@ pub struct EditArgs {
 
     // ── Generation params ──
 
-    /// Model: standard or fast
+    /// Model: standard (2.0) | fast (2.0) | 2.5 — or a raw Ark model ID.
+    /// 2.5 uses the native `edit` task type (duration/ratio follow the source)
     #[arg(short, long, default_value = "standard")]
     pub model: String,
 
-    /// Duration in seconds (4-15)
+    /// Duration in seconds (ignored on 2.5 native edit: follows the source video)
     #[arg(short, long, default_value_t = 5)]
-    pub duration: u8,
+    pub duration: i32,
 
-    /// Aspect ratio
+    /// Aspect ratio (forced to "adaptive" on 2.5 native edit)
     #[arg(short, long, default_value = "16:9")]
     pub ratio: String,
 
-    /// Resolution
+    /// Resolution (2.5 supports 480p/720p only)
     #[arg(long, default_value = "1080p")]
     pub resolution: String,
 
@@ -92,12 +93,25 @@ pub async fn execute(args: EditArgs) -> Result<()> {
     let api_key = cfg.resolve_api_key()?;
     let client = ArkClient::new(&cfg.base_url, &api_key)?;
 
-    if args.duration < 4 || args.duration > 15 {
-        anyhow::bail!("duration must be between 4 and 15 seconds");
-    }
+    let spec = super::models::resolve_spec(&args.model);
+    let model_id = spec.id.to_string();
+    let native_edit = spec.supports_task_types;
+
+    super::models::validate_resolution(&spec, &args.resolution)?;
+
+    // Seedance 2.5 native edit: duration is always -1 (follows the source
+    // video's length/ratio) and the ratio must be adaptive.
+    let (duration, ratio) = if native_edit {
+        if !args.quiet && args.duration != 5 {
+            eprintln!("note: Seedance 2.5 edit ignores --duration (follows the source video)");
+        }
+        (-1, "adaptive".to_string())
+    } else {
+        super::models::validate_duration(&spec, args.duration)?;
+        (args.duration, args.ratio.clone())
+    };
 
     let prompt = resolve_prompt(&args.prompt)?;
-    let model_id = resolve_model_id(&args.model);
 
     let video_url = common::resolve_source_video_url(&client, &args.source).await?;
 
@@ -130,15 +144,27 @@ pub async fn execute(args: EditArgs) -> Result<()> {
         model: model_id.clone(),
         content,
         resolution: Some(args.resolution.clone()),
-        ratio: Some(args.ratio.clone()),
-        duration: Some(args.duration),
+        ratio: Some(ratio),
+        duration: Some(duration),
         watermark: Some(args.watermark),
-        generate_audio: if args.audio_gen { Some(true) } else { None },
+        generate_audio: if spec.version >= 25 {
+            Some(args.audio_gen)
+        } else if args.audio_gen {
+            Some(true)
+        } else {
+            None
+        },
         seed: args.seed,
         return_last_frame: None,
         callback_url: None,
         tools: None,
         service_tier: None,
+        task_type: if native_edit {
+            Some("edit".into())
+        } else {
+            None
+        },
+        output_format: None,
     };
 
     let opts = SubmitOpts {

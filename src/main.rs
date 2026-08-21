@@ -1,16 +1,13 @@
-mod cli;
-mod client;
-mod config;
-mod core;
-mod store;
-mod ui;
-
 use clap::{Parser, Subcommand};
+
+// Reuse the library crate so `seedance` and `seedream` binaries share one
+// compilation of the shared modules (client, config, core, ...).
+use seedance_cli::{cli, ui};
 
 #[derive(Parser)]
 #[command(
     name = "seedance",
-    about = "CLI for Seedance 2.0 video generation on Volcengine Ark",
+    about = "CLI for Seedance 2.0/2.5 video generation on Volcengine Ark",
     version
 )]
 struct Cli {

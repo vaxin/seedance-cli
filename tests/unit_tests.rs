@@ -138,6 +138,8 @@ mod types_tests {
             callback_url: None,
             tools: None,
             service_tier: None,
+            task_type: None,
+            output_format: None,
         };
         let json = serde_json::to_value(&req).unwrap();
         assert!(json.get("generate_audio").is_none());
@@ -169,6 +171,8 @@ mod types_tests {
                 tool_type: "web_search".into(),
             }]),
             service_tier: Some("flex".into()),
+            task_type: None,
+            output_format: None,
         };
         let json = serde_json::to_value(&req).unwrap();
         assert_eq!(json["tools"][0]["type"], "web_search");
@@ -314,6 +318,14 @@ mod types_tests {
 
 mod config_tests {
     use seedance_cli::config::AppConfig;
+    use std::sync::{Mutex, OnceLock};
+
+    /// Tests that mutate the ARK_API_KEY environment variable must hold this
+    /// lock — they race with each other when run in parallel threads.
+    fn env_lock() -> std::sync::MutexGuard<'static, ()> {
+        static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+        LOCK.get_or_init(|| Mutex::new(())).lock().unwrap_or_else(|e| e.into_inner())
+    }
 
     #[test]
     fn defaults_are_correct() {
@@ -400,6 +412,7 @@ mod config_tests {
 
     #[test]
     fn resolve_api_key_from_config() {
+        let _guard = env_lock();
         let mut cfg = AppConfig::with_defaults();
         cfg.api_key = Some("sk-from-config".into());
         // Clear env var to avoid interference
@@ -409,6 +422,7 @@ mod config_tests {
 
     #[test]
     fn resolve_api_key_env_takes_precedence() {
+        let _guard = env_lock();
         let mut cfg = AppConfig::with_defaults();
         cfg.api_key = Some("sk-from-config".into());
         std::env::set_var("ARK_API_KEY", "sk-from-env");
@@ -418,6 +432,7 @@ mod config_tests {
 
     #[test]
     fn resolve_api_key_fails_when_not_set() {
+        let _guard = env_lock();
         let cfg = AppConfig::with_defaults();
         std::env::remove_var("ARK_API_KEY");
         assert!(cfg.resolve_api_key().is_err());
@@ -614,6 +629,7 @@ mod store_tests {
 
 mod generate_tests {
     use seedance_cli::cli::generate::{resolve_model_id, resolve_prompt, validate_inputs, GenerateArgs};
+    use seedance_cli::cli::models::{self, ModelSpec};
     use std::io::Write;
 
     fn default_args() -> GenerateArgs {
@@ -623,6 +639,7 @@ mod generate_tests {
             duration: 5,
             ratio: "16:9".into(),
             resolution: "1080p".into(),
+            output_format: None,
             seed: None,
             watermark: false,
             audio_gen: false,
@@ -698,79 +715,88 @@ mod generate_tests {
     #[test]
     fn validate_duration_too_short() {
         let mut args = default_args();
+        let spec = models::resolve_spec(&args.model);
         args.duration = 3;
-        assert!(validate_inputs(&args).is_err());
+        assert!(validate_inputs(&args, &spec).is_err());
     }
 
     #[test]
     fn validate_duration_too_long() {
         let mut args = default_args();
+        let spec = models::resolve_spec(&args.model);
         args.duration = 16;
-        assert!(validate_inputs(&args).is_err());
+        assert!(validate_inputs(&args, &spec).is_err());
     }
 
     #[test]
     fn validate_duration_boundary_values() {
         let mut args = default_args();
+        let spec = models::resolve_spec(&args.model);
         args.duration = 4;
-        assert!(validate_inputs(&args).is_ok());
+        assert!(validate_inputs(&args, &spec).is_ok());
         args.duration = 15;
-        assert!(validate_inputs(&args).is_ok());
+        assert!(validate_inputs(&args, &spec).is_ok());
     }
 
     #[test]
     fn validate_too_many_images() {
         let mut args = default_args();
+        let spec = models::resolve_spec(&args.model);
         args.image = (0..10).map(|i| format!("https://img/{i}.jpg")).collect();
-        assert!(validate_inputs(&args).is_err());
+        assert!(validate_inputs(&args, &spec).is_err());
     }
 
     #[test]
     fn validate_max_images_ok() {
         let mut args = default_args();
+        let spec = models::resolve_spec(&args.model);
         args.image = (0..9).map(|i| format!("https://img/{i}.jpg")).collect();
-        assert!(validate_inputs(&args).is_ok());
+        assert!(validate_inputs(&args, &spec).is_ok());
     }
 
     #[test]
     fn validate_too_many_videos() {
         let mut args = default_args();
+        let spec = models::resolve_spec(&args.model);
         args.video = (0..4).map(|i| format!("https://vid/{i}.mp4")).collect();
-        assert!(validate_inputs(&args).is_err());
+        assert!(validate_inputs(&args, &spec).is_err());
     }
 
     #[test]
     fn validate_too_many_audio() {
         let mut args = default_args();
+        let spec = models::resolve_spec(&args.model);
         args.audio = (0..4).map(|i| format!("https://aud/{i}.mp3")).collect();
-        assert!(validate_inputs(&args).is_err());
+        assert!(validate_inputs(&args, &spec).is_err());
     }
 
     #[test]
     fn validate_rule_of_12_total() {
         let mut args = default_args();
+        let spec = models::resolve_spec(&args.model);
         args.image = (0..9).map(|i| format!("https://img/{i}.jpg")).collect();
         args.video = (0..3).map(|i| format!("https://vid/{i}.mp4")).collect();
         // 9 + 3 = 12, OK
-        assert!(validate_inputs(&args).is_ok());
+        assert!(validate_inputs(&args, &spec).is_ok());
 
         // Add first_frame = 13 total, should fail
         args.first_frame = Some("https://ff.jpg".into());
-        assert!(validate_inputs(&args).is_err());
+        assert!(validate_inputs(&args, &spec).is_err());
     }
 
     #[test]
     fn validate_first_last_frame_count_in_total() {
         let mut args = default_args();
+        let spec = models::resolve_spec(&args.model);
         args.image = (0..9).map(|i| format!("https://img/{i}.jpg")).collect();
         args.first_frame = Some("https://first.jpg".into());
         args.last_frame = Some("https://last.jpg".into());
         // 9 + 1 + 1 = 11, OK
-        assert!(validate_inputs(&args).is_ok());
+        assert!(validate_inputs(&args, &spec).is_ok());
 
         args.video = vec!["https://v.mp4".into(), "https://v2.mp4".into()];
         // 9 + 2 + 1 + 1 = 13, FAIL
-        assert!(validate_inputs(&args).is_err());
+        assert!(validate_inputs(&args, &spec).is_err());
     }
 }
 
@@ -950,5 +976,179 @@ mod poller_tests {
         assert_eq!(opts.timeout, Duration::from_secs(300));
         assert_eq!(opts.initial_interval, Duration::from_secs(10));
         assert!(!opts.strict);
+    }
+}
+
+// ═══════════════════════════════════════════════════════
+// 6. cli::models — Seedance 2.5 model registry & validation
+// ═══════════════════════════════════════════════════════
+
+mod models_tests {
+    use seedance_cli::cli::models::*;
+
+    #[test]
+    fn resolve_model_id_aliases() {
+        assert_eq!(resolve_model_id("standard"), "doubao-seedance-2-0-260128");
+        assert_eq!(resolve_model_id("std"), "doubao-seedance-2-0-260128");
+        assert_eq!(resolve_model_id("2.0"), "doubao-seedance-2-0-260128");
+        assert_eq!(resolve_model_id("fast"), "doubao-seedance-2-0-fast-260128");
+        assert_eq!(resolve_model_id("2.5"), "doubao-seedance-2-5-260628");
+        assert_eq!(resolve_model_id("seedance-2.5"), "doubao-seedance-2-5-260628");
+        assert_eq!(resolve_model_id("v2.5"), "doubao-seedance-2-5-260628");
+        assert_eq!(resolve_model_id(" 2.5 "), "doubao-seedance-2-5-260628");
+    }
+
+    #[test]
+    fn resolve_model_id_raw_passthrough() {
+        assert_eq!(resolve_model_id("doubao-seedance-2-5-260628"), "doubao-seedance-2-5-260628");
+        assert_eq!(resolve_model_id("some-future-model-261231"), "some-future-model-261231");
+    }
+
+    #[test]
+    fn spec_version_and_capabilities() {
+        let s20 = resolve_spec("standard");
+        assert_eq!(s20.version, 20);
+        assert_eq!(s20.duration_max, 15);
+        assert!(!s20.supports_task_types);
+        assert!(!s20.allow_auto_duration);
+
+        let s25 = resolve_spec("2.5");
+        assert_eq!(s25.version, 25);
+        assert_eq!(s25.duration_max, 30);
+        assert!(s25.supports_task_types);
+        assert!(s25.allow_auto_duration);
+        assert_eq!(s25.max_images, 30);
+        assert_eq!(s25.max_videos, 10);
+        assert_eq!(s25.max_audios, 10);
+        assert!(s25.supports_mov);
+    }
+
+    #[test]
+    fn validate_duration_per_model() {
+        let s20 = resolve_spec("standard");
+        let s25 = resolve_spec("2.5");
+
+        assert!(validate_duration(&s20, 4).is_ok());
+        assert!(validate_duration(&s20, 15).is_ok());
+        assert!(validate_duration(&s20, 16).is_err());
+        assert!(validate_duration(&s20, -1).is_err());
+
+        assert!(validate_duration(&s25, 30).is_ok());
+        assert!(validate_duration(&s25, 31).is_err());
+        assert!(validate_duration(&s25, -1).is_ok());
+    }
+
+    #[test]
+    fn validate_resolution_per_model() {
+        let s20 = resolve_spec("standard");
+        let s25 = resolve_spec("2.5");
+
+        assert!(validate_resolution(&s20, "1080p").is_ok());
+        assert!(validate_resolution(&s25, "1080p").is_err(), "2.5 has no 1080p");
+        assert!(validate_resolution(&s25, "480p").is_ok());
+        assert!(validate_resolution(&s25, "720p").is_ok());
+    }
+
+    #[test]
+    fn create_task_request_serializes_new_fields() {
+        use seedance_cli::client::types::*;
+        let req = CreateTaskRequest {
+            model: "doubao-seedance-2-5-260628".into(),
+            content: vec![ContentItem::Text { text: "test".into() }],
+            resolution: Some("720p".into()),
+            ratio: Some("adaptive".into()),
+            duration: Some(-1),
+            watermark: None,
+            generate_audio: Some(false),
+            seed: None,
+            return_last_frame: None,
+            callback_url: None,
+            tools: None,
+            service_tier: None,
+            task_type: Some("edit".into()),
+            output_format: Some("mov".into()),
+        };
+        let json = serde_json::to_value(&req).unwrap();
+        assert_eq!(json["task_type"], "edit");
+        assert_eq!(json["output_format"], "mov");
+        assert_eq!(json["duration"], -1);
+        // absent fields must not appear
+        assert!(json.get("watermark").is_none());
+        assert!(json.get("task_type_output").is_none());
+    }
+}
+
+// ═══════════════════════════════════════════════════════
+// 7. client::types — Seedream image generation
+// ═══════════════════════════════════════════════════════
+
+mod image_gen_tests {
+    use seedance_cli::client::types::*;
+
+    #[test]
+    fn image_gen_request_omits_optional_fields() {
+        let req = ImageGenRequest {
+            model: "doubao-seedream-4-0-250828".into(),
+            prompt: "a red panda barista".into(),
+            image: vec![],
+            size: None,
+            response_format: None,
+            watermark: Some(false),
+            seed: None,
+            sequential_image_generation: None,
+        };
+        let json = serde_json::to_value(&req).unwrap();
+        assert!(json.get("image").is_none());
+        assert!(json.get("size").is_none());
+        assert!(json.get("response_format").is_none());
+        assert!(json.get("seed").is_none());
+        assert!(json.get("sequential_image_generation").is_none());
+        assert_eq!(json["watermark"], false);
+    }
+
+    #[test]
+    fn image_gen_request_serializes_references_and_group() {
+        let req = ImageGenRequest {
+            model: "doubao-seedream-4-0-250828".into(),
+            prompt: "group of four".into(),
+            image: vec!["https://example.com/a.png".into()],
+            size: Some("2K".into()),
+            response_format: Some("b64_json".into()),
+            watermark: None,
+            seed: Some(42),
+            sequential_image_generation: Some(SequentialImageGeneration {
+                max_images: 4,
+                enable_default_prompt: Some(true),
+            }),
+        };
+        let json = serde_json::to_value(&req).unwrap();
+        assert_eq!(json["image"][0], "https://example.com/a.png");
+        assert_eq!(json["size"], "2K");
+        assert_eq!(json["response_format"], "b64_json");
+        assert_eq!(json["seed"], 42);
+        assert_eq!(json["sequential_image_generation"]["max_images"], 4);
+        assert_eq!(json["sequential_image_generation"]["enable_default_prompt"], true);
+    }
+
+    #[test]
+    fn image_gen_response_parses_url_and_b64() {
+        let body = r#"{
+            "model": "doubao-seedream-4-0-250828",
+            "created": 1755500000,
+            "data": [
+                {"size": "2048x2048", "url": "https://example.com/out.png"}
+            ],
+            "usage": {"generated_images": 1, "total_tokens": 4096}
+        }"#;
+        let resp: ImageGenResponse = serde_json::from_str(body).unwrap();
+        assert_eq!(resp.data.len(), 1);
+        assert_eq!(resp.data[0].url.as_deref(), Some("https://example.com/out.png"));
+        assert!(resp.data[0].b64_json.is_none());
+        assert_eq!(resp.data[0].size.as_deref(), Some("2048x2048"));
+
+        let body2 = r#"{"data": [{"b64_json": "aGVsbG8="}]}"#;
+        let resp2: ImageGenResponse = serde_json::from_str(body2).unwrap();
+        assert_eq!(resp2.data[0].b64_json.as_deref(), Some("aGVsbG8="));
+        assert!(resp2.data[0].url.is_none());
     }
 }

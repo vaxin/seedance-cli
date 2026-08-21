@@ -1,9 +1,10 @@
 {
   "name": "seedance",
-  "version": "0.1.3",
-  "description": "CLI for Seedance 2.0 video generation on Volcengine Ark",
+  "version": "0.2.0",
+  "description": "CLI for Seedance 2.0/2.5 video generation and Seedream image generation on Volcengine Ark",
   "bin": {
-    "seedance": "scripts/run.js"
+    "seedance": "scripts/run.js",
+    "seedream": "scripts/run-seedream.js"
   },
   "scripts": {
     "postinstall": "node scripts/install.js"
@@ -31,7 +32,9 @@
     "bytedance",
     "volcengine",
     "ark",
-    "cli"
+    "cli",
+    "seedream",
+    "image"
   ],
   "author": "vaxin",
   "license": "MIT",
@@ -42,6 +45,7 @@
     "scripts/install.js",
     "scripts/run.js",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "scripts/run-seedream.js"
   ]
 }

@@ -1,6 +1,7 @@
 # seedance
 
-Seedance 2.0 AI 视频生成命令行工具，基于火山引擎 Ark 平台。
+Seedance 2.0/2.5 AI 视频生成命令行工具，基于火山引擎 Ark 平台。
+同一仓库还提供 `seedream` 图像生成 CLI。
 
 支持 Text-to-Video、Image-to-Video、Video-to-Video、Reference-to-Video 四种生成模式。
 
@@ -41,10 +42,33 @@ seedance generate "夕阳下的湖面，金色光芒铺满水面，镜头缓缓�
 seedance generate "角色缓步走来，风吹动发丝" \
   --first-frame character.png --wait
 
-# 4. 完整参数控制
+# 4. Seedance 2.5：30 秒长视频 + 自动时长 + mov 输出
+seedance generate "一段电影级长镜头叙事" \
+  --model 2.5 --duration -1 --resolution 720p --output-format mov --wait
+
+# 5. 完整参数控制
 seedance generate "产品瓶身置于大理石台面，缓慢环绕拍摄" \
   --model standard --duration 8 --ratio 16:9 --resolution 1080p --wait
+
+# 6. Seedream 文生图（独立命令）
+seedream generate "一只水彩风格的小熊猫咖啡师" --size 2K
 ```
+
+## Seedance 2.5
+
+`--model 2.5`（上游 `doubao-seedance-2-5-260628`）带来以下变化：
+
+| 能力 | 2.0 | 2.5 |
+|---|---|---|
+| 时长 | 4–15s | **4–30s**，`-1` 让模型自动选择 |
+| 分辨率 | 480p/720p/1080p | **仅 480p/720p**（无 1080p） |
+| 参考素材 | 9 图/3 视频/3 音频 | **50 个**（30 图 + 10 视频 + 10 音频） |
+| 任务类型 | generate | generate / **edit** / **extend**（原生） |
+| 输出格式 | mp4 | mp4 / **mov**（yuv444p+PCM，调色抠像友好） |
+
+- `seedance extend --model 2.5`：原生续写任务，源视频不再被裁到 5 秒（总长最多 30s），ratio 自动为 `adaptive`
+- `seedance edit --model 2.5`：原生编辑任务，时长/比例自动跟随源视频
+- 编辑/续写按「源视频 + 输出」总时长计费
 
 ## 命令一览
 
@@ -61,10 +85,11 @@ seedance generate <PROMPT> [OPTIONS]
 
 | 参数                    | 短写   | 默认值        | 说明                                          |
 | --------------------- | ---- | ---------- | ------------------------------------------- |
-| `--model`             | `-m` | `standard` | 模型：`standard` / `fast`                      |
-| `--duration`          | `-d` | `5`        | 时长 4–15 秒                                   |
-| `--ratio`             | `-r` | `16:9`     | 画面比例：`16:9` `9:16` `4:3` `3:4` `21:9` `1:1` |
-| `--resolution`        |      | `1080p`    | 分辨率：`480p` `720p` `1080p` `2K`              |
+| `--model`             | `-m` | `standard` | 模型：`standard` / `fast`（2.0）、`2.5`            |
+| `--duration`          | `-d` | `5`        | 时长：2.0 为 4–15 秒；2.5 为 4–30 秒或 `-1`（模型自动选择） |
+| `--ratio`             | `-r` | `16:9`     | 画面比例：`16:9` `9:16` `4:3` `3:4` `21:9` `1:1`（2.5 另支持 `adaptive`） |
+| `--resolution`        |      | `1080p`    | 分辨率：`480p` `720p` `1080p` `2K`（**2.5 仅 480p/720p**） |
+| `--output-format`     |      |            | 输出容器：`mp4` / `mov`（仅 2.5）                |
 | `--seed`              |      |            | 随机种子，用于复现                                   |
 | `--watermark`         |      | `false`    | 添加水印                                        |
 | `--audio-gen`         |      | `false`    | 启用原生音频生成                                    |
@@ -128,6 +153,37 @@ seedance config set <KEY> <VALUE> # 设置单项
 ```
 
 可配置项：`api_key`、`base_url`、`model`、`resolution`、`ratio`、`duration`、`output_dir`。
+
+## seedream — 图像生成 CLI
+
+同一仓库提供 `seedream` 命令，使用 Ark 同步接口 `/images/generations`（无需轮询任务），
+复用同一个 `ARK_API_KEY`，配置文件位于 `~/.config/seedream/config.toml`。
+
+```bash
+# 文生图
+seedream generate "一只水彩风格的小熊猫咖啡师" --size 2K
+
+# 图生图 / 局部编辑（多图融合最多 10 张参考图）
+seedream generate "把背景换成夜晚城市霓虹" -i photo.jpg -o edited.jpg
+
+# 组图（2-4 张一组）
+seedream generate "四季的同一棵树" --sequential 4 --size 2048x2048
+
+# 指定模型与随机种子
+seedream generate "赛博朋克街景" --model 5.0 --seed 42
+```
+
+| 参数 | 说明 |
+|---|---|
+| `--model` | `standard`/`4.0`（doubao-seedream-4-0-250828）、`5.0`（doubao-seedream-5-0-260128）、`pro`，或原始模型 ID |
+| `--image` / `-i` | 参考图（URL 或本地路径，≤10MB 内联 base64，超过自动走 TOS 上传） |
+| `--size` | `1024x1024`、`2K`、`4K`、`adaptive` 等 |
+| `--sequential` | 生成 2–4 张组图（4.0+） |
+| `--response-format` | `url`（默认）或 `b64_json` |
+| `--seed` / `--watermark` | 随机种子 / 水印 |
+
+> 注：`pro` 别名对应的上游模型 ID（`doubao-seedream-5-0-pro`）来自第三方文档，
+> 使用前请在 Ark 控制台确认，也可以直接传原始模型 ID。
 
 ## 环境变量
 

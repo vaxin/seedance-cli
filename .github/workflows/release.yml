@@ -62,18 +62,18 @@ jobs:
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          BINARY="target/${{ matrix.target }}/release/seedance"
+          DIR="target/${{ matrix.target }}/release"
           ARCHIVE="seedance-v${{ steps.version.outputs.version }}-${{ matrix.target }}.tar.gz"
-          tar -czf "$ARCHIVE" -C "$(dirname "$BINARY")" "$(basename "$BINARY")"
+          tar -czf "$ARCHIVE" -C "$DIR" seedance seedream
           echo "ARCHIVE=$ARCHIVE" >> "$GITHUB_ENV"
 
       - name: Package (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $binary = "target/${{ matrix.target }}/release/seedance.exe"
+          $dir = "target/${{ matrix.target }}/release"
           $archive = "seedance-v${{ steps.version.outputs.version }}-${{ matrix.target }}.zip"
-          Compress-Archive -Path $binary -DestinationPath $archive
+          Compress-Archive -Path "$dir\seedance.exe", "$dir\seedream.exe" -DestinationPath $archive
           echo "ARCHIVE=$archive" >> $env:GITHUB_ENV
 
       - name: Upload release asset

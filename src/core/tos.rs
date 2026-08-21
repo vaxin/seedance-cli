@@ -22,6 +22,13 @@ fn get_env(name: &str) -> Result<String> {
     env::var(name).with_context(|| format!("environment variable {name} is not set"))
 }
 
+/// Whether all required TOS credentials are present in the environment.
+pub fn is_configured() -> bool {
+    env::var("TOS_ACCESS_KEY").is_ok()
+        && env::var("TOS_SECRET_KEY").is_ok()
+        && env::var("TOS_BUCKET").is_ok()
+}
+
 /// Upload a file to TOS (S3-compatible) and return the public HTTPS URL.
 ///
 /// Required env vars:

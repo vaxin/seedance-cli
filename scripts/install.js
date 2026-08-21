@@ -93,6 +93,17 @@ async function install() {
 
     const extractedBinary = path.join(tmpDir, binaryName);
 
+    // Also stage the seedream binary (shipped in the same archive since v0.2.0)
+    const seedreamBinary = path.join(
+      tmpDir,
+      "seedream" + (isWindows ? ".exe" : "")
+    );
+    const seedreamDest = path.join(binDir, "seedream" + (isWindows ? ".exe" : ""));
+    if (fs.existsSync(seedreamBinary)) {
+      fs.copyFileSync(seedreamBinary, seedreamDest);
+      fs.chmodSync(seedreamDest, 0o755);
+    }
+
     if (!fs.existsSync(extractedBinary)) {
       const files = fs.readdirSync(tmpDir);
       const found = files.find((f) => f === binaryName || f.startsWith(NAME));

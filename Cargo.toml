@@ -1,12 +1,16 @@
 [package]
 name = "seedance-cli"
-version = "0.1.3"
+version = "0.2.0"
 edition = "2021"
-description = "CLI for Seedance 2.0 video generation on Volcengine Ark"
+description = "CLI for Seedance 2.0/2.5 video generation and Seedream image generation on Volcengine Ark"
 
 [[bin]]
 name = "seedance"
 path = "src/main.rs"
+
+[[bin]]
+name = "seedream"
+path = "src/bin/seedream.rs"
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }
