@@ -173,6 +173,16 @@ npm install -g seedream
 npm install -g seedance
 ```
 
+为 AI Agent 安装 seedream skill：
+
+```bash
+npx skills add https://github.com/vaxin/seedance-cli/tree/main/skills/seedream-cli
+```
+
+> 注：因仓库根存在 SKILL.md（seedance-cli），`npx skills add vaxin/seedance-cli`
+> 默认只识别主 skill；安装任意子 skill（含 seedream-cli 和 22 个 seedance 子 skill）
+> 请使用上述直链方式，或加 `--full-depth` 交互选择。
+
 ```bash
 # 文生图
 seedream generate "一只水彩风格的小熊猫咖啡师" --size 2K
