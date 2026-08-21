@@ -114,5 +114,18 @@ jobs:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
 
+      # Precedent (b6562ba): a brand-new package's FIRST version is published
+      # manually, not from CI. Skip gracefully when that version already
+      # exists so the tagged release stays green.
+      - name: Skip if version already published
+        working-directory: npm/seedream
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view seedream@${VERSION} version >/dev/null 2>&1; then
+            echo "seedream@${VERSION} already published (manual first publish) — skipping"
+            echo "SKIP=true" >> "$GITHUB_ENV"
+          fi
+
       - name: Publish seedream to npm
+        if: env.SKIP != 'true'
         run: npm publish ./npm/seedream --access public
