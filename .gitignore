@@ -2,3 +2,14 @@
 /bin
 node_modules
 .fuckclaude/
+
+# loong app local state: keep data files, ignore caches & secrets-bearing state
+.loong/sessions/
+.loong/.migration-backups/
+.loong/tmp/
+.loong/sandbox-tmp/
+.loong/tool-diagnostics.log
+.loong/sandbox-home/.rustup/
+.loong/sandbox-home/.cargo/
+.loong/sandbox-home/.npm/
+.loong/sandbox-home/.npmrc

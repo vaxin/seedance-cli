@@ -1,0 +1,21 @@
+{
+  "tracked_files": [
+    "/Users/bytedance/dev/code/seedance-cli/.gitignore"
+  ],
+  "snapshots": [
+    {
+      "message_index": 0,
+      "timestamp_ms": 1791030099475,
+      "backups": {}
+    },
+    {
+      "message_index": 12,
+      "timestamp_ms": 1791030327724,
+      "backups": {
+        "/Users/bytedance/dev/code/seedance-cli/.gitignore": {
+          "content": "/target\n/bin\nnode_modules\n.fuckclaude/\n"
+        }
+      }
+    }
+  ]
+}

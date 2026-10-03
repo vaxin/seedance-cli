@@ -1,0 +1,100 @@
+{
+  "tracked_files": [
+    "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/MEMORY.md",
+    "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/feedback_visual_verification.md",
+    "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/project_seedance25_seedream.md",
+    "/Users/bytedance/dev/code/seedance-cli/.loong/tmp/wmtest/capture_server.py"
+  ],
+  "snapshots": [
+    {
+      "message_index": 0,
+      "timestamp_ms": 1787660331530,
+      "backups": {
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/project_seedance25_seedream.md": {
+          "content": "---\nname: Seedance 2.5 & Seedream CLI 支持进展\ndescription: v0.2.0 双包已发布上线（seedance CI 发、seedream webauthn 手动发）；待配 seedream trusted publisher\ntype: project\n---\n\n2026-08-20~21 v0.2.0 **已完整发布上线**（npm 双包 latest 均为 0.2.0）：\n\n- `seedance@0.2.0`：CI OIDC 发布（f3fa6aa / v0.2.0 tag），含 Seedance 2.5 支持 + 自带 seedream 二进制\n- `seedream@0.2.0`：**手动发布成功**——破局组合 = 用户终端真 TTY + `npm login --auth-type=web` 刷新全权限 token（替换掉 .npmrc 里的僵尸旧 token）+ `npm publish --auth-type=web` 走指纹 webauthn\n- 实测 `npm install seedream` 安装链路正常（postinstall 下载 v0.2.0 归档提取二进制）\n- 关键实证（v0.2.1-tp.1 测试 tag）：**trusted publisher 按包授权**——同一 OIDC 通道 seedance 发布成功、seedream（未配置的包）E404 拒绝。CI 的双 job 隔离 + \"已发布则跳过\"守卫（24bac92/f3fa6aa）工作正常。\n- prerelease 版本号必须 `--tag next`（workflow 已内置该逻辑，f3fa6aa）\n\n**遗留一步**：npmjs.com → seedream 包（现已存在）→ Settings → Trusted Publisher，配 repo `vaxin/seedance-cli` + workflow `release.yml` + environment 留空。配好后 0.2.1 起双包全 CI 自动。\n\n**Why:** 用户要求 CLI 跟进 Seedance 2.5 并支持 Seedream，npm 侧要求双包独立分发。\n**How to apply:** 下次发版直接 bump 三处版本（package.json / Cargo.toml / npm/seedream/package.json）→ `./scripts/tag-release.sh`；prerelease 版本会自动走 next dist-tag。pro 别名的上游模型 ID（doubao-seedream-5-0-pro）仍未在 Ark 控制台核实。\n"
+        },
+        "/Users/bytedance/dev/code/seedance-cli/.loong/tmp/wmtest/capture_server.py": {
+          "content": null
+        }
+      }
+    },
+    {
+      "message_index": 98,
+      "timestamp_ms": 1787661386349,
+      "backups": {
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/project_seedance25_seedream.md": {
+          "content": "---\nname: Seedance 2.5 & Seedream CLI 支持进展\ndescription: v0.2.0 双包已发布上线（seedance CI 发、seedream webauthn 手动发）；待配 seedream trusted publisher\ntype: project\n---\n\n2026-08-20~21 v0.2.0 **已完整发布上线**（npm 双包 latest 均为 0.2.0）：\n\n- `seedance@0.2.0`：CI OIDC 发布（f3fa6aa / v0.2.0 tag），含 Seedance 2.5 支持 + 自带 seedream 二进制\n- `seedream@0.2.0`：**手动发布成功**——破局组合 = 用户终端真 TTY + `npm login --auth-type=web` 刷新全权限 token（替换掉 .npmrc 里的僵尸旧 token）+ `npm publish --auth-type=web` 走指纹 webauthn\n- 实测 `npm install seedream` 安装链路正常（postinstall 下载 v0.2.0 归档提取二进制）\n- 关键实证（v0.2.1-tp.1 测试 tag）：**trusted publisher 按包授权**——同一 OIDC 通道 seedance 发布成功、seedream（未配置的包）E404 拒绝。CI 的双 job 隔离 + \"已发布则跳过\"守卫（24bac92/f3fa6aa）工作正常。\n- prerelease 版本号必须 `--tag next`（workflow 已内置该逻辑，f3fa6aa）\n\n**遗留一步**：npmjs.com → seedream 包（现已存在）→ Settings → Trusted Publisher，配 repo `vaxin/seedance-cli` + workflow `release.yml` + environment 留空。配好后 0.2.1 起双包全 CI 自动。\n\n**Why:** 用户要求 CLI 跟进 Seedance 2.5 并支持 Seedream，npm 侧要求双包独立分发。\n**How to apply:** 下次发版直接 bump 三处版本（package.json / Cargo.toml / npm/seedream/package.json）→ `./scripts/tag-release.sh`；prerelease 版本会自动走 next dist-tag。pro 别名的上游模型 ID（doubao-seedream-5-0-pro）仍未在 Ark 控制台核实。\n\n## Ark 图片 API 实测（2026-08-25，/images/generations）\n\n- **水印**：服务端默认加水印（不带 `watermark` 字段时）；`watermark:false` 在 4.0 与 5.0 均生效去除。水印形态 = 底部居中的半透明小字（~200-228 亮度），不在右下角。CLI v0.2.0 默认就显式发 `watermark:false`（loopback 抓包证实），用户报告的\"默认带水印\"不可复现——大概率来自控制台调试/裸 curl 等不带该字段的调用路径。\n- **5.0 size 限制**：只接受 `2k/3k/4k`（大小写不敏感）或 `WxH`；`1K`、`adaptive` 会报 InvalidParameter（这两个是 4.0 专属值）。CLI 的 `--size` 帮助文案未区分，且无模型感知校验——潜在待修。\n- **pro 模型**：`doubao-seedream-5-0-pro` 实测 404（InvalidEndpointOrModel.NotFound），上游仍未上线。\n- 4.0 固定 seed=42 两次生成内容不同（seed 不保证确定性），做图像对比实验时不能依赖同 seed 对齐。\n"
+        },
+        "/Users/bytedance/dev/code/seedance-cli/.loong/tmp/wmtest/capture_server.py": {
+          "content": "from http.server import BaseHTTPRequestHandler, HTTPServer\n\nclass H(BaseHTTPRequestHandler):\n    def do_POST(self):\n        n = int(self.headers.get('Content-Length', 0))\n        body = self.rfile.read(n)\n        with open('captured_request.json', 'wb') as f:\n            f.write(self.path.encode() + b'\\n' + body)\n        self.send_response(500)\n        self.send_header('Content-Type', 'application/json')\n        self.end_headers()\n        self.wfile.write(b'{\"error\":{\"message\":\"loopback capture\"}}')\n\n    def log_message(self, *a):\n        pass\n\nHTTPServer(('127.0.0.1', 18099), H).serve_forever()\n"
+        }
+      }
+    },
+    {
+      "message_index": 104,
+      "timestamp_ms": 1787661453511,
+      "backups": {
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/project_seedance25_seedream.md": {
+          "content": "---\nname: Seedance 2.5 & Seedream CLI 支持进展\ndescription: v0.2.0 双包已发布上线（seedance CI 发、seedream webauthn 手动发）；待配 seedream trusted publisher\ntype: project\n---\n\n2026-08-20~21 v0.2.0 **已完整发布上线**（npm 双包 latest 均为 0.2.0）：\n\n- `seedance@0.2.0`：CI OIDC 发布（f3fa6aa / v0.2.0 tag），含 Seedance 2.5 支持 + 自带 seedream 二进制\n- `seedream@0.2.0`：**手动发布成功**——破局组合 = 用户终端真 TTY + `npm login --auth-type=web` 刷新全权限 token（替换掉 .npmrc 里的僵尸旧 token）+ `npm publish --auth-type=web` 走指纹 webauthn\n- 实测 `npm install seedream` 安装链路正常（postinstall 下载 v0.2.0 归档提取二进制）\n- 关键实证（v0.2.1-tp.1 测试 tag）：**trusted publisher 按包授权**——同一 OIDC 通道 seedance 发布成功、seedream（未配置的包）E404 拒绝。CI 的双 job 隔离 + \"已发布则跳过\"守卫（24bac92/f3fa6aa）工作正常。\n- prerelease 版本号必须 `--tag next`（workflow 已内置该逻辑，f3fa6aa）\n\n**遗留一步**：npmjs.com → seedream 包（现已存在）→ Settings → Trusted Publisher，配 repo `vaxin/seedance-cli` + workflow `release.yml` + environment 留空。配好后 0.2.1 起双包全 CI 自动。\n\n**Why:** 用户要求 CLI 跟进 Seedance 2.5 并支持 Seedream，npm 侧要求双包独立分发。\n**How to apply:** 下次发版直接 bump 三处版本（package.json / Cargo.toml / npm/seedream/package.json）→ `./scripts/tag-release.sh`；prerelease 版本会自动走 next dist-tag。pro 别名的上游模型 ID（doubao-seedream-5-0-pro）仍未在 Ark 控制台核实。\n\n## Ark 图片 API 实测（2026-08-25，/images/generations）\n\n- **水印**：服务端默认加水印（不带 `watermark` 字段时）；`watermark:false` 在 4.0 与 5.0 均生效去除。水印形态 = 底部居中的半透明小字（~200-228 亮度），不在右下角。CLI v0.2.0 默认就显式发 `watermark:false`（loopback 抓包证实），用户报告的\"默认带水印\"不可复现——大概率来自控制台调试/裸 curl 等不带该字段的调用路径。\n- **5.0 size 限制**：只接受 `2k/3k/4k`（大小写不敏感）或 `WxH`；`1K`、`adaptive` 会报 InvalidParameter（这两个是 4.0 专属值）。CLI 的 `--size` 帮助文案未区分，且无模型感知校验——潜在待修。\n- **pro 模型**：`doubao-seedream-5-0-pro` 实测 404（InvalidEndpointOrModel.NotFound），上游仍未上线。\n- 4.0 固定 seed=42 两次生成内容不同（seed 不保证确定性），做图像对比实验时不能依赖同 seed 对齐。\n"
+        },
+        "/Users/bytedance/dev/code/seedance-cli/.loong/tmp/wmtest/capture_server.py": {
+          "content": "from http.server import BaseHTTPRequestHandler, HTTPServer\n\nclass H(BaseHTTPRequestHandler):\n    def do_POST(self):\n        n = int(self.headers.get('Content-Length', 0))\n        body = self.rfile.read(n)\n        with open('captured_request.json', 'wb') as f:\n            f.write(self.path.encode() + b'\\n' + body)\n        self.send_response(500)\n        self.send_header('Content-Type', 'application/json')\n        self.end_headers()\n        self.wfile.write(b'{\"error\":{\"message\":\"loopback capture\"}}')\n\n    def log_message(self, *a):\n        pass\n\nHTTPServer(('127.0.0.1', 18099), H).serve_forever()\n"
+        }
+      }
+    },
+    {
+      "message_index": 112,
+      "timestamp_ms": 1787661549024,
+      "backups": {
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/MEMORY.md": {
+          "content": "# Memory Index\n\n- [Seedance 2.5 & Seedream CLI 支持进展](project_seedance25_seedream.md) — v0.2.0 已提交待发版；pro 别名待确认；seedream 首版需手动发\n- [npm 发布经验教训](feedback_npm_publishing.md) — 新包首版手动发；OIDC 先配 trusted publisher；rustls 交叉编译\n- [本机 Rust/网络环境](reference_dev_env.md) — crates.io 需走 rsproxy 镜像；工具链 2026-08-20 安装\n"
+        },
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/feedback_visual_verification.md": {
+          "content": null
+        },
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/project_seedance25_seedream.md": {
+          "content": "---\nname: Seedance 2.5 & Seedream CLI 支持进展\ndescription: v0.2.0 双包已发布上线（seedance CI 发、seedream webauthn 手动发）；待配 seedream trusted publisher\ntype: project\n---\n\n2026-08-20~21 v0.2.0 **已完整发布上线**（npm 双包 latest 均为 0.2.0）：\n\n- `seedance@0.2.0`：CI OIDC 发布（f3fa6aa / v0.2.0 tag），含 Seedance 2.5 支持 + 自带 seedream 二进制\n- `seedream@0.2.0`：**手动发布成功**——破局组合 = 用户终端真 TTY + `npm login --auth-type=web` 刷新全权限 token（替换掉 .npmrc 里的僵尸旧 token）+ `npm publish --auth-type=web` 走指纹 webauthn\n- 实测 `npm install seedream` 安装链路正常（postinstall 下载 v0.2.0 归档提取二进制）\n- 关键实证（v0.2.1-tp.1 测试 tag）：**trusted publisher 按包授权**——同一 OIDC 通道 seedance 发布成功、seedream（未配置的包）E404 拒绝。CI 的双 job 隔离 + \"已发布则跳过\"守卫（24bac92/f3fa6aa）工作正常。\n- prerelease 版本号必须 `--tag next`（workflow 已内置该逻辑，f3fa6aa）\n\n**遗留一步**：npmjs.com → seedream 包（现已存在）→ Settings → Trusted Publisher，配 repo `vaxin/seedance-cli` + workflow `release.yml` + environment 留空。配好后 0.2.1 起双包全 CI 自动。\n\n**Why:** 用户要求 CLI 跟进 Seedance 2.5 并支持 Seedream，npm 侧要求双包独立分发。\n**How to apply:** 下次发版直接 bump 三处版本（package.json / Cargo.toml / npm/seedream/package.json）→ `./scripts/tag-release.sh`；prerelease 版本会自动走 next dist-tag。pro 别名的上游模型 ID（doubao-seedream-5-0-pro）仍未在 Ark 控制台核实。\n\n## Ark 图片 API 实测（2026-08-25，/images/generations）\n\n- **水印**：服务端默认加水印（不带 `watermark` 字段时）；`watermark:false` 在 4.0 与 5.0 均生效去除。水印形态 = 底部居中的半透明小字（~200-228 亮度），不在右下角。CLI v0.2.0 默认就显式发 `watermark:false`（loopback 抓包证实），用户报告的\"默认带水印\"不可复现——大概率来自控制台调试/裸 curl 等不带该字段的调用路径。\n- **5.0 size 限制**：只接受 `2k/3k/4k`（大小写不敏感）或 `WxH`；`1K`、`adaptive` 会报 InvalidParameter（这两个是 4.0 专属值）。CLI 的 `--size` 帮助文案未区分，且无模型感知校验——潜在待修。\n- **pro 模型**：`doubao-seedream-5-0-pro` 实测 404（InvalidEndpointOrModel.NotFound），上游仍未上线。\n- 4.0 固定 seed=42 两次生成内容不同（seed 不保证确定性），做图像对比实验时不能依赖同 seed 对齐。\n"
+        },
+        "/Users/bytedance/dev/code/seedance-cli/.loong/tmp/wmtest/capture_server.py": {
+          "content": "from http.server import BaseHTTPRequestHandler, HTTPServer\n\nclass H(BaseHTTPRequestHandler):\n    def do_POST(self):\n        n = int(self.headers.get('Content-Length', 0))\n        body = self.rfile.read(n)\n        with open('captured_request.json', 'wb') as f:\n            f.write(self.path.encode() + b'\\n' + body)\n        self.send_response(500)\n        self.send_header('Content-Type', 'application/json')\n        self.end_headers()\n        self.wfile.write(b'{\"error\":{\"message\":\"loopback capture\"}}')\n\n    def log_message(self, *a):\n        pass\n\nHTTPServer(('127.0.0.1', 18099), H).serve_forever()\n"
+        }
+      }
+    },
+    {
+      "message_index": 118,
+      "timestamp_ms": 1787669488499,
+      "backups": {
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/MEMORY.md": {
+          "content": "# Memory Index\n\n- [Seedance 2.5 & Seedream CLI 支持进展](project_seedance25_seedream.md) — v0.2.0 已提交待发版；pro 别名待确认；seedream 首版需手动发\n- [npm 发布经验教训](feedback_npm_publishing.md) — 新包首版手动发；OIDC 先配 trusted publisher；rustls 交叉编译\n- [本机 Rust/网络环境](reference_dev_env.md) — crates.io 需走 rsproxy 镜像；工具链 2026-08-20 安装\n- [视觉验证用深色底](feedback_visual_verification.md) — 验证水印等半透明叠加物时测试图必须用黑底，白底等于没验证\n"
+        },
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/feedback_visual_verification.md": {
+          "content": "---\nname: 视觉验证用深色底\ndescription: 验证水印/叠加物等视觉产物时，生成图必须用纯黑底而不是白底\ntype: feedback\n---\n\n做水印、贴纸、叠加文字之类的视觉验证实验时，测试图的 prompt 要用纯黑底（pure solid black background, empty, no objects），不要用白底。\n\n**Why:** 2026-08-25 验证 Seedream 水印时我先用白底生成，用户直接骂回来——水印是白色半透明字，压在白底上人眼根本看不见，等于没验证。换黑底后水印一目了然，像素统计（band max 63~66 vs 纯黑 31）也才可靠。\n\n**How to apply:** 任何\"肉眼/像素检测某个叠加物是否存在\"的实验，底色必须与被测物形成最大对比度；半透明白字 → 黑底，反之亦然。同时记得同 prompt 做带/不带参数的 A/B 对照组。\n"
+        },
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/project_seedance25_seedream.md": {
+          "content": "---\nname: Seedance 2.5 & Seedream CLI 支持进展\ndescription: v0.2.0 双包已发布上线（seedance CI 发、seedream webauthn 手动发）；待配 seedream trusted publisher\ntype: project\n---\n\n2026-08-20~21 v0.2.0 **已完整发布上线**（npm 双包 latest 均为 0.2.0）：\n\n- `seedance@0.2.0`：CI OIDC 发布（f3fa6aa / v0.2.0 tag），含 Seedance 2.5 支持 + 自带 seedream 二进制\n- `seedream@0.2.0`：**手动发布成功**——破局组合 = 用户终端真 TTY + `npm login --auth-type=web` 刷新全权限 token（替换掉 .npmrc 里的僵尸旧 token）+ `npm publish --auth-type=web` 走指纹 webauthn\n- 实测 `npm install seedream` 安装链路正常（postinstall 下载 v0.2.0 归档提取二进制）\n- 关键实证（v0.2.1-tp.1 测试 tag）：**trusted publisher 按包授权**——同一 OIDC 通道 seedance 发布成功、seedream（未配置的包）E404 拒绝。CI 的双 job 隔离 + \"已发布则跳过\"守卫（24bac92/f3fa6aa）工作正常。\n- prerelease 版本号必须 `--tag next`（workflow 已内置该逻辑，f3fa6aa）\n\n**遗留一步**：npmjs.com → seedream 包（现已存在）→ Settings → Trusted Publisher，配 repo `vaxin/seedance-cli` + workflow `release.yml` + environment 留空。配好后 0.2.1 起双包全 CI 自动。\n\n**Why:** 用户要求 CLI 跟进 Seedance 2.5 并支持 Seedream，npm 侧要求双包独立分发。\n**How to apply:** 下次发版直接 bump 三处版本（package.json / Cargo.toml / npm/seedream/package.json）→ `./scripts/tag-release.sh`；prerelease 版本会自动走 next dist-tag。pro 别名的上游模型 ID（doubao-seedream-5-0-pro）仍未在 Ark 控制台核实。\n\n## Ark 图片 API 实测（2026-08-25，/images/generations）\n\n- **水印**：服务端默认加水印（不带 `watermark` 字段时）；`watermark:false` 在 4.0 与 5.0 均生效去除。水印形态 = 底部居中的半透明小字（~200-228 亮度），不在右下角。CLI v0.2.0 默认就显式发 `watermark:false`（loopback 抓包证实），用户报告的\"默认带水印\"不可复现——大概率来自控制台调试/裸 curl 等不带该字段的调用路径。\n- **5.0 size 限制**：只接受 `2k/3k/4k`（大小写不敏感）或 `WxH`；`1K`、`adaptive` 会报 InvalidParameter（这两个是 4.0 专属值）。CLI 的 `--size` 帮助文案未区分，且无模型感知校验——潜在待修。\n- **pro 模型**：`doubao-seedream-5-0-pro` 实测 404（InvalidEndpointOrModel.NotFound），上游仍未上线。\n- 4.0 固定 seed=42 两次生成内容不同（seed 不保证确定性），做图像对比实验时不能依赖同 seed 对齐。\n"
+        },
+        "/Users/bytedance/dev/code/seedance-cli/.loong/tmp/wmtest/capture_server.py": {
+          "content": "from http.server import BaseHTTPRequestHandler, HTTPServer\n\nclass H(BaseHTTPRequestHandler):\n    def do_POST(self):\n        n = int(self.headers.get('Content-Length', 0))\n        body = self.rfile.read(n)\n        with open('captured_request.json', 'wb') as f:\n            f.write(self.path.encode() + b'\\n' + body)\n        self.send_response(500)\n        self.send_header('Content-Type', 'application/json')\n        self.end_headers()\n        self.wfile.write(b'{\"error\":{\"message\":\"loopback capture\"}}')\n\n    def log_message(self, *a):\n        pass\n\nHTTPServer(('127.0.0.1', 18099), H).serve_forever()\n"
+        }
+      }
+    },
+    {
+      "message_index": 122,
+      "timestamp_ms": 1787669630551,
+      "backups": {
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/MEMORY.md": {
+          "content": "# Memory Index\n\n- [Seedance 2.5 & Seedream CLI 支持进展](project_seedance25_seedream.md) — v0.2.0 已提交待发版；pro 别名待确认；seedream 首版需手动发\n- [npm 发布经验教训](feedback_npm_publishing.md) — 新包首版手动发；OIDC 先配 trusted publisher；rustls 交叉编译\n- [本机 Rust/网络环境](reference_dev_env.md) — crates.io 需走 rsproxy 镜像；工具链 2026-08-20 安装\n- [视觉验证用深色底](feedback_visual_verification.md) — 验证水印等半透明叠加物时测试图必须用黑底，白底等于没验证\n"
+        },
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/feedback_visual_verification.md": {
+          "content": "---\nname: 视觉验证用深色底\ndescription: 验证水印/叠加物等视觉产物时，生成图必须用纯黑底而不是白底\ntype: feedback\n---\n\n做水印、贴纸、叠加文字之类的视觉验证实验时，测试图的 prompt 要用纯黑底（pure solid black background, empty, no objects），不要用白底。\n\n**Why:** 2026-08-25 验证 Seedream 水印时我先用白底生成，用户直接骂回来——水印是白色半透明字，压在白底上人眼根本看不见，等于没验证。换黑底后水印一目了然，像素统计（band max 63~66 vs 纯黑 31）也才可靠。\n\n**How to apply:** 任何\"肉眼/像素检测某个叠加物是否存在\"的实验，底色必须与被测物形成最大对比度；半透明白字 → 黑底，反之亦然。同时记得同 prompt 做带/不带参数的 A/B 对照组。\n"
+        },
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/project_seedance25_seedream.md": {
+          "content": "---\nname: Seedance 2.5 & Seedream CLI 支持进展\ndescription: v0.2.0 双包已发布上线（seedance CI 发、seedream webauthn 手动发）；待配 seedream trusted publisher\ntype: project\n---\n\n2026-08-20~21 v0.2.0 **已完整发布上线**（npm 双包 latest 均为 0.2.0）：\n\n- `seedance@0.2.0`：CI OIDC 发布（f3fa6aa / v0.2.0 tag），含 Seedance 2.5 支持 + 自带 seedream 二进制\n- `seedream@0.2.0`：**手动发布成功**——破局组合 = 用户终端真 TTY + `npm login --auth-type=web` 刷新全权限 token（替换掉 .npmrc 里的僵尸旧 token）+ `npm publish --auth-type=web` 走指纹 webauthn\n- 实测 `npm install seedream` 安装链路正常（postinstall 下载 v0.2.0 归档提取二进制）\n- 关键实证（v0.2.1-tp.1 测试 tag）：**trusted publisher 按包授权**——同一 OIDC 通道 seedance 发布成功、seedream（未配置的包）E404 拒绝。CI 的双 job 隔离 + \"已发布则跳过\"守卫（24bac92/f3fa6aa）工作正常。\n- prerelease 版本号必须 `--tag next`（workflow 已内置该逻辑，f3fa6aa）\n\n**遗留一步**：npmjs.com → seedream 包（现已存在）→ Settings → Trusted Publisher，配 repo `vaxin/seedance-cli` + workflow `release.yml` + environment 留空。配好后 0.2.1 起双包全 CI 自动。\n\n**Why:** 用户要求 CLI 跟进 Seedance 2.5 并支持 Seedream，npm 侧要求双包独立分发。\n**How to apply:** 下次发版直接 bump 三处版本（package.json / Cargo.toml / npm/seedream/package.json）→ `./scripts/tag-release.sh`；prerelease 版本会自动走 next dist-tag。pro 别名的上游模型 ID（doubao-seedream-5-0-pro）仍未在 Ark 控制台核实。\n\n## Ark 图片 API 实测（2026-08-25，/images/generations）\n\n- **水印**：平台合规\"AI 生成内容\"标识，服务端默认加水印（请求不带 `watermark` 字段时）；`watermark:false` 在 4.0 与 5.0 均生效去除。形态 = 底部偏右的半透明白字（黑底可见，亮度 +35~50）。CLI v0.2.0 起恒发 `watermark:false`（loopback 抓包证实），无分支可省略该字段。\n- **团队误解记录（2026-08-25）**：其他团队文档称 CLI 的 `--watermark` 是\"用户自定义水印开关、不影响平台 AI 水印\"——实测为误解：该 flag 就是 API `watermark` 字段直通，请求体里只有一个水印开关。其 v1/v2 带水印图来自裸 API 调用（脚本/控制台不带字段），非本 CLI 产物；其 v3 python 脚本显式传 `watermark:false` 与 CLI 默认行为完全等价。\n- **5.0 size 限制**：只接受 `2k/3k/4k`（大小写不敏感）或 `WxH`；`1K`、`adaptive` 会报 InvalidParameter（这两个是 4.0 专属值）。CLI 的 `--size` 帮助文案未区分，且无模型感知校验——潜在待修。\n- **pro 模型**：`doubao-seedream-5-0-pro` 实测 404（InvalidEndpointOrModel.NotFound），上游仍未上线。\n- 4.0 固定 seed=42 两次生成内容不同（seed 不保证确定性），做图像对比实验时不能依赖同 seed 对齐。\n"
+        },
+        "/Users/bytedance/dev/code/seedance-cli/.loong/tmp/wmtest/capture_server.py": {
+          "content": "from http.server import BaseHTTPRequestHandler, HTTPServer\n\nclass H(BaseHTTPRequestHandler):\n    def do_POST(self):\n        n = int(self.headers.get('Content-Length', 0))\n        body = self.rfile.read(n)\n        with open('captured_request.json', 'wb') as f:\n            f.write(self.path.encode() + b'\\n' + body)\n        self.send_response(500)\n        self.send_header('Content-Type', 'application/json')\n        self.end_headers()\n        self.wfile.write(b'{\"error\":{\"message\":\"loopback capture\"}}')\n\n    def log_message(self, *a):\n        pass\n\nHTTPServer(('127.0.0.1', 18099), H).serve_forever()\n"
+        }
+      }
+    }
+  ]
+}
