@@ -1,5 +1,6 @@
 {
   "tracked_files": [
+    "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/project_loong_dir_policy.md",
     "/Users/bytedance/dev/code/seedance-cli/.gitignore"
   ],
   "snapshots": [
@@ -12,8 +13,23 @@
       "message_index": 12,
       "timestamp_ms": 1791030327724,
       "backups": {
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/project_loong_dir_policy.md": {
+          "content": null
+        },
         "/Users/bytedance/dev/code/seedance-cli/.gitignore": {
           "content": "/target\n/bin\nnode_modules\n.fuckclaude/\n"
+        }
+      }
+    },
+    {
+      "message_index": 47,
+      "timestamp_ms": 1791030637233,
+      "backups": {
+        "/Users/bytedance/.loong/projects/-Users-bytedance-dev-code-seedance-cli/memory/project_loong_dir_policy.md": {
+          "content": "---\nname: seedance-cli 仓库 .loong 目录入库策略\ndescription: 该仓库只入库 .loong 数据文件；sessions/备份/缓存含真实密钥被 gitignore，永不提交\ntype: project\n---\n\nseedance-cli（公开仓库 github.com/vaxin/seedance-cli）中 `.loong/` 的处理策略（2026-10-03 定，commit 865c121）：\n\n- 入库：`plans/`、`settings.local.json`、`tool-state/`、`file-history/`、`sandbox-home/Library/Application Support/{anygen,seedance}/*.db`\n- 忽略：`sessions/`、`.migration-backups/`（每个文件含 21~116 处真实 sk-/Bearer/npm token）、`tool-diagnostics.log`（含密钥前缀片段）、`sandbox-home/{.rustup,.cargo,.npm,.npmrc}`（.npmrc 是 npm 发布 token）\n\n**Why:** 用户想把 .loong 数据备份到仓库，但全量推送 = 1.8G 缓存 + 密钥进公开 git 历史（不可逆）。协商后只推\"相关数据文件\"。\n\n**How to apply:** 未来向该仓库提交 .loong 内容时：先跑密钥模式扫描（`git grep --cached -E 'sk-|_authToken=|Bearer |AKLT|ghp_|BEGIN'`）；sqlite db 里的 `video_url` 可能带 TOS 签名 URL（含 AKLT Key ID），提交前剥 query 并 `VACUUM`；sessions 类文件除非先清洗密钥否则不推。\n"
+        },
+        "/Users/bytedance/dev/code/seedance-cli/.gitignore": {
+          "content": "/target\n/bin\nnode_modules\n.fuckclaude/\n\n# loong app local state: keep data files, ignore caches & secrets-bearing state\n.loong/sessions/\n.loong/.migration-backups/\n.loong/tmp/\n.loong/sandbox-tmp/\n.loong/tool-diagnostics.log\n.loong/sandbox-home/.rustup/\n.loong/sandbox-home/.cargo/\n.loong/sandbox-home/.npm/\n.loong/sandbox-home/.npmrc\n"
         }
       }
     }
