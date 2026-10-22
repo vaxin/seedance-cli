@@ -98,7 +98,8 @@ seedance generate <PROMPT> [OPTIONS]
 | `--output-format`     |      |            | 输出容器：`mp4` / `mov`（仅 2.5）                |
 | `--seed`              |      |            | 随机种子，用于复现                                   |
 | `--watermark`         |      | `false`    | 添加水印                                        |
-| `--audio-gen`         |      | `false`    | 启用原生音频生成                                    |
+| `--audio-gen`         |      | `false`    | 音频生成（默认开启，此 flag 仅为兼容保留，无需显式传）          |
+| `--no-audio-gen`      |      | `false`    | 关闭音频生成（默认生成音频，用此 flag 显式关闭）              |
 | `--return-last-frame` |      | `false`    | 返回最后一帧图片                                    |
 | `--callback`          |      |            | Webhook 回调地址                                |
 

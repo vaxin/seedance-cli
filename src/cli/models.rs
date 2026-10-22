@@ -144,3 +144,21 @@ pub fn validate_resolution(spec: &ModelSpec, resolution: &str) -> anyhow::Result
         );
     }
 }
+
+/// Resolve the `generate_audio` request field from the audio flags.
+///
+/// Audio generation is ON by default; `--no-audio-gen` opts out (and
+/// overrides a simultaneous `--audio-gen`, which stays accepted as an
+/// explicit no-op for backward compatibility). Seedance 2.5 also defaults
+/// `generate_audio` to true server-side, so we send an explicit value
+/// there to keep the flags deterministic; on 2.0 the field is omitted
+/// when audio is disabled (the server default there is false).
+pub fn generate_audio_field(version: u8, no_audio_gen: bool) -> Option<bool> {
+    if version >= 25 {
+        Some(!no_audio_gen)
+    } else if no_audio_gen {
+        None
+    } else {
+        Some(true)
+    }
+}

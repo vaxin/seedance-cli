@@ -643,6 +643,7 @@ mod generate_tests {
             seed: None,
             watermark: false,
             audio_gen: false,
+            no_audio_gen: false,
             return_last_frame: false,
             callback: None,
             web_search: false,
@@ -798,6 +799,38 @@ mod generate_tests {
         // 9 + 2 + 1 + 1 = 13, FAIL
         assert!(validate_inputs(&args, &spec).is_err());
     }
+
+    #[test]
+    fn parse_audio_flags_default_on() {
+        use clap::Parser;
+        #[derive(Parser)]
+        struct TestCli {
+            #[command(flatten)]
+            args: GenerateArgs,
+        }
+
+        // No flag: audio stays on by default
+        let cli = TestCli::try_parse_from(["test", "prompt"]).unwrap();
+        assert!(!cli.args.audio_gen);
+        assert!(!cli.args.no_audio_gen);
+
+        // --audio-gen still accepted (explicit no-op)
+        let cli = TestCli::try_parse_from(["test", "prompt", "--audio-gen"]).unwrap();
+        assert!(cli.args.audio_gen);
+        assert!(!cli.args.no_audio_gen);
+
+        // --no-audio-gen opts out
+        let cli = TestCli::try_parse_from(["test", "prompt", "--no-audio-gen"]).unwrap();
+        assert!(cli.args.no_audio_gen);
+
+        // --no-audio-gen wins over --audio-gen (clap overrides_with)
+        let cli = TestCli::try_parse_from([
+            "test", "prompt", "--audio-gen", "--no-audio-gen",
+        ])
+        .unwrap();
+        assert!(cli.args.no_audio_gen);
+        assert!(!cli.args.audio_gen);
+    }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -878,6 +911,19 @@ mod extend_tests {
     }
 
     #[test]
+    fn parse_no_audio_gen_opts_out() {
+        let cli = TestCli::try_parse_from([
+            "test",
+            "--source-video", "clip.mp4",
+            "延长内容",
+            "--no-audio-gen",
+        ])
+        .unwrap();
+        assert!(cli.args.no_audio_gen);
+        assert!(!cli.args.audio_gen);
+    }
+
+    #[test]
     fn reject_no_source() {
         let result = TestCli::try_parse_from(["test", "只有prompt没有source"]);
         assert!(result.is_err());
@@ -947,6 +993,17 @@ mod edit_tests {
         ])
         .unwrap();
         assert_eq!(cli.args.audio, vec!["new_voice.mp3"]);
+    }
+
+    #[test]
+    fn parse_edit_no_audio_gen() {
+        let cli = TestCli::try_parse_from([
+            "test", "cgt-abc", "去掉背景音",
+            "--no-audio-gen",
+        ])
+        .unwrap();
+        assert!(cli.args.no_audio_gen);
+        assert!(!cli.args.audio_gen);
     }
 
     #[test]
@@ -1021,6 +1078,19 @@ mod models_tests {
         assert_eq!(s25.max_videos, 10);
         assert_eq!(s25.max_audios, 10);
         assert!(s25.supports_mov);
+    }
+
+    #[test]
+    fn generate_audio_default_on_opt_out() {
+        // Default: audio on — explicit true on 2.5 (server default is true
+        // anyway), explicit true on 2.0
+        assert_eq!(generate_audio_field(20, false), Some(true));
+        assert_eq!(generate_audio_field(25, false), Some(true));
+
+        // --no-audio-gen: explicit false on 2.5, omitted on 2.0 (server
+        // default is false there)
+        assert_eq!(generate_audio_field(20, true), None);
+        assert_eq!(generate_audio_field(25, true), Some(false));
     }
 
     #[test]

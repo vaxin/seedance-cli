@@ -35,7 +35,7 @@ seedance generate "Two instruments duet, violin and piano" \
   --audio violin.mp3 --audio reference_piano.mp3 --audio-gen --duration 8 --wait
 ```
 
-Key flags: `--audio <file>` (repeatable, max 3), `--audio-gen` (enable native audio generation). See [skill:seedance-cli] for full reference.
+Key flags: `--audio <file>` (repeatable, max 3). Audio generation is on by default; pass `--no-audio-gen` to disable it. See [skill:seedance-cli] for full reference.
 
 > **Source intelligence**: ByteDance official Seedance 2.0 release blog (seed.bytedance.com), Douyin/抖音 creator community, CSDN practitioner tutorials, Q1 2026. Western sources have minimal real-world data.
 

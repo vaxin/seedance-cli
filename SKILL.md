@@ -5,7 +5,7 @@ license: MIT
 user-invocable: true
 user-invokable: true
 tags: ["cli", "terminal", "automation", "pipeline", "seedance-20", "seedance-25"]
-metadata: {"version": "1.3.0", "updated": "2026-08-20", "parent": "seedance-20"}
+metadata: {"version": "1.4.0", "updated": "2026-10-22", "parent": "seedance-20"}
 ---
 
 # seedance-cli
@@ -85,7 +85,8 @@ seedance generate <PROMPT> [OPTIONS]
 | `--output-format`     |       |            | Output container: `mp4` (default) or `mov` — 2.5 only        |
 | `--seed`              |       |            | Random seed for reproducibility                              |
 | `--watermark`         |       | `false`    | Add watermark                                                |
-| `--audio-gen`         |       | `false`    | Enable native audio generation                               |
+| `--audio-gen`         |       | `true`     | Audio generation (on by default; flag kept for compatibility) |
+| `--no-audio-gen`      |       |            | Disable audio generation (audio is on by default)            |
 | `--return-last-frame` |       | `false`    | Return the last frame as an image                            |
 | `--callback`          |       |            | Webhook callback URL                                         |
 | `--web-search`        |       | `false`    | Enable web search tool (text-only input)                     |
@@ -152,7 +153,8 @@ Pass 1 video for forward/backward extension, or 2–3 videos for multi-clip brid
 | `--duration`          | `-d`  | `5`        | Duration (4–15s)                                              |
 | `--ratio`             | `-r`  | `16:9`     | Aspect ratio                                                  |
 | `--resolution`        |       | `1080p`    | Resolution                                                    |
-| `--audio-gen`         |       | `false`    | Enable audio generation                                       |
+| `--audio-gen`         |       | `true`     | Audio generation (on by default; flag kept for compatibility) |
+| `--no-audio-gen`      |       |            | Disable audio generation (audio is on by default)            |
 | `--watermark`         |       | `false`    | Add watermark                                                 |
 | `--return-last-frame` |       | `false`    | Return last frame (for chaining further extends)              |
 | `--seed`              |       |            | Random seed                                                   |
@@ -201,7 +203,8 @@ seedance edit <SOURCE_TASK_ID> <PROMPT> [OPTIONS]
 | `--duration`         | `-d`  | `5`        | Duration (4–15s)                        |
 | `--ratio`            | `-r`  | `16:9`     | Aspect ratio                            |
 | `--resolution`       |       | `1080p`    | Resolution                              |
-| `--audio-gen`        |       | `false`    | Enable audio generation                 |
+| `--audio-gen`        |       | `true`     | Audio generation (on by default)        |
+| `--no-audio-gen`     |       |            | Disable audio generation                |
 | `--watermark`        |       | `false`    | Add watermark                           |
 | `--seed`             |       |            | Random seed                             |
 | `--image`            | `-i`  |            | Image for replacement/addition (repeat) |
@@ -317,7 +320,7 @@ Use `--model 2.5` (upstream `doubao-seedance-2-5-260628`, launched on Ark 2026-0
 | Reference assets | 9 images / 3 videos / 3 audios (Rule of 12) | **50 total**: 30 images + 10 videos + 10 audios; audio may be the *only* reference |
 | Task types | generate | generate / **edit** / **extend** (native) |
 | Output format | mp4 | mp4 / **mov** (H.264 + yuv444p + PCM — better for grading/keying) |
-| Audio | opt-in | `--audio-gen` sent explicitly (server default is true on 2.5) |
+| Audio | on by default (`--no-audio-gen` to opt out) | on by default (`--no-audio-gen` to opt out) |
 
 ```bash
 # 30s max length, model picks duration, mov delivery
